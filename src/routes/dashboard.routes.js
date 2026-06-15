@@ -1,0 +1,93 @@
+import { Router } from "express";
+import {
+  getDashboardData,
+  getKpis,
+  getChart,
+  getFinancials,
+  getActivity,
+  getSubscription,
+  getAIUsage,
+} from "../controllers/dashboard.controller.js";
+
+const router = Router();
+
+/**
+ * GET /api/dashboard
+ *
+ * Unified dashboard endpoint.
+ * Returns:
+ * - KPIs
+ * - Sales/Purchases Chart
+ * - Financial Summary
+ * - Recent Activity
+ * - Subscription Summary
+ * - AI Usage Summary
+ *
+ * Frontend can load the entire dashboard in one request.
+ */
+router.get("/", getDashboardData);
+
+/**
+ * GET /api/dashboard/kpis
+ *
+ * Returns dashboard KPI cards:
+ * - Sales
+ * - Purchases
+ * - Expenses
+ * - Profit
+ */
+router.get("/kpis", getKpis);
+
+/**
+ * GET /api/dashboard/chart?days=30
+ *
+ * Returns Sales vs Purchases chart data
+ * for the requested period.
+ */
+router.get("/chart", getChart);
+
+/**
+ * GET /api/dashboard/financials
+ *
+ * Returns:
+ * - Cash In
+ * - Cash Out
+ * - Receivables
+ * - Payables
+ */
+router.get("/financials", getFinancials);
+
+/**
+ * GET /api/dashboard/activity?limit=10
+ *
+ * Returns recent system activity:
+ * - Invoice creation
+ * - Invoice cancellation
+ * - Payments
+ * - Refunds
+ */
+router.get("/activity", getActivity);
+
+/**
+ * GET /api/dashboard/subscription
+ *
+ * Returns current subscription information:
+ * - Plan
+ * - Status
+ * - Credit Limit
+ * - Credits Used
+ * - Credits Remaining
+ */
+router.get("/subscription", getSubscription);
+
+/**
+ * GET /api/dashboard/ai-usage?days=30
+ *
+ * Returns AI usage statistics:
+ * - Requests count
+ * - Credits consumed
+ * - Token usage
+ */
+router.get("/ai-usage", getAIUsage);
+
+export default router;

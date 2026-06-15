@@ -1,0 +1,550 @@
+import Invoice from "../models/Invoice.js";
+import Client from "../models/Client.js";
+import PaymentTransaction from "../models/PaymentTransaction.js";
+import ClientBalanceTransaction from "../models/ClientBalanceTransaction.js";
+
+const round2 = (n) => Math.round((Number(n) + Number.EPSILON) * 100) / 100;
+
+const balanceDeltaToEffect = (delta) => (delta >= 0 ? "debit" : "credit");
+const balanceEffectToDelta = (tx) => (tx.effect === "debit" ? tx.amount : -tx.amount);
+
+const getPaymentDirection = (invoiceType) => {
+  // in  = cash received by the accountant
+  // out = cash paid by the accountant
+  if (["purchase", "expense", "sales_return"].includes(invoiceType)) return "out";
+  return "in";
+};
+
+const getDueBalanceDelta = (invoiceType, amount) => {
+  // Positive balance  => client/vendor owes the accountant.
+  // Negative balance  => accountant owes the client/vendor.
+  if (["sale", "purchase_return"].includes(invoiceType)) return round2(amount);
+  if (["purchase", "sales_return"].includes(invoiceType)) return round2(-amount);
+  return 0;
+};
+
+const getSettlementBalanceDelta = (invoiceType, amount) => {
+  // Settlement reverses the outstanding due effect.
+  return round2(-getDueBalanceDelta(invoiceType, amount));
+};
+
+const buildPaymentTxDoc = ({
+  accountantId,
+  invoiceId,
+  clientId,
+  amount,
+  paymentMethod,
+  source,
+  direction = "in",
+  paidBy,
+  notes = null,
+}) => ({
+  accountantId,
+  invoiceId,
+  clientId: clientId ?? null,
+  amount: round2(amount),
+  paymentMethod,
+  source,
+  direction,
+  paidBy,
+  notes,
+});
+
+const applyClientBalanceDelta = async ({
+  accountantId,
+  clientId,
+  amount,
+  delta,
+  type,
+  sourceInvoiceId,
+  createdBy,
+  notes,
+  session,
+}) => {
+  const roundedAmount = round2(amount);
+  const roundedDelta = round2(delta);
+
+  if (!clientId || roundedAmount <= 0 || roundedDelta === 0) return null;
+
+  const client = await Client.findOne({
+    _id: clientId,
+    accountantId,
+    isActive: true,
+  }).session(session);
+
+  if (!client) {
+    throw Object.assign(new Error("Client/Vendor not found"), {
+      statusCode: 404,
+    });
+  }
+
+  client.currentBalance = round2(client.currentBalance + roundedDelta);
+  await client.save({ session });
+
+  const [tx] = await ClientBalanceTransaction.create(
+    [
+      {
+        accountantId,
+        clientId,
+        amount: roundedAmount,
+        effect: balanceDeltaToEffect(roundedDelta),
+        type,
+        balanceAfter: client.currentBalance,
+        sourceInvoiceId,
+        createdBy,
+        notes,
+      },
+    ],
+    { session }
+  );
+
+  return tx;
+};
+
+const applyOverpayment = async ({
+  accountantId,
+  clientId,
+  invoice,
+  amount,
+  createdBy,
+  session,
+}) => {
+  const delta = getDueBalanceDelta(invoice.invoiceType, amount);
+
+  await applyClientBalanceDelta({
+    accountantId,
+    clientId,
+    amount,
+    delta,
+    type: "overpayment",
+    sourceInvoiceId: invoice._id,
+    createdBy,
+    notes: `Overpayment from invoice ${invoice.invoiceNumber}`,
+    session,
+  });
+};
+
+export const recordInitialPayment = async ({
+  invoice,
+  session,
+  createdBy,
+  accountantId,
+  initialOverpayment = 0,
+}) => {
+  if (invoice.amountPaid && invoice.amountPaid > 0) {
+    const paymentDoc = buildPaymentTxDoc({
+      accountantId,
+      invoiceId: invoice._id,
+      clientId: invoice.clientId,
+      amount: invoice.amountPaid,
+      paymentMethod: invoice.paymentMethod,
+      direction: getPaymentDirection(invoice.invoiceType),
+      source: "invoice_creation",
+      paidBy: createdBy,
+      notes: `Initial payment for invoice ${invoice.invoiceNumber}`,
+    });
+
+    await PaymentTransaction.create([paymentDoc], { session });
+  }
+
+  if (invoice.clientId && invoice.dueAmount > 0) {
+    const delta = getDueBalanceDelta(invoice.invoiceType, invoice.dueAmount);
+
+    await applyClientBalanceDelta({
+      accountantId,
+      clientId: invoice.clientId,
+      amount: invoice.dueAmount,
+      delta,
+      type: "invoice_due",
+      sourceInvoiceId: invoice._id,
+      createdBy,
+      notes: `Outstanding balance from invoice ${invoice.invoiceNumber}`,
+      session,
+    });
+  }
+
+  if (invoice.clientId && initialOverpayment > 0) {
+    await applyOverpayment({
+      accountantId,
+      clientId: invoice.clientId,
+      invoice,
+      amount: initialOverpayment,
+      createdBy,
+      session,
+    });
+  }
+};
+
+export const createPayment = async (body, paidBy, accountantId = paidBy) => {
+  const session = await Invoice.startSession();
+  session.startTransaction();
+
+  try {
+    const { invoiceId, amount, paymentMethod, notes = null } = body;
+    const parsedAmount = round2(Number(amount));
+
+    const invoice = await Invoice.findOne({
+      _id: invoiceId,
+      accountantId,
+    }).session(session);
+
+    if (!invoice) {
+      throw Object.assign(new Error("Invoice not found"), { statusCode: 404 });
+    }
+
+    if (invoice.isCancelled) {
+      throw Object.assign(
+        new Error("Cannot record payment on a cancelled invoice"),
+        { statusCode: 422 }
+      );
+    }
+
+    if (invoice.dueAmount <= 0) {
+      throw Object.assign(new Error("Invoice is already fully paid"), {
+        statusCode: 422,
+      });
+    }
+
+    const oldDueAmount = invoice.dueAmount;
+    const newAmountPaid = round2(invoice.amountPaid + parsedAmount);
+
+    const excess =
+      newAmountPaid > invoice.finalAmount
+        ? round2(newAmountPaid - invoice.finalAmount)
+        : 0;
+
+    const newDueAmount =
+      excess > 0 ? 0 : round2(invoice.finalAmount - newAmountPaid);
+
+    invoice.amountPaid = newAmountPaid;
+    invoice.dueAmount = newDueAmount;
+    invoice.changeAmount = 0;
+
+    await invoice.save({ session });
+
+    const [paymentTx] = await PaymentTransaction.create(
+      [
+        buildPaymentTxDoc({
+          accountantId,
+          invoiceId: invoice._id,
+          clientId: invoice.clientId,
+          amount: parsedAmount,
+          paymentMethod,
+          source: "manual_payment",
+          direction: getPaymentDirection(invoice.invoiceType),
+          paidBy,
+          notes,
+        }),
+      ],
+      { session }
+    );
+
+    if (invoice.clientId) {
+      const settledAmount = round2(Math.min(parsedAmount, oldDueAmount));
+      const delta = getSettlementBalanceDelta(invoice.invoiceType, settledAmount);
+
+      await applyClientBalanceDelta({
+        accountantId,
+        clientId: invoice.clientId,
+        amount: settledAmount,
+        delta,
+        type: "manual_adjustment",
+        sourceInvoiceId: invoice._id,
+        createdBy: paidBy,
+        notes: `Payment settlement for invoice ${invoice.invoiceNumber}`,
+        session,
+      });
+    }
+
+    if (excess > 0 && invoice.clientId) {
+      await applyOverpayment({
+        accountantId,
+        clientId: invoice.clientId,
+        invoice,
+        amount: excess,
+        createdBy: paidBy,
+        session,
+      });
+    }
+
+    await session.commitTransaction();
+
+    return { invoice, paymentTransaction: paymentTx };
+  } catch (err) {
+    await session.abortTransaction();
+    throw err;
+  } finally {
+    session.endSession();
+  }
+};
+
+export const recordSalesReturnRefund = async ({
+  returnInvoice,
+  originalInvoice,
+  session,
+  createdBy,
+  accountantId,
+}) => {
+  if (returnInvoice.invoiceType !== "sales_return") return;
+  if (!returnInvoice.clientId) return;
+
+  // A sales return reduces what the client owes. If the client already paid,
+  // this creates a temporary negative balance that will be cleared by the refund.
+  await applyClientBalanceDelta({
+    accountantId,
+    clientId: returnInvoice.clientId,
+    amount: returnInvoice.finalAmount,
+    delta: getDueBalanceDelta("sales_return", returnInvoice.finalAmount),
+    type: "refund",
+    sourceInvoiceId: returnInvoice._id,
+    createdBy,
+    notes: `Sales return value for invoice ${returnInvoice.invoiceNumber}`,
+    session,
+  });
+
+  const previousReturns = await Invoice.find({
+    accountantId,
+    relatedInvoiceId: originalInvoice._id,
+    invoiceType: "sales_return",
+    isCancelled: false,
+    _id: { $ne: returnInvoice._id },
+  }).session(session);
+
+  const previousRefundedAmount = previousReturns.reduce((sum, inv) => {
+    return round2(sum + (inv.amountPaid || 0));
+  }, 0);
+
+  const remainingRefundable = round2(
+    originalInvoice.amountPaid - previousRefundedAmount
+  );
+
+  const refundAmount = Math.min(returnInvoice.finalAmount, Math.max(0, remainingRefundable));
+
+  returnInvoice.amountPaid = refundAmount;
+  returnInvoice.dueAmount = 0;
+  returnInvoice.changeAmount = 0;
+
+  await returnInvoice.save({ session });
+
+  if (refundAmount <= 0) return;
+
+  await PaymentTransaction.create(
+    [
+      {
+        accountantId,
+        invoiceId: returnInvoice._id,
+        clientId: returnInvoice.clientId,
+        amount: refundAmount,
+        paymentMethod: returnInvoice.paymentMethod,
+        source: "refund",
+        direction: "out",
+        paidBy: createdBy,
+        notes: `Cash refund for sales return invoice ${returnInvoice.invoiceNumber}`,
+      },
+    ],
+    { session }
+  );
+
+  // Cash refund clears the accountant's liability to the client.
+  await applyClientBalanceDelta({
+    accountantId,
+    clientId: returnInvoice.clientId,
+    amount: refundAmount,
+    delta: round2(refundAmount),
+    type: "refund",
+    sourceInvoiceId: returnInvoice._id,
+    createdBy,
+    notes: `Cash refund paid for sales return ${returnInvoice.invoiceNumber}`,
+    session,
+  });
+};
+
+export const getPayments = async (query, accountantId) => {
+  const {
+    invoiceId,
+    clientId,
+    source,
+    from,
+    to,
+    page = 1,
+    limit = 20,
+  } = query;
+
+  const filter = { accountantId };
+
+  if (invoiceId) filter.invoiceId = invoiceId;
+  if (clientId) filter.clientId = clientId;
+  if (source) filter.source = source;
+
+  if (from || to) {
+    filter.createdAt = {};
+    if (from) filter.createdAt.$gte = new Date(from);
+    if (to) filter.createdAt.$lte = new Date(to);
+  }
+
+  const skip = (Number(page) - 1) * Number(limit);
+  const total = await PaymentTransaction.countDocuments(filter);
+
+  const payments = await PaymentTransaction.find(filter)
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(Number(limit))
+    .populate("invoiceId", "invoiceNumber invoiceType finalAmount dueAmount")
+    .populate("clientId", "name phone type")
+    .populate("paidBy", "name email")
+    .lean();
+
+  return {
+    total,
+    page: Number(page),
+    limit: Number(limit),
+    pages: Math.ceil(total / Number(limit)),
+    payments,
+  };
+};
+
+export const getClientBalance = async (clientId, query, accountantId) => {
+  const client = await Client.findOne({
+    _id: clientId,
+    accountantId,
+    isActive: true,
+  })
+    .select("name phone type currentBalance")
+    .lean();
+
+  if (!client) {
+    throw Object.assign(new Error("Client/Vendor not found"), {
+      statusCode: 404,
+    });
+  }
+
+  const { from, to, page = 1, limit = 20 } = query;
+
+  const filter = {
+    accountantId,
+    clientId,
+  };
+
+  if (from || to) {
+    filter.createdAt = {};
+    if (from) filter.createdAt.$gte = new Date(from);
+    if (to) filter.createdAt.$lte = new Date(to);
+  }
+
+  const skip = (Number(page) - 1) * Number(limit);
+  const total = await ClientBalanceTransaction.countDocuments(filter);
+
+  const transactions = await ClientBalanceTransaction.find(filter)
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(Number(limit))
+    .populate("sourceInvoiceId", "invoiceNumber invoiceType finalAmount")
+    .populate("createdBy", "name email")
+    .lean();
+
+  return {
+    client,
+    total,
+    page: Number(page),
+    limit: Number(limit),
+    pages: Math.ceil(total / Number(limit)),
+    transactions,
+  };
+};
+
+export const reverseCancelledInvoicePayments = async ({
+  invoice,
+  cancelledBy,
+  session,
+  accountantId,
+}) => {
+  if (!invoice.clientId) {
+    await reverseInvoicePaymentTransactions({
+      invoice,
+      cancelledBy,
+      session,
+      accountantId,
+    });
+    return;
+  }
+
+  const alreadyReversed = await ClientBalanceTransaction.exists({
+    accountantId,
+    sourceInvoiceId: invoice._id,
+    type: "cancellation_reversal",
+  }).session(session);
+
+  if (alreadyReversed) return;
+
+  await reverseInvoicePaymentTransactions({
+    invoice,
+    cancelledBy,
+    session,
+    accountantId,
+  });
+
+  const balanceTransactions = await ClientBalanceTransaction.find({
+    accountantId,
+    sourceInvoiceId: invoice._id,
+    type: { $ne: "cancellation_reversal" },
+  }).session(session);
+
+  const totalDelta = round2(
+    balanceTransactions.reduce((sum, tx) => sum + balanceEffectToDelta(tx), 0)
+  );
+
+  const reversalDelta = round2(-totalDelta);
+
+  if (reversalDelta === 0) return;
+
+  await applyClientBalanceDelta({
+    accountantId,
+    clientId: invoice.clientId,
+    amount: Math.abs(reversalDelta),
+    delta: reversalDelta,
+    type: "cancellation_reversal",
+    sourceInvoiceId: invoice._id,
+    createdBy: cancelledBy,
+    notes: `Cancellation balance reversal for invoice ${invoice.invoiceNumber}`,
+    session,
+  });
+};
+
+const reverseInvoicePaymentTransactions = async ({
+  invoice,
+  cancelledBy,
+  session,
+  accountantId,
+}) => {
+  const existingReversals = await PaymentTransaction.exists({
+    accountantId,
+    invoiceId: invoice._id,
+    source: "cancellation_reversal",
+  }).session(session);
+
+  if (existingReversals) return;
+
+  const paymentTransactions = await PaymentTransaction.find({
+    accountantId,
+    invoiceId: invoice._id,
+    source: { $ne: "cancellation_reversal" },
+  }).session(session);
+
+  if (!paymentTransactions.length) return;
+
+  const reversalDocs = paymentTransactions.map((tx) =>
+    buildPaymentTxDoc({
+      accountantId,
+      invoiceId: invoice._id,
+      clientId: tx.clientId,
+      amount: tx.amount,
+      paymentMethod: tx.paymentMethod,
+      source: "cancellation_reversal",
+      direction: tx.direction === "in" ? "out" : "in",
+      paidBy: cancelledBy,
+      notes: `Payment transaction reversed due to invoice cancellation (${invoice.invoiceNumber})`,
+    })
+  );
+
+  await PaymentTransaction.create(reversalDocs, { session });
+};
