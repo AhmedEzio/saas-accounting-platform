@@ -5,31 +5,33 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { authApi } from "@/services/api";
+import { signIn } from "next-auth/react";
 
-const EyeIcon = ({ open }) =>
-  open ? (
+const InputIcon = ({ children }) => (
+  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+    {children}
+  </span>
+);
+
+const EyeIcon = ({ open, onToggle }) => (
+  <button
+    type="button"
+    onClick={onToggle}
+    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+    aria-label={open ? "Hide password" : "Show password"}
+  >
     <svg
-      className="w-5 h-5"
+      className="w-4.5 h-4.5"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.6"
+      strokeWidth="1.8"
       viewBox="0 0 24 24"
     >
-      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-      <circle cx="12" cy="12" r="3" />
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z" />
+      {open ? <path d="M4 4l16 16" /> : <circle cx="12" cy="12" r="3" />}
     </svg>
-  ) : (
-    <svg
-      className="w-5 h-5"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      viewBox="0 0 24 24"
-    >
-      <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
-      <line x1="1" y1="1" x2="23" y2="23" />
-    </svg>
-  );
+  </button>
+);
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -41,49 +43,14 @@ export default function RegisterPage() {
     password: "",
     confirm: "",
   });
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    if (error) setError("");
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!form.name || !form.email || !form.password || !form.confirm) {
-      setError("Please fill in all fields.");
-      router.push("/login");
-      return;
-    }
-    if (form.password.length < 8) {
-      setError("Password must be at least 8 characters.");
-      return;
-    }
-    if (form.password !== form.confirm) {
-      setError("Passwords do not match.");
-      return;
-    }
-    setLoading(true);
+    setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
     setError("");
-    try {
-      const res = await authApi.register({
-        name: form.name,
-        email: form.email,
-        password: form.password,
-      });
-      setAuth(res.data, res.token);
-      router.push("/dashboard");
-    } catch (err) {
-      setError(
-        err?.response?.data?.message ||
-          "Registration failed. Please try again.",
-      );
-    } finally {
-      setLoading(false);
-    }
   };
 
   const strength = (() => {
@@ -106,24 +73,62 @@ export default function RegisterPage() {
     "bg-green-500",
   ][strength];
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!form.name || !form.email || !form.password || !form.confirm) {
+      setError("Please fill in all fields.");
+      return;
+    }
+    if (form.password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
+    if (form.password !== form.confirm) {
+      setError("Passwords do not match.");
+      return;
+    }
+    setLoading(true);
+    setError("");
+    try {
+      const res = await authApi.register({
+        name: form.name,
+        email: form.email,
+        password: form.password,
+      });
+      setAuth(res.data, res.token);
+      router.push("/login");
+    } catch (err) {
+      setError(
+        err?.response?.data?.message ||
+          "Registration failed. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  async function LOGIN() {
+    await signIn("google", { redirectTo: "/profile" });
+  }
   return (
-    <div className="min-h-screen bg-[#eef1f8] relative flex flex-col items-center justify-center px-4 py-12">
-      {/* Grid background */}
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-[#e8ecf5] relative overflow-hidden">
+      {/* grid */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage:
-            "linear-gradient(to right, #c7d0e8 1px, transparent 1px), linear-gradient(to bottom, #c7d0e8 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
+            "linear-gradient(to right,#c5cde0 1px,transparent 1px),linear-gradient(to bottom,#c5cde0 1px,transparent 1px)",
+          backgroundSize: "52px 52px",
         }}
       />
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#d4f0e8] rounded-full blur-3xl opacity-60 pointer-events-none" />
+      {/* glow */}
+      <div className="absolute bottom-0 right-0 w-125 h-100 bg-[#c8ede0] rounded-full blur-[80px] opacity-70 pointer-events-none" />
 
-      {/* EN / AR */}
-      <div className="absolute top-6 right-6 z-10">
-        <button className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-300 bg-white/80 text-sm font-medium text-gray-700 hover:bg-white transition">
+      {/* EN/AR */}
+      <div className="absolute top-5 right-5 z-10">
+        <button className="flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-gray-300 bg-white/80 text-sm font-medium text-gray-600 hover:bg-white transition">
           <svg
-            className="w-4 h-4 text-gray-500"
+            className="w-4 h-4"
             fill="none"
             stroke="currentColor"
             strokeWidth="1.5"
@@ -136,37 +141,20 @@ export default function RegisterPage() {
         </button>
       </div>
 
-      {/* Card */}
-      <div className="relative z-10 w-full max-w-md bg-white rounded-2xl shadow-lg px-10 py-10">
-        {/* Logo */}
-        <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 rounded-xl bg-[#1e2d6b] flex items-center justify-center">
-            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-              <text x="6" y="26" fontSize="22" fontWeight="bold" fill="white">
-                F
-              </text>
-              <rect
-                x="8"
-                y="26"
-                width="14"
-                height="3"
-                rx="1.5"
-                fill="#22c9a0"
-              />
-              <rect
-                x="8"
-                y="21"
-                width="10"
-                height="2.5"
-                rx="1.25"
-                fill="#22c9a0"
-                opacity="0.7"
-              />
-            </svg>
+      {/* ══ CARD ══ */}
+      <div className="relative z-10 w-full max-w-105 bg-white rounded-2xl shadow-md px-10 py-10">
+        {/* logo */}
+        <div className="flex justify-center mb-7">
+          <div className="w-17 h-17 rounded-xl bg-[#1b2b6b] flex flex-col items-center justify-center gap-0.5">
+            <span className="text-white text-3xl font-extrabold leading-none">
+              F
+            </span>
+            <div className="w-7 h-0.75 rounded-full bg-[#1fc99e]" />
+            <div className="w-5 h-[2.5px] rounded-full bg-[#1fc99e] opacity-70" />
           </div>
         </div>
 
-        <h1 className="text-center text-3xl font-bold text-[#1a2340] mb-2">
+        <h1 className="text-center text-[28px] font-extrabold text-[#111827] mb-1 tracking-tight">
           Create Account
         </h1>
         <p className="text-center text-sm text-gray-500 mb-8">
@@ -186,9 +174,9 @@ export default function RegisterPage() {
               Full Name
             </label>
             <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+              <InputIcon>
                 <svg
-                  className="w-5 h-5"
+                  className="w-4.5 h-4.5"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="1.6"
@@ -197,14 +185,14 @@ export default function RegisterPage() {
                   <circle cx="12" cy="8" r="4" />
                   <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
                 </svg>
-              </span>
+              </InputIcon>
               <input
                 type="text"
                 name="name"
                 value={form.name}
                 onChange={handleChange}
                 placeholder="John Smith"
-                className="w-full pl-11 pr-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e2d6b]/30 focus:border-[#1e2d6b] transition"
+                className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#1b2b6b]/25 focus:border-[#1b2b6b] transition"
               />
             </div>
           </div>
@@ -215,9 +203,9 @@ export default function RegisterPage() {
               Work Email
             </label>
             <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+              <InputIcon>
                 <svg
-                  className="w-5 h-5"
+                  className="w-4.5 h-4.5"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="1.6"
@@ -226,14 +214,14 @@ export default function RegisterPage() {
                   <rect x="2" y="4" width="20" height="16" rx="2" />
                   <path d="M2 7l10 7 10-7" />
                 </svg>
-              </span>
+              </InputIcon>
               <input
                 type="email"
                 name="email"
                 value={form.email}
                 onChange={handleChange}
                 placeholder="name@company.com"
-                className="w-full pl-11 pr-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e2d6b]/30 focus:border-[#1e2d6b] transition"
+                className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#1b2b6b]/25 focus:border-[#1b2b6b] transition"
               />
             </div>
           </div>
@@ -244,9 +232,9 @@ export default function RegisterPage() {
               Password
             </label>
             <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+              <InputIcon>
                 <svg
-                  className="w-5 h-5"
+                  className="w-4.5 h-4.5"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="1.6"
@@ -255,34 +243,32 @@ export default function RegisterPage() {
                   <rect x="3" y="11" width="18" height="11" rx="2" />
                   <path d="M7 11V7a5 5 0 0110 0v4" />
                 </svg>
-              </span>
+              </InputIcon>
               <input
-                type={showPassword ? "text" : "password"}
+                type={showPass ? "text" : "password"}
                 name="password"
                 value={form.password}
                 onChange={handleChange}
                 placeholder="Min. 8 characters"
-                className="w-full pl-11 pr-12 py-3 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e2d6b]/30 focus:border-[#1e2d6b] transition"
+                className="w-full pl-10 pr-11 py-3 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#1b2b6b]/25 focus:border-[#1b2b6b] transition"
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-              >
-                <EyeIcon open={showPassword} />
-              </button>
+              <EyeIcon
+                open={showPass}
+                onToggle={() => setShowPass(!showPass)}
+              />
             </div>
+            {/* strength bar */}
             {form.password && (
               <div className="mt-2">
                 <div className="flex gap-1 mb-1">
                   {[1, 2, 3, 4].map((i) => (
                     <div
                       key={i}
-                      className={`h-1 flex-1 rounded-full transition-all duration-300 ${i <= strength ? strengthColor : "bg-gray-200"}`}
+                      className={`h-1 flex-1 rounded-full transition-all ${i <= strength ? strengthColor : "bg-gray-200"}`}
                     />
                   ))}
                 </div>
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-gray-400">
                   Strength: <span className="font-medium">{strengthLabel}</span>
                 </span>
               </div>
@@ -295,9 +281,9 @@ export default function RegisterPage() {
               Confirm Password
             </label>
             <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+              <InputIcon>
                 <svg
-                  className="w-5 h-5"
+                  className="w-4.5 h-4.5"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="1.6"
@@ -307,28 +293,25 @@ export default function RegisterPage() {
                   <rect x="3" y="11" width="18" height="11" rx="2" />
                   <path d="M7 11V7a5 5 0 0110 0v4" />
                 </svg>
-              </span>
+              </InputIcon>
               <input
                 type={showConfirm ? "text" : "password"}
                 name="confirm"
                 value={form.confirm}
                 onChange={handleChange}
                 placeholder="Repeat your password"
-                className={`w-full pl-11 pr-12 py-3 rounded-lg border bg-gray-50 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 transition ${
+                className={`w-full pl-10 pr-11 py-3 rounded-lg border bg-gray-50 text-sm text-gray-800 placeholder-gray-400 outline-none focus:ring-2 transition ${
                   form.confirm && form.confirm !== form.password
                     ? "border-red-300 focus:ring-red-200"
                     : form.confirm && form.confirm === form.password
                       ? "border-green-300 focus:ring-green-200"
-                      : "border-gray-200 focus:ring-[#1e2d6b]/30 focus:border-[#1e2d6b]"
+                      : "border-gray-200 focus:ring-[#1b2b6b]/25 focus:border-[#1b2b6b]"
                 }`}
               />
-              <button
-                type="button"
-                onClick={() => setShowConfirm(!showConfirm)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-              >
-                <EyeIcon open={showConfirm} />
-              </button>
+              <EyeIcon
+                open={showConfirm}
+                onToggle={() => setShowConfirm(!showConfirm)}
+              />
               {form.confirm && form.confirm === form.password && (
                 <span className="absolute right-10 top-1/2 -translate-y-1/2 text-green-500">
                   <svg
@@ -349,7 +332,7 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#2a3fba] hover:bg-[#1e2d9e] active:bg-[#1a2788] text-white font-semibold text-base transition disabled:opacity-60 mt-2"
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#2d3ebd] hover:bg-[#2233aa] active:bg-[#1b2b9e] text-white font-bold text-base tracking-wide transition disabled:opacity-60 mt-1"
           >
             {loading ? (
               <svg
@@ -378,7 +361,7 @@ export default function RegisterPage() {
                   className="w-5 h-5"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="2"
+                  strokeWidth="2.2"
                   viewBox="0 0 24 24"
                 >
                   <path d="M5 12h14M13 6l6 6-6 6" />
@@ -388,17 +371,20 @@ export default function RegisterPage() {
           </button>
         </form>
 
-        {/* Divider */}
+        {/* OR */}
         <div className="flex items-center gap-3 my-6">
           <div className="flex-1 h-px bg-gray-200" />
-          <span className="text-xs font-medium text-gray-400 tracking-widest">
+          <span className="text-[11px] font-semibold text-gray-400 tracking-[0.12em] whitespace-nowrap">
             OR CONTINUE WITH
           </span>
           <div className="flex-1 h-px bg-gray-200" />
         </div>
 
         <div className="space-y-3">
-          <button className="w-full flex items-center justify-center gap-3 py-3 rounded-xl border border-gray-200 hover:bg-gray-50 transition text-sm font-medium text-gray-700">
+          <button
+            onClick={LOGIN}
+            className="w-full flex items-center justify-center gap-3 py-3 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition text-sm font-medium text-gray-700"
+          >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
                 fill="#4285F4"
@@ -419,34 +405,25 @@ export default function RegisterPage() {
             </svg>
             Google
           </button>
-          {/* <button className="w-full flex items-center justify-center gap-3 py-3 rounded-xl border border-gray-200 hover:bg-gray-50 transition text-sm font-medium text-gray-700">
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
-              <path fill="#F25022" d="M1 1h10v10H1z" />
-              <path fill="#00A4EF" d="M13 1h10v10H13z" />
-              <path fill="#7FBA00" d="M1 13h10v10H1z" />
-              <path fill="#FFB900" d="M13 13h10v10H13z" />
-            </svg>
-            Microsoft
-          </button> */}
         </div>
       </div>
 
-      {/* Footer */}
+      {/* footer */}
       <div className="relative z-10 mt-6 text-center">
         <p className="text-sm text-gray-600">
           Already have an account?{" "}
           <Link
             href="/login"
-            className="font-bold text-[#1a2340] hover:underline"
+            className="font-bold text-[#111827] hover:underline"
           >
             Sign In
           </Link>
         </p>
-        <p className="mt-2 text-xs text-gray-400">
+        <p className="mt-2 text-xs text-gray-400 flex items-center justify-center gap-2">
           <Link href="/privacy" className="hover:underline">
             Privacy Policy
           </Link>
-          <span className="mx-2">•</span>
+          <span>•</span>
           <Link href="/terms" className="hover:underline">
             Terms of Service
           </Link>
