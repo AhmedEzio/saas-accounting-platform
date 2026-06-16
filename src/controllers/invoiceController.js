@@ -1,14 +1,18 @@
 import * as invoiceService from "../services/invoice.service.js";
-
+import Invoice from "../models/Invoice.js";
+import {addInvoice} from "../controllers/ai.controller.js";
 // POST /api/invoices
 export const createInvoice = async (req, res, next) => {
   try {
     const invoice = await invoiceService.createInvoice(
       req.body,
       req.user._id,
-      req.user._id
+      req.user._id,
     );
-
+    const invoiceForIndexing = await Invoice.findById(invoice._id)
+      .populate("clientId", "name phone")
+      .populate("accountantId", "name email");
+    await addInvoice(invoiceForIndexing);
     return res.status(201).json({
       success: true,
       message: "Invoice created successfully",
@@ -38,7 +42,7 @@ export const getInvoiceById = async (req, res, next) => {
   try {
     const invoice = await invoiceService.getInvoiceById(
       req.params.id,
-      req.user._id
+      req.user._id,
     );
 
     return res.status(200).json({
@@ -57,7 +61,7 @@ export const cancelInvoice = async (req, res, next) => {
       req.params.id,
       req.user._id,
       req.body.reason,
-      req.user._id
+      req.user._id,
     );
 
     return res.status(200).json({

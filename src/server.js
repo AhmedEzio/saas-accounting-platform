@@ -22,6 +22,8 @@ import dashboardRouter from "./routes/dashboard.routes.js";
 import { handleStripeWebhook } from "./controllers/subscriptionController.js";
 import { authorize, protect } from "./middleware/auth.js";
 
+import aiRoutes from "./routes/ai.routes.js";
+
 dns.setServers(["1.1.1.1", "1.0.0.1"]);
 
 const __filename = fileURLToPath(import.meta.url);
@@ -36,7 +38,7 @@ app.use(cors());
 app.post(
   "/api/stripe/webhook",
   express.raw({ type: "application/json" }),
-  handleStripeWebhook
+  handleStripeWebhook,
 );
 
 app.use(express.json());
@@ -58,9 +60,14 @@ app.use("/api/invoice-documents", invoiceDocumentRoutes);
 
 app.use("/api/payments", paymentRoutes);
 
-
 // مؤقتا لحد ما اعرف الدش بورد تخص مين
-app.use("/api/dashboard", protect, authorize("admin", "accountant"), dashboardRouter);
+app.use(
+  "/api/dashboard",
+  protect,
+  authorize("admin", "accountant"),
+  dashboardRouter,
+);
+app.use("/api/ai", aiRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({
