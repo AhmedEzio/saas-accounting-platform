@@ -38,7 +38,7 @@ export const authApi = {
 
   register: ({ name, email, password, role }) =>
     api
-      .post("/auth/register", { name, email, password, role })
+      .post("/auth/register", { name, email, password, role: "accountant", })
       .then((r) => r.data),
 
   forgotPassword: ({ email }) =>
@@ -48,4 +48,7 @@ export const authApi = {
 
   updateProfile: (id, payload) =>
     api.put(`/users/${id}`, payload).then((r) => r.data.data),
+
+  googleLogin: (credential) =>
+  api.post("/auth/google", { credential }).then((r) => r.data),
 };

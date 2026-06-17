@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import { OAuth2Client } from "google-auth-library";
 
 const signToken = (id) => {
   try {
@@ -26,7 +27,7 @@ const sendAuthResponse = (
 
   res.status(statusCode).json(response);
 };
-
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 export const register = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
@@ -147,6 +148,56 @@ export const getMe = async (req, res, next) => {
         email: req.user.email,
         role: req.user.role,
         createdAt: req.user.createdAt,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+export const googleAuth = async (req, res, next) => {
+  try {
+    const { credential } = req.body;
+
+    if (!credential) {
+      return sendAuthResponse(res, 400, false, "Google credential is required");
+    }
+
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+
+    const email = payload.email?.toLowerCase();
+    const name = payload.name || payload.email?.split("@")[0];
+
+    if (!email) {
+      return sendAuthResponse(res, 400, false, "Google account email is required");
+    }
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        name,
+        email,
+        passwordHash: Math.random().toString(36).slice(-12) + Date.now(),
+        role: "accountant",
+      });
+    }
+
+    const token = signToken(user._id);
+
+    return sendAuthResponse(res, 200, true, "Google authentication successful", {
+      token,
+      data: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
       },
     });
   } catch (error) {

@@ -7,6 +7,7 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("accounting_token");
@@ -19,6 +20,8 @@ export function AuthProvider({ children }) {
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
+
+    setLoading(false);
   }, []);
 
   const setAuth = (userData, tokenValue) => {
@@ -26,6 +29,15 @@ export function AuthProvider({ children }) {
     localStorage.setItem("accounting_user", JSON.stringify(userData));
 
     setToken(tokenValue);
+    setUser(userData);
+  };
+
+  const updateUser = (userData) => {
+    localStorage.setItem(
+      "accounting_user",
+      JSON.stringify(userData)
+    );
+
     setUser(userData);
   };
 
@@ -42,7 +54,9 @@ export function AuthProvider({ children }) {
       value={{
         user,
         token,
+        loading,
         setAuth,
+        updateUser,
         clearAuth,
       }}
     >
