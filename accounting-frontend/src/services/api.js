@@ -44,6 +44,11 @@ export const authApi = {
   forgotPassword: ({ email }) =>
     api.post("/auth/forgot-password", { email }).then((r) => r.data),
 
+  resetPassword: ({ token, password, passwordConfirm }) =>
+    api
+      .patch(`/auth/reset-password/${token}`, { password, passwordConfirm })
+      .then((r) => r.data),
+
   getMe: () => api.get("/auth/me").then((r) => r.data.data),
 
   updateProfile: (id, payload) =>

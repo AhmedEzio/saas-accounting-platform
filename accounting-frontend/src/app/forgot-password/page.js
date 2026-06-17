@@ -25,11 +25,15 @@ export default function ForgotPassword() {
       setLoading(true);
       setError("");
 
-      await authApi.forgotPassword({
+      const res = await authApi.forgotPassword({
         email,
       });
 
-      setMessage("Reset password link has been sent to your email");
+      setMessage(
+        res?.resetUrl
+          ? `Reset link created. Development link: ${res.resetUrl}`
+          : "If this email exists, a reset password link has been sent."
+      );
     } catch (err) {
       setError(err?.response?.data?.message || "Something went wrong");
     } finally {
