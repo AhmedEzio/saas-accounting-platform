@@ -85,7 +85,19 @@ export const createClient = async (req, res) => {
         message: "Name and type are required",
       });
     }
+    ////
+    const clientt = await Client.findOne({
+      email,
+      accountantId: req.user._id,
+    });
 
+    if (clientt) {
+      return res.status(400).json({
+        success: false,
+        message: "Client/Vendor already exists",
+      });
+    }
+    ////
     if (!["client", "vendor"].includes(type)) {
       return res.status(400).json({
         success: false,
@@ -136,7 +148,7 @@ export const updateClient = async (req, res) => {
         isActive: true,
       },
       { name, type, phone, email, address, notes },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!client) {
@@ -170,7 +182,7 @@ export const deleteClient = async (req, res) => {
         isActive: true,
       },
       { isActive: false },
-      { new: true }
+      { new: true },
     );
 
     if (!client) {

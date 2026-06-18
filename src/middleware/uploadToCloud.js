@@ -34,14 +34,33 @@ export const uploadToCloud = async (req, res, next) => {
 
     const uploadedFile = await streamUpload(file.buffer);
 
-   req.cloudInvoice = {
-  fileName: file.originalname,
-  fileType: uploadedFile.format,
-  fileUrl: uploadedFile.secure_url,
-  publicId: uploadedFile.public_id,
-};
+    req.cloudInvoice = {
+      fileName: file.originalname,
+      fileType: uploadedFile.format,
+      fileUrl: uploadedFile.secure_url,
+      publicId: uploadedFile.public_id,
+    };
     next();
   } catch (error) {
     next(new AppError(error.message || "Internal server error", 500));
   }
+};
+
+export const uploadFileToCloudinary = async (file) => {
+  const streamUpload = (fileBuffer) =>
+    new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          public_id: file.originalname,
+        },
+        (error, result) => {
+          if (result) resolve(result);
+          else reject(error);
+        },
+      );
+
+      streamifier.createReadStream(fileBuffer).pipe(stream);
+    });
+
+  return await streamUpload(file.buffer);
 };

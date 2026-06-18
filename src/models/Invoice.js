@@ -27,7 +27,7 @@ const invoiceItemSchema = new mongoose.Schema(
       min: [0, "Total price cannot be negative"],
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const invoiceSchema = new mongoose.Schema(
@@ -38,7 +38,10 @@ const invoiceSchema = new mongoose.Schema(
       required: [true, "accountantId is required"],
       index: true,
     },
-
+    cloudinaryUrl: {
+      type: String,
+      default: null,
+    },
     invoiceType: {
       type: String,
       enum: {
@@ -218,7 +221,7 @@ const invoiceSchema = new mongoose.Schema(
   {
     timestamps: true,
     collection: "invoices",
-  }
+  },
 );
 
 invoiceSchema.pre("validate", function (next) {
@@ -233,7 +236,7 @@ invoiceSchema.pre("validate", function (next) {
 
     if (this.expenseType === "other" && !this.expenseOtherNotes) {
       return next(
-        new Error("expenseOtherNotes is required when expenseType is other")
+        new Error("expenseOtherNotes is required when expenseType is other"),
       );
     }
 

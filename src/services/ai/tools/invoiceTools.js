@@ -1,90 +1,134 @@
-export const createInvoiceTool = (context) =>
-  tool(
-    async () => {
-      const extracted = await extractInvoiceFromFile(context.file);
+import { z } from "zod";
+import { tool, createAgent } from "langchain";
+import chatSession from "../../../models/chatSession.js";
+import chatMessage from "../../../models/chatMessage.js";
+import AppError from "../../../utils/appError.js";
+import { getVectorStore, getLLM } from "../vector.js";
+import { createWorker } from "tesseract.js";
+import Client from "../../../models/Client.js";
 
-      // 2. Upload file
-      const uploadedFile = await uploadBufferToCloud({
-        buffer: context.file.buffer,
-        originalName: context.file.originalname,
-      });
+export const searchInvoicesTool = tool(
+  async ({ question }, config) => {
+    const { userId, sessionId } = config.context;
 
-      // 3. Resolve client if needed
-      let clientId = null;
+    const vectorStore = await getVectorStore(userId);
+    const retriever = vectorStore.asRetriever({ k: 3 });
+    const relevantDocs = await retriever.invoke(question);
 
-      if (extracted.invoiceType !== "expense" && extracted.clientName) {
-        const client = await Client.findOne({
-          accountantId: context.userId,
-          name: new RegExp(`^${extracted.clientName.trim()}$`, "i"),
-          isActive: true,
-        });
+    if (!relevantDocs.length) {
+      return "No indexed invoice documents were found related to this question.";
+    }
 
-        if (client) {
-          clientId = client._id;
-        }
-      }
+    const context = relevantDocs
+      .map((doc, index) => `[Document ${index + 1}]\n${doc.pageContent}`)
+      .join("\n\n");
 
-      // 4. Build invoice payload
-      const payload = {
-        invoiceType: extracted.invoiceType || "purchase",
-        paymentMethod: extracted.paymentMethod || "cash",
-        amountPaid: extracted.amountPaid || 0,
-        taxPercentage: extracted.taxPercentage || 0,
-        notes: extracted.notes || "",
-      };
+    const history = await chatMessage
+      .find({ sessionId })
+      .sort({ createdAt: 1 });
+    console.log(history);
+    console.log(sessionId);
+    const historyText = history
+      .map((m) => `${m.role === "user" ? "User" : "ai"}: ${m.content}`)
+      .join("\n");
 
-      if (payload.invoiceType === "expense") {
-        payload.expenseName = extracted.expenseName || "Uploaded Expense";
+    const llm = getLLM();
+    const response = await llm.invoke([
+      {
+        role: "system",
+        content:
+          "You are an expert accounting assistant. Answer using ONLY the provided context.",
+      },
+      {
+        role: "user",
+        content: `${historyText ? `History:\n${historyText}\n\n` : ""}Context:\n${context}\n\nQuestion: ${question}`,
+      },
+    ]);
 
-        payload.expenseType = extracted.expenseType || "other";
+    return typeof response.content === "string"
+      ? response.content
+      : JSON.stringify(response.content);
+  },
+  {
+    name: "search_invoices",
+    description:
+      "Search the user's indexed invoice documents to answer questions that depend on their invoice data.",
+    schema: z.object({
+      question: z.string().describe("The user's question about their invoices"),
+    }),
+  },
+);
 
-        payload.baseAmount = extracted.baseAmount || 0;
-      } else {
-        if (!clientId) {
-          throw new Error(`Client "${extracted.clientName}" not found`);
-        }
+export const addInvoiceTool = tool(
+  async ({ clientEmail }, config) => {
+    const { userId, imageUrl } = config.context;
+    const llm = getLLM();
+    // const result = await model.invoke([
+    //   {
+    //     type: "text",
+    //     text: `
+    //   Extract all invoice information as JSON.
+    // `,
+    //   },
+    //   {
+    //     type: "image_url",
+    //     image_url: {
+    //       imageUrl,
+    //     },
+    //   },
+    // ]);
+    console.log(imageUrl);
+    const worker = await createWorker("eng");
+    const result = await worker.recognize(imageUrl);
+    console.log(result.data.text);
+    await worker.terminate();
+    const client = await Client.findOne({
+      email: clientEmail,
+      accountantId: userId,
+    });
 
-        payload.clientId = clientId;
-        payload.items = extracted.items || [];
-      }
+    if (!client) {
+      throw new Error("Client/Vendor not found");
+    }
+    const prompt = `
+Extract invoice data from the text below and return ONLY valid JSON.
 
-      // 5. Create invoice
-      const invoice = await invoiceService.createInvoice(
-        payload,
-        context.userId,
-        context.userId,
-      );
+Text:
+"""
+${text}
+"""
 
-      // 6. Create document record
-      const document = await InvoiceDocument.create({
-        accountantId: context.userId,
-        invoiceId: invoice._id,
-        fileName: uploadedFile.fileName,
-        fileType: uploadedFile.fileType,
-        fileUrl: uploadedFile.fileUrl,
-        publicId: uploadedFile.publicId,
-        ocrText: extracted.ocrText || "",
-        uploadedBy: context.userId,
-      });
+Return format:
+{
+  "invoiceType": "purchase | sale | purchase_return | sales_return | expense",
 
-      invoice.documentId = document._id;
-      await invoice.save();
+  "invoiceNumber": "",
 
-      // 7. Index
-      await indexInvoice(invoice, context.userId);
-      await indexInvoiceDocument(document, context.userId);
+  "paymentMethod": "cash | card | wallet | bank_transfer",
 
-      return {
-        success: true,
-        invoiceId: invoice._id.toString(),
-        invoiceNumber: invoice.invoiceNumber,
-        documentId: document._id.toString(),
-      };
-    },
+  "items": [
     {
-      name: "create_invoice_from_file",
-      description:
-        "Extract invoice data from uploaded file and save it into database.",
-      schema: z.object({}),
-    },
-  );
+      "description": "",
+      "quantity": 0,
+      "unitPrice": 0,
+      "totalPrice": 0
+    }
+  ],
+  "baseAmount": 0,
+  "taxPercentage": 0,
+  "taxAmount": 0,
+  "finalAmount": 0,
+
+  "notes": null
+}
+
+`;
+    const res = await llm.invoke(prompt);
+    const json = JSON.parse(res.content);
+  },
+  {
+    name: "add_invoice",
+    description: "add invoice into db",
+    schema: z.object({ clientEmail: z.string().email() }),
+  },
+);

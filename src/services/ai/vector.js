@@ -5,14 +5,13 @@ import {
   ChatGoogleGenerativeAI,
   GoogleGenerativeAIEmbeddings,
 } from "@langchain/google-genai";
+import { OpenAIEmbeddings } from "@langchain/openai";
 
 export function getEmbeddings() {
-  const embeddings = new GoogleGenerativeAIEmbeddings({
-    apiKey: process.env.GOOGLE_API_KEY,
-    model: "gemini-embedding-2",
-    outputDimensionality: 3072,
+  return new OpenAIEmbeddings({
+    apiKey: process.env.OPENAI_API_KEY,
+    model: "text-embedding-3-small",
   });
-  return embeddings;
 }
 
 export function getPineconeIndex() {
@@ -33,10 +32,18 @@ export async function getVectorStore(userId) {
     namespace: getNamespace(userId),
   });
 }
+// export function getLLM() {
+//   return new ChatGoogleGenerativeAI({
+//     model: process.env.GEMINI_MODEL || "gemini-2.0-flash",
+//     apiKey: process.env.GOOGLE_API_KEY?.trim(),
+//     temperature: 0.3,
+//     maxRetries: 2,
+//   });
+// }
 export function getLLM() {
-  return new ChatGoogleGenerativeAI({
-    model: process.env.GEMINI_MODEL || "gemini-2.0-flash",
-    apiKey: process.env.GOOGLE_API_KEY?.trim(),
+  return new ChatOpenAI({
+    model: process.env.OPENAI_MODEL,
+    apiKey: process.env.OPENAI_API_KEY,
     temperature: 0.3,
     maxRetries: 2,
   });
