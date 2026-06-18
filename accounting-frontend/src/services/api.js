@@ -38,14 +38,22 @@ export const authApi = {
 
   register: ({ name, email, password, role }) =>
     api
-      .post("/auth/register", { name, email, password, role })
+      .post("/auth/register", { name, email, password, role: "accountant", })
       .then((r) => r.data),
 
   forgotPassword: ({ email }) =>
     api.post("/auth/forgot-password", { email }).then((r) => r.data),
 
+  resetPassword: ({ token, password, passwordConfirm }) =>
+    api
+      .patch(`/auth/reset-password/${token}`, { password, passwordConfirm })
+      .then((r) => r.data),
+
   getMe: () => api.get("/auth/me").then((r) => r.data.data),
 
   updateProfile: (id, payload) =>
     api.put(`/users/${id}`, payload).then((r) => r.data.data),
+
+  googleLogin: (credential) =>
+  api.post("/auth/google", { credential }).then((r) => r.data),
 };

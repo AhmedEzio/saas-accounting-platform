@@ -39,7 +39,7 @@ const EyeBtn = ({ open, onToggle }) => (
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { user, token, clearAuth, updateUser } = useAuth();
+  const { user, token, loading, clearAuth, updateUser } = useAuth();
 
   const [form, setForm] = useState(() => ({
     name: user?.name || "",
@@ -55,8 +55,10 @@ export default function ProfilePage() {
 
   /* redirect if not logged in */
   useEffect(() => {
-    if (!token) router.push("/login");
-  }, [token, router]);
+    if (!loading && !token) {
+      router.push("/login");
+    }
+  }, [loading, token, router]);
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -102,6 +104,8 @@ export default function ProfilePage() {
       })
     : "—";
 
+  if (loading) return null;
+  if (!user) return null;
   if (!user) return null;
 
   return (
