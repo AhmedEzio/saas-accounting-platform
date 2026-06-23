@@ -4,17 +4,6 @@ import Client from "../models/Client.js";
 import UserSubscription from "../models/UserSubscription.js";
 import AIUsageLog from "../models/AIUsageLog.js";
 
-function dayRange(offsetDays = 0) {
-  const start = new Date();
-  start.setUTCHours(0, 0, 0, 0);
-  start.setUTCDate(start.getUTCDate() + offsetDays);
-
-  const end = new Date(start);
-  end.setUTCDate(end.getUTCDate() + 1);
-
-  return { start, end };
-}
-
 function daysAgoStart(days) {
   const d = new Date();
   d.setUTCHours(0, 0, 0, 0);
@@ -22,177 +11,78 @@ function daysAgoStart(days) {
   return d;
 }
 
-const ALL_INVOICE_TYPES = [
-  "purchase",
-  "sale",
-  "purchase_return",
-  "sales_return",
-  "expense",
-];
-
-function totalsByType(rows) {
-  const map = Object.fromEntries(ALL_INVOICE_TYPES.map((type) => [type, 0]));
-
-  for (const row of rows) {
-    if (row._id in map) {
-      map[row._id] = row.total;
-    }
-  }
-
-  return map;
+/** Returns the [start, end) UTC boundaries for the calendar day containing `date`. */
+function getDayBounds(date) {
+  const start = new Date(date);
+  start.setUTCHours(0, 0, 0, 0);
+  const end = new Date(start);
+  end.setUTCDate(end.getUTCDate() + 1);
+  return { start, end };
 }
 
-function netSales(totals) {
-  return totals.sale - totals.sales_return;
-}
+/**
+ * getSubscriptionKpis
+ * ────────────────────
+ * KPI #1: Total Subscribed Users — count of UserSubscription docs
+ *   currently "active" or "trialing" (one per user, enforced by the
+ *   model's unique partial index).
+ * KPI #2: Total Subscriptions for the selected date — count of
+ *   UserSubscription docs created on that calendar day.
+ */
+export async function getSubscriptionKpis(date = new Date()) {
+  const { start, end } = getDayBounds(date);
 
-function netPurchases(totals) {
-  return totals.purchase - totals.purchase_return;
-}
-
-function netProfit(totals) {
-  return netSales(totals) - netPurchases(totals) - totals.expense;
-}
-
-function pctChange(today, yesterday) {
-  if (yesterday === 0) return today > 0 ? 100 : 0;
-  return Number((((today - yesterday) / yesterday) * 100).toFixed(1));
-}
-
-export async function getKpis(accountantId) {
-  const { start, end } = dayRange(0);
-  const yesterday = dayRange(-1);
-
-  const [todayResult, yesterdayResult] = await Promise.all([
-    Invoice.aggregate([
-      {
-        $match: {
-          accountantId,
-          isCancelled: false,
-          invoiceType: { $in: ALL_INVOICE_TYPES },
-          createdAt: { $gte: start, $lt: end },
-        },
-      },
-      {
-        $group: {
-          _id: "$invoiceType",
-          total: { $sum: "$finalAmount" },
-        },
-      },
-    ]),
-
-    Invoice.aggregate([
-      {
-        $match: {
-          accountantId,
-          isCancelled: false,
-          invoiceType: { $in: ALL_INVOICE_TYPES },
-          createdAt: { $gte: yesterday.start, $lt: yesterday.end },
-        },
-      },
-      {
-        $group: {
-          _id: "$invoiceType",
-          total: { $sum: "$finalAmount" },
-        },
-      },
-    ]),
+  const [totalSubscribedUsers, totalSubscriptionsForDate] = await Promise.all([
+    UserSubscription.countDocuments({
+      status: { $in: ["active", "trialing"] },
+    }),
+    UserSubscription.countDocuments({
+      createdAt: { $gte: start, $lt: end },
+    }),
   ]);
 
-  const todayTotals = totalsByType(todayResult);
-  const yesterdayTotals = totalsByType(yesterdayResult);
-
-  const todaySales = netSales(todayTotals);
-  const todayPurchases = netPurchases(todayTotals);
-  const todayExpenses = todayTotals.expense;
-  const todayProfit = netProfit(todayTotals);
-
-  const yestSales = netSales(yesterdayTotals);
-  const yestPurchases = netPurchases(yesterdayTotals);
-  const yestExpenses = yesterdayTotals.expense;
-  const yestProfit = netProfit(yesterdayTotals);
-
-  return {
-    sales: {
-      value: todaySales,
-      trend: pctChange(todaySales, yestSales),
-      trendUp: todaySales >= yestSales,
-    },
-    purchases: {
-      value: todayPurchases,
-      trend: pctChange(todayPurchases, yestPurchases),
-      trendUp: todayPurchases >= yestPurchases,
-    },
-    expenses: {
-      value: todayExpenses,
-      trend: pctChange(todayExpenses, yestExpenses),
-      trendUp: todayExpenses >= yestExpenses,
-    },
-    profit: {
-      value: todayProfit,
-      trend: pctChange(todayProfit, yestProfit),
-      trendUp: todayProfit >= yestProfit,
-    },
-  };
+  return { totalSubscribedUsers, totalSubscriptionsForDate };
 }
 
-export async function getSalesPurchasesChart(accountantId, days = 30) {
-  const rangeStart = daysAgoStart(days);
-  const now = new Date();
+/**
+ * getSubscriptionsChart
+ * ──────────────────────
+ * Total new subscriptions per day, for the `days`-day window ending
+ * on `date` (inclusive). Days with zero subscriptions are filled in
+ * with 0 so the chart has no gaps.
+ */
+export async function getSubscriptionsChart(date = new Date(), days = 30) {
+  const end = new Date(date);
+  end.setUTCHours(23, 59, 59, 999);
 
-  const rows = await Invoice.aggregate([
-    {
-      $match: {
-        accountantId,
-        isCancelled: false,
-        invoiceType: {
-          $in: ["sale", "purchase", "sales_return", "purchase_return"],
-        },
-        createdAt: { $gte: rangeStart, $lt: now },
-      },
-    },
+  const start = new Date(end);
+  start.setUTCDate(start.getUTCDate() - (days - 1));
+  start.setUTCHours(0, 0, 0, 0);
+
+  const rows = await UserSubscription.aggregate([
+    { $match: { createdAt: { $gte: start, $lte: end } } },
     {
       $group: {
-        _id: {
-          date: {
-            $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
-          },
-          type: "$invoiceType",
-        },
-        total: { $sum: "$finalAmount" },
+        _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+        count: { $sum: 1 },
       },
     },
-    { $sort: { "_id.date": 1 } },
   ]);
 
-  const salesMap = {};
-  const purchasesMap = {};
+  const countByDate = new Map(rows.map((r) => [r._id, r.count]));
 
-  for (let i = 0; i < days; i++) {
-    const d = new Date(rangeStart);
-    d.setUTCDate(d.getUTCDate() + i);
-    const key = d.toISOString().slice(0, 10);
+  const labels = [];
+  const subscriptionsData = [];
+  const cursor = new Date(start);
 
-    salesMap[key] = 0;
-    purchasesMap[key] = 0;
+  while (cursor <= end) {
+    const key = cursor.toISOString().slice(0, 10);
+    labels.push(key);
+    subscriptionsData.push(countByDate.get(key) ?? 0);
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
   }
 
-  for (const row of rows) {
-    const { date, type } = row._id;
-
-    if (type === "sale") salesMap[date] += row.total;
-    if (type === "sales_return") salesMap[date] -= row.total;
-    if (type === "purchase") purchasesMap[date] += row.total;
-    if (type === "purchase_return") purchasesMap[date] -= row.total;
-  }
-
-  const labels = Object.keys(salesMap).sort();
-
-  return {
-    labels,
-    salesData: labels.map((label) => salesMap[label]),
-    purchasesData: labels.map((label) => purchasesMap[label]),
-  };
+  return { labels, subscriptionsData };
 }
 
 export async function getFinancialSummary(accountantId) {
@@ -386,3 +276,4 @@ export async function getAIUsageSummary(accountantId, days = 30) {
     totalTokens: row.totalTokens,
   }));
 }
+

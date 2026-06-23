@@ -1,5 +1,12 @@
 import * as DashboardService from "../services/dashboard.service.js";
 
+/** Parses a `?date=YYYY-MM-DD` query param, falling back to "now" if missing/invalid. */
+function parseDateParam(value) {
+  if (!value) return new Date();
+  const parsed = new Date(value);
+  return isNaN(parsed.getTime()) ? new Date() : parsed;
+}
+
 // ─── Unified dashboard endpoint ──────────────────────────────────────────────
 
 /**
@@ -11,6 +18,7 @@ import * as DashboardService from "../services/dashboard.service.js";
 export async function getDashboardData(req, res, next) {
   try {
     const accountantId = req.user._id;
+    const date = parseDateParam(req.query.date);
     const days = parseInt(req.query.days ?? "30", 10) || 30;
     const activityLimit = parseInt(req.query.activityLimit ?? "10", 10) || 10;
 
@@ -22,8 +30,8 @@ export async function getDashboardData(req, res, next) {
       subscriptionResult,
       aiUsageResult,
     ] = await Promise.allSettled([
-      DashboardService.getKpis(accountantId),
-      DashboardService.getSalesPurchasesChart(accountantId, days),
+      DashboardService.getSubscriptionKpis(date),
+      DashboardService.getSubscriptionsChart(date, days),
       DashboardService.getFinancialSummary(accountantId),
       DashboardService.getRecentActivity(accountantId, activityLimit),
       DashboardService.getSubscriptionSummary(accountantId),
@@ -77,7 +85,8 @@ export async function getDashboardData(req, res, next) {
 
 export async function getKpis(req, res, next) {
   try {
-    const data = await DashboardService.getKpis(req.user._id);
+    const date = parseDateParam(req.query.date);
+    const data = await DashboardService.getSubscriptionKpis(date);
     return res.status(200).json({ success: true, data });
   } catch (error) {
     next(error);
@@ -86,11 +95,9 @@ export async function getKpis(req, res, next) {
 
 export async function getChart(req, res, next) {
   try {
+    const date = parseDateParam(req.query.date);
     const days = parseInt(req.query.days ?? "30", 10) || 30;
-    const data = await DashboardService.getSalesPurchasesChart(
-      req.user._id,
-      days
-    );
+    const data = await DashboardService.getSubscriptionsChart(date, days);
 
     return res.status(200).json({ success: true, data });
   } catch (error) {

@@ -16,8 +16,8 @@ const router = Router();
  *
  * Unified dashboard endpoint.
  * Returns:
- * - KPIs
- * - Sales/Purchases Chart
+ * - KPIs (subscribed users / subscriptions for the date)
+ * - Daily Subscriptions Chart
  * - Financial Summary
  * - Recent Activity
  * - Subscription Summary
@@ -28,21 +28,20 @@ const router = Router();
 router.get("/", getDashboardData);
 
 /**
- * GET /api/dashboard/kpis
+ * GET /api/dashboard/kpis?date=YYYY-MM-DD
  *
  * Returns dashboard KPI cards:
- * - Sales
- * - Purchases
- * - Expenses
- * - Profit
+ * - Total Subscribed Users (currently active/trialing)
+ * - Total Subscriptions created on the given date (defaults to today)
  */
 router.get("/kpis", getKpis);
 
 /**
- * GET /api/dashboard/chart?days=30
+ * GET /api/dashboard/chart?days=30&date=YYYY-MM-DD
  *
- * Returns Sales vs Purchases chart data
- * for the requested period.
+ * Returns daily new-subscriptions counts for the `days`-day window
+ * ending on `date` (defaults to today). Re-fetch with a new `date`
+ * whenever the dashboard's calendar selection changes.
  */
 router.get("/chart", getChart);
 
