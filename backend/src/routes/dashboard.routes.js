@@ -3,6 +3,7 @@ import {
   getDashboardData,
   getKpis,
   getChart,
+  getOverview,
   getFinancials,
   getActivity,
   getSubscription,
@@ -18,6 +19,7 @@ const router = Router();
  * Returns:
  * - KPIs (subscribed users / subscriptions for the date)
  * - Daily Subscriptions Chart
+ * - Platform Overview (accountants, admins, invoices, clients, plans, payments)
  * - Financial Summary
  * - Recent Activity
  * - Subscription Summary
@@ -44,6 +46,20 @@ router.get("/kpis", getKpis);
  * whenever the dashboard's calendar selection changes.
  */
 router.get("/chart", getChart);
+
+/**
+ * GET /api/dashboard/overview?date=YYYY-MM-DD
+ *
+ * Returns platform-wide snapshot totals as of the given date
+ * (running totals — everything created on or before that day):
+ * - Accountants
+ * - Admins
+ * - Total Invoices
+ * - Total Clients
+ * - Available Subscription Plans
+ * - Total Payments
+ */
+router.get("/overview", getOverview);
 
 /**
  * GET /api/dashboard/financials
