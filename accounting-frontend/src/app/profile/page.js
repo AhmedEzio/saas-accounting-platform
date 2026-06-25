@@ -138,7 +138,6 @@ export default function ProfilePage() {
             {isRtl ? "EN" : "AR"}
           </button>
         </div>
-
         {/* header card */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden ">
           <div className="h-28 bg-linear-to-r from-[#1b2b6b] to-[#2d3ebd] relative mb-11">
