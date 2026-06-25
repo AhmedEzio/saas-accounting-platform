@@ -22,7 +22,7 @@ Invoice
 
 # Current Phase
 
-Phase 3B — Actions and Modals
+Phase 4 — Final Polish
 
 Status
 
@@ -179,6 +179,40 @@ Verification
 
 ---
 
+### Invoice Final Polish
+
+Completed
+
+* src/app/invoices/page.js
+* src/components/invoices/FiltersBar.js
+* src/components/invoices/InvoiceTable.js
+* src/components/invoices/InvoiceForm.js
+* src/components/invoices/LineItemsEditor.js
+* src/components/invoices/CancelModal.js
+* src/components/invoices/PaymentModal.js
+* src/components/invoices/ReturnModal.js
+* src/components/invoices/useLang.js
+
+Features
+
+* Reviewed /invoices, /invoices/new, and /invoices/[id].
+* Removed nonfunctional export and row-selection controls from the invoice list.
+* Improved filter wrapping and mobile form layout.
+* Added a stacked mobile line-item editor for /invoices/new.
+* Improved RTL-aware table/form alignment and touch target sizing.
+* Improved line-item accessibility with labels and aria-invalid states.
+* Deferred invoice-module effect state resets/loads for the current React lint rule.
+* Confirmed invoice actions still match backend-supported rules and existing services only.
+
+Verification
+
+* npm run build passed.
+* npm run lint has no invoice-module errors.
+* Project lint still reports one out-of-scope react-hooks/set-state-in-effect error in src/context/AuthContext.js.
+* PowerShell printed the existing npm wrapper access warning before npm commands, but the build completed successfully.
+
+---
+
 # Current Design Source
 
 Primary source:
@@ -191,9 +225,7 @@ Do not use Arabic screenshots as the implementation reference.
 
 # Current Files Remaining
 
-Phase 3 is completed.
-
-Phase 4 remains.
+Invoice module Phases 1-4 are completed.
 
 ---
 
@@ -361,13 +393,13 @@ Then stop and wait for approval.
 
 Return invoices currently use a simple relatedInvoiceId text input by Phase 2 scope. Advanced original invoice selection belongs to a later approved phase.
 
-Phase 4 has not started. Do not begin final polish without approval.
+Project lint has one remaining out-of-scope error in src/context/AuthContext.js from react-hooks/set-state-in-effect. The invoice module is clean.
 
 ---
 
 # Next Task
 
-Wait for approval before starting Phase 4.
+Wait for approval before any new module or additional scope.
 
 ---
 
@@ -395,4 +427,4 @@ Completed
 
 Current Priority
 
-Phase 3B completed. Do not start Phase 4 without approval.
+Invoice module Phase 4 completed. Do not start a new module without approval.

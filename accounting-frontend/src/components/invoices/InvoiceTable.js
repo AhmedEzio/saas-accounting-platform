@@ -41,17 +41,14 @@ function formatDate(value, lang) {
   }).format(new Date(value));
 }
 
-export default function InvoiceTable({ invoices, loading, lang, isRtl, t }) {
-  const alignEnd = isRtl ? "text-left" : "text-right";
+export default function InvoiceTable({ invoices, loading, lang, t }) {
+  const alignEnd = "text-end";
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-[980px] border-collapse text-left">
+      <table className="w-full min-w-[900px] border-collapse text-start">
         <thead>
           <tr className="border-b border-slate-200 bg-slate-100">
-            <th className="w-12 px-4 py-3">
-              <span className="sr-only">Selection</span>
-            </th>
             <th className="px-4 py-3 text-[11px] font-semibold uppercase text-slate-500">
               {t("col.invoiceNo")}
             </th>
@@ -92,13 +89,6 @@ export default function InvoiceTable({ invoices, loading, lang, isRtl, t }) {
                     }`}
                     key={invoice._id}
                   >
-                    <td className="px-4 py-2">
-                      <input
-                        aria-label={`${t("col.invoiceNo")} ${invoice.invoiceNumber}`}
-                        className="h-4 w-4 rounded border-slate-300 text-[#001540] focus:ring-[#001540]/20"
-                        type="checkbox"
-                      />
-                    </td>
                     <td className="px-4 py-2">
                       <Link
                         className="font-mono font-medium text-[#001540] hover:underline focus:outline-none focus:ring-2 focus:ring-[#001540]/20"
@@ -141,7 +131,7 @@ export default function InvoiceTable({ invoices, loading, lang, isRtl, t }) {
                     </td>
                     <td className={`px-4 py-2 ${alignEnd}`}>
                       <Link
-                        className="inline-flex min-h-9 items-center rounded border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#001540]/20"
+                        className="inline-flex min-h-11 items-center rounded border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#001540]/20"
                         href={`/invoices/${invoice._id}`}
                       >
                         {t("action.view")}

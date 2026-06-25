@@ -12,7 +12,7 @@ Invoice
 
 Current Phase
 
-Phase 3B — Actions and Modals
+Phase 4 — Final Polish
 
 Status
 
@@ -153,7 +153,7 @@ PowerShell printed an npm wrapper access warning before the build, but Next.js c
 
 Status
 
-In Progress
+Completed
 
 ## Phase 3A — Invoice Details Read-Only
 
@@ -250,7 +250,57 @@ PowerShell printed the existing npm wrapper access warning before the build, but
 
 Status
 
-Not Started
+Completed
+
+## Modified Files
+
+src/app/invoices/page.js
+
+src/components/invoices/FiltersBar.js
+
+src/components/invoices/InvoiceTable.js
+
+src/components/invoices/InvoiceForm.js
+
+src/components/invoices/LineItemsEditor.js
+
+src/components/invoices/CancelModal.js
+
+src/components/invoices/PaymentModal.js
+
+src/components/invoices/ReturnModal.js
+
+src/components/invoices/useLang.js
+
+## Features
+
+* Reviewed /invoices, /invoices/new, and /invoices/[id].
+* Removed nonfunctional invoice list export and row-selection controls.
+* Improved invoice filter responsiveness on small screens.
+* Improved invoice table touch target sizing and RTL-aware alignment.
+* Added a stacked mobile line-item editor for /invoices/new to avoid cramped table editing on phones.
+* Improved line-item input accessibility with labels and aria-invalid states.
+* Deferred invoice-module effect state resets/loads to satisfy the current React lint rule.
+* Confirmed no fake invoice endpoints or fake invoice data were added.
+* Confirmed action visibility still follows backend rules for cancel, payment, and return.
+
+## Verification
+
+npm run build
+
+Status
+
+Passed.
+
+npm run lint
+
+Status
+
+Invoice module passed. Project lint still reports one existing out-of-scope react-hooks/set-state-in-effect error in src/context/AuthContext.js, which was not modified by Phase 4 scope.
+
+Notes
+
+PowerShell printed the existing npm wrapper access warning before npm commands, but the Next.js production build completed successfully and included /invoices, /invoices/new, and /invoices/[id] in the route list.
 
 ---
 
@@ -372,4 +422,4 @@ These files are production-ready and should not be rewritten unless a bug is fou
 
 # Next Task
 
-Wait for approval before starting Phase 4.
+Invoice module Phase 4 is completed. Wait for approval before any new module or additional scope.

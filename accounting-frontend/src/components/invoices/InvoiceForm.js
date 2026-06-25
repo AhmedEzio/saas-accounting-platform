@@ -387,6 +387,7 @@ export default function InvoiceForm() {
             {!isExpense ? (
               <LineItemsEditor
                 errors={errors}
+                isRtl={isRtl}
                 items={form.items}
                 onChange={(items) => updateForm({ items })}
                 t={t}

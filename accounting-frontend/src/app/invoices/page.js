@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import EmptyState from "@/components/invoices/EmptyState";
 import ErrorState from "@/components/invoices/ErrorState";
@@ -60,6 +61,7 @@ function invoiceMatchesSearch(invoice, search) {
 }
 
 export default function InvoicesPage() {
+  const router = useRouter();
   const { lang, dir, isRtl, setLang, t } = useLang();
   const [filters, setFilters] = useState(initialFilters);
   const [invoices, setInvoices] = useState([]);
@@ -69,6 +71,7 @@ export default function InvoicesPage() {
   const [reloadKey, setReloadKey] = useState(0);
 
   const fetchInvoices = useCallback(async () => {
+    await Promise.resolve();
     setLoading(true);
     setError("");
 
@@ -93,7 +96,15 @@ export default function InvoicesPage() {
   }, [filters]);
 
   useEffect(() => {
-    fetchInvoices();
+    let active = true;
+
+    queueMicrotask(() => {
+      if (active) fetchInvoices();
+    });
+
+    return () => {
+      active = false;
+    };
   }, [fetchInvoices, reloadKey]);
 
   const filteredInvoices = useMemo(
@@ -139,12 +150,6 @@ export default function InvoicesPage() {
             </p>
           </div>
           <div className="flex w-full items-center gap-3 sm:w-auto">
-            <button
-              className="hidden min-h-11 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#001540]/20 sm:inline-flex"
-              type="button"
-            >
-              {t("action.export")}
-            </button>
             <Link
               className="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-[#001540] px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-[#0f2a5f] focus:outline-none focus:ring-2 focus:ring-[#001540]/30 sm:w-auto"
               href="/invoices/new"
@@ -194,9 +199,7 @@ export default function InvoicesPage() {
                   onAction={
                     hasActiveFilters
                       ? clearFilters
-                      : () => {
-                          window.location.href = "/invoices/new";
-                        }
+                      : () => router.push("/invoices/new")
                   }
                   title={hasActiveFilters ? t("state.emptyFiltered") : t("state.empty")}
                 />

@@ -41,10 +41,19 @@ export default function ReturnModal({ invoice, open, onClose, t }) {
 
   useEffect(() => {
     if (!open || !invoice) return;
-    setItems(toReturnItems(invoice));
-    setPaymentMethod(invoice.paymentMethod || "cash");
-    setNotes("");
-    setError("");
+    let active = true;
+
+    queueMicrotask(() => {
+      if (!active) return;
+      setItems(toReturnItems(invoice));
+      setPaymentMethod(invoice.paymentMethod || "cash");
+      setNotes("");
+      setError("");
+    });
+
+    return () => {
+      active = false;
+    };
   }, [invoice, open]);
 
   useEffect(() => {

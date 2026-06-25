@@ -19,8 +19,17 @@ export default function CancelModal({ invoice, open, onClose, onSuccess, t }) {
 
   useEffect(() => {
     if (!open) return;
-    setReason("");
-    setError("");
+    let active = true;
+
+    queueMicrotask(() => {
+      if (!active) return;
+      setReason("");
+      setError("");
+    });
+
+    return () => {
+      active = false;
+    };
   }, [open]);
 
   useEffect(() => {

@@ -9,14 +9,24 @@ export default function useLang() {
   const [lang, setLangState] = useState("en");
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === "ar" || stored === "en") {
-      setLangState(stored);
-      return;
-    }
+    let active = true;
 
-    const pageLang = document.documentElement.lang;
-    if (pageLang === "ar") setLangState("ar");
+    queueMicrotask(() => {
+      if (!active) return;
+
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored === "ar" || stored === "en") {
+        setLangState(stored);
+        return;
+      }
+
+      const pageLang = document.documentElement.lang;
+      if (pageLang === "ar") setLangState("ar");
+    });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   const setLang = (nextLang) => {

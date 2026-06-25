@@ -25,10 +25,19 @@ export default function PaymentModal({ invoice, open, onClose, onSuccess, t }) {
 
   useEffect(() => {
     if (!open || !invoice) return;
-    setAmount(dueAmount > 0 ? String(dueAmount) : "");
-    setPaymentMethod(invoice.paymentMethod || "cash");
-    setNotes("");
-    setError("");
+    let active = true;
+
+    queueMicrotask(() => {
+      if (!active) return;
+      setAmount(dueAmount > 0 ? String(dueAmount) : "");
+      setPaymentMethod(invoice.paymentMethod || "cash");
+      setNotes("");
+      setError("");
+    });
+
+    return () => {
+      active = false;
+    };
   }, [dueAmount, invoice, open]);
 
   useEffect(() => {

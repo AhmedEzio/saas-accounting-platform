@@ -27,12 +27,12 @@ export default function FiltersBar({
         />
       </div>
 
-      <div className="flex w-full flex-wrap items-center gap-3 lg:w-auto">
+      <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 xl:flex xl:w-auto xl:flex-wrap xl:items-center">
         <label className="sr-only" htmlFor="invoice-type-filter">
           {t("form.invoiceType")}
         </label>
         <select
-          className={`min-h-11 rounded-lg border border-slate-300 bg-white py-2 text-sm text-slate-900 focus:border-[#001540] focus:outline-none focus:ring-2 focus:ring-[#001540]/20 ${selectPadding}`}
+          className={`min-h-11 w-full rounded-lg border border-slate-300 bg-white py-2 text-sm text-slate-900 focus:border-[#001540] focus:outline-none focus:ring-2 focus:ring-[#001540]/20 xl:w-auto ${selectPadding}`}
           id="invoice-type-filter"
           onChange={(event) => onChange({ invoiceType: event.target.value, page: 1 })}
           value={filters.invoiceType}
@@ -49,7 +49,7 @@ export default function FiltersBar({
           {t("col.status")}
         </label>
         <select
-          className={`min-h-11 rounded-lg border border-slate-300 bg-white py-2 text-sm text-slate-900 focus:border-[#001540] focus:outline-none focus:ring-2 focus:ring-[#001540]/20 ${selectPadding}`}
+          className={`min-h-11 w-full rounded-lg border border-slate-300 bg-white py-2 text-sm text-slate-900 focus:border-[#001540] focus:outline-none focus:ring-2 focus:ring-[#001540]/20 xl:w-auto ${selectPadding}`}
           id="invoice-status-filter"
           onChange={(event) => onChange({ paymentStatus: event.target.value, page: 1 })}
           value={filters.paymentStatus}
@@ -66,7 +66,7 @@ export default function FiltersBar({
           {t("filter.allDates")}
         </label>
         <select
-          className={`min-h-11 rounded-lg border border-slate-300 bg-white py-2 text-sm text-slate-900 focus:border-[#001540] focus:outline-none focus:ring-2 focus:ring-[#001540]/20 ${selectPadding}`}
+          className={`min-h-11 w-full rounded-lg border border-slate-300 bg-white py-2 text-sm text-slate-900 focus:border-[#001540] focus:outline-none focus:ring-2 focus:ring-[#001540]/20 xl:w-auto ${selectPadding}`}
           id="invoice-date-filter"
           onChange={(event) => onChange({ dateRange: event.target.value, page: 1 })}
           value={filters.dateRange}
