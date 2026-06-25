@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>تفاصيل الفاتورة - Finora</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#00217a",
+                        "surface-dim": "#dbd9de",
+                        "on-background": "#1a1b1f",
+                        "primary": "#001540",
+                        "outline-variant": "#c5c6d1",
+                        "on-primary-container": "#7d93ce",
+                        "on-primary-fixed": "#001946",
+                        "on-primary-fixed-variant": "#2e457b",
+                        "inverse-surface": "#2f3034",
+                        "primary-fixed-dim": "#b1c5ff",
+                        "surface-container-highest": "#e3e2e7",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#465d94",
+                        "secondary-fixed-dim": "#b8c4ff",
+                        "tertiary-container": "#003421",
+                        "inverse-primary": "#b1c5ff",
+                        "surface-container-low": "#f4f3f8",
+                        "surface-container-high": "#e9e7ed",
+                        "primary-container": "#0f2a5f",
+                        "tertiary": "#001d11",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#faf8fe",
+                        "surface-container": "#efedf2",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "on-surface-variant": "#44464f",
+                        "on-tertiary-fixed": "#002113",
+                        "on-tertiary-container": "#00a975",
+                        "error": "#ba1a1a",
+                        "secondary": "#3755c3",
+                        "outline": "#757780",
+                        "on-secondary-fixed": "#001453",
+                        "secondary-container": "#708cfd",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "surface-bright": "#faf8fe",
+                        "on-secondary-fixed-variant": "#173bab",
+                        "primary-fixed": "#dae2ff",
+                        "surface": "#faf8fe",
+                        "on-surface": "#1a1b1f",
+                        "surface-variant": "#e3e2e7",
+                        "tertiary-fixed": "#6ffbbe",
+                        "secondary-fixed": "#dde1ff",
+                        "inverse-on-surface": "#f2f0f5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "2xl": "48px",
+                        "sidebar-width": "280px",
+                        "container-max": "1440px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "base": "4px",
+                        "3xl": "64px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["IBM Plex Sans Arabic", "sans-serif"],
+                        "title-lg": ["Cairo", "sans-serif"],
+                        "headline-md": ["Cairo", "sans-serif"],
+                        "display-lg": ["Cairo", "sans-serif"],
+                        "code": ["JetBrains Mono"],
+                        "label-md": ["IBM Plex Sans Arabic", "sans-serif"],
+                        "headline-lg-mobile": ["Cairo", "sans-serif"],
+                        "headline-lg": ["Cairo", "sans-serif"],
+                        "body-lg": ["IBM Plex Sans Arabic", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "title-lg": ["18px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "code": ["13px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md overflow-x-hidden antialiased">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-inverse-surface fixed top-0 inset-x-0 h-16 z-30 border-b border-outline-variant dark:border-outline flex justify-between items-center h-16 px-lg ms-[280px] rtl:me-[280px] rtl:ms-0">
+<div class="flex items-center gap-md">
+<button class="md:hidden text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed md:hidden">Finora</h1>
+</div>
+<div class="flex items-center gap-md">
+<!-- Language Switcher (Ghost Button) -->
+<button class="text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors rounded-lg px-3 py-2 flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="language">language</span>
+<span class="font-label-md text-label-md">العربية</span>
+</button>
+<button class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
+<img alt="User profile menu" class="w-full h-full object-cover" data-alt="A professional corporate headshot of a Middle Eastern accountant in a modern office, softly lit with cool, bright light, conveying trust and efficiency in a high-tech financial environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBF9d2fYSO2PtU1hMauerYSnE2erlDyxTcBrohpwtDLwXdT82jSbkU1K-_esrDfyQbAap8NjIhvjln69-dJGxMYuqbiKoeRsZaD87f1yE5dPJhhjrr7VupqFCuCPJRggpZCNP1EEcQarTgL6O8jyjAxLTvDzj2b0gwbbCuqjre2d49RdJTt8dzbC_p3w30HDfP8N6Gus_nneS0RuaCmp4q6Y6H10RY3chItGFkqwm1rcy342qvFGDNzXP_66f9wEyKFGDIGz-PPdw"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-full py-lg px-md gap-sm rtl:border-s ltr:border-e bg-surface dark:bg-inverse-surface fixed h-full w-[280px] start-0 top-0 border-e border-outline-variant dark:border-outline z-40">
+<div class="flex items-center gap-sm px-4 mb-xl">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-on-primary font-bold">F</div>
+<div>
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Finora</div>
+<div class="font-label-md text-label-md text-on-surface-variant">Accounting AI</div>
+</div>
+</div>
+<button class="bg-primary text-on-primary hover:bg-primary/90 rounded-lg py-2 px-4 flex items-center justify-center gap-2 mb-md transition-colors w-full">
+<span class="material-symbols-outlined">add</span>
+<span class="font-label-md text-label-md">New Invoice</span>
+</button>
+<div class="flex flex-col gap-1 flex-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-body-md text-body-md">Clients</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-secondary-container dark:text-on-secondary-fixed bg-secondary-container dark:bg-on-secondary-fixed-variant font-semibold scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-body-md text-body-md">Invoices</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-body-md text-body-md">Payments</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-body-md text-body-md">Documents</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="card_membership">card_membership</span>
+<span class="font-body-md text-body-md">Subscription</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors group relative" href="#">
+<span class="material-symbols-outlined text-teal-600" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-body-md text-body-md">AI Usage</span>
+<!-- AI Credits Progress -->
+<div class="absolute bottom-1 left-4 right-4 h-1 bg-surface-variant rounded-full overflow-hidden hidden group-hover:block">
+<div class="h-full bg-gradient-to-r from-[#14B8A6] to-[#10B981] w-[75%]"></div>
+</div>
+</a>
+</div>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors mt-auto" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+<!-- Main Canvas -->
+<main class="md:me-[280px] pt-16 min-h-screen rtl">
+<div class="max-w-[800px] mx-auto p-4 md:p-8">
+<!-- Breadcrumb & Actions -->
+<div class="flex justify-between items-center mb-8">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<a class="hover:text-primary transition-colors font-body-md text-body-md" href="#">الفواتير</a>
+<span class="material-symbols-outlined text-sm rtl:rotate-180">chevron_right</span>
+<span class="font-title-lg text-title-lg text-on-background">تفاصيل الفاتورة #INV-2023-089</span>
+</div>
+<div class="flex gap-3">
+<button class="bg-surface border border-outline-variant text-primary hover:bg-surface-container-low px-4 py-2 rounded-lg font-label-md text-label-md transition-colors flex items-center gap-2 shadow-[0px_4px_12px_rgba(15,23,42,0.05)]">
+<span class="material-symbols-outlined">download</span>
+                        تحميل PDF
+                    </button>
+<button class="bg-primary text-on-primary hover:bg-primary-container px-4 py-2 rounded-lg font-label-md text-label-md transition-colors shadow-[0px_4px_12px_rgba(15,23,42,0.05)]">
+                        إرسال تذكير
+                    </button>
+</div>
+</div>
+<!-- Invoice Document Surface -->
+<div class="bg-surface border border-outline-variant rounded-xl p-8 relative overflow-hidden">
+<!-- AI Insight Glow Indicator (Subtle) -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-teal-500/5 blur-[50px] rounded-full pointer-events-none"></div>
+<!-- Header Info -->
+<div class="flex justify-between items-start mb-12 border-b border-outline-variant pb-8">
+<div>
+<h2 class="font-headline-lg text-headline-lg font-bold text-primary mb-2">فاتورة</h2>
+<div class="flex items-center gap-3">
+<span class="font-body-md text-body-md text-on-surface-variant">INV-2023-089</span>
+<!-- Invoice Status Badge (Paid) -->
+<span class="bg-emerald-500/10 text-emerald-700 px-2 py-1 rounded text-xs font-semibold flex items-center gap-1">
+                                مدفوعة جزئياً
+                            </span>
+</div>
+</div>
+<div class="text-left">
+<div class="w-16 h-16 bg-primary-fixed rounded-lg mb-4 ml-auto flex items-center justify-center text-primary font-bold text-2xl">F</div>
+<p class="font-body-md text-body-md text-on-surface-variant">شركة فينورا للتقنية</p>
+<p class="font-body-md text-body-md text-on-surface-variant">الرياض، المملكة العربية السعودية</p>
+</div>
+</div>
+<!-- Client & Dates Grid -->
+<div class="grid grid-cols-2 gap-8 mb-12">
+<div>
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-2">تفاصيل العميل</h3>
+<p class="font-title-lg text-title-lg text-on-background font-semibold">مؤسسة الأفق للتجارة</p>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">شارع العليا، الرياض</p>
+<p class="font-body-md text-body-md text-on-surface-variant">contact@alufuq.sa</p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-1">تاريخ الإصدار</h3>
+<p class="font-body-md text-body-md text-on-background">15 أكتوبر 2023</p>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-1">تاريخ الاستحقاق</h3>
+<p class="font-body-md text-body-md text-on-background">30 أكتوبر 2023</p>
+</div>
+</div>
+</div>
+<!-- Items Table -->
+<div class="mb-12">
+<h3 class="font-title-lg text-title-lg text-on-background mb-4">جدول الأصناف</h3>
+<div class="overflow-x-auto">
+<table class="w-full text-right border-collapse">
+<thead>
+<tr class="bg-[#F1F5F9] border-y border-outline-variant">
+<th class="py-3 px-4 font-label-md text-label-md text-on-surface-variant font-medium">الوصف</th>
+<th class="py-3 px-4 font-label-md text-label-md text-on-surface-variant font-medium w-24 text-center">الكمية</th>
+<th class="py-3 px-4 font-label-md text-label-md text-on-surface-variant font-medium w-32">السعر (ر.س)</th>
+<th class="py-3 px-4 font-label-md text-label-md text-on-surface-variant font-medium w-32">المجموع</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md">
+<tr class="border-b border-outline-variant/50 hover:bg-surface-container-lowest transition-colors h-[52px]">
+<td class="py-3 px-4">
+<div class="font-medium text-on-background">استشارة مالية (شهري)</div>
+<div class="text-xs text-on-surface-variant mt-1">مراجعة الحسابات لشهر سبتمبر</div>
+</td>
+<td class="py-3 px-4 text-center">1</td>
+<td class="py-3 px-4">5,000.<span class="opacity-70 text-xs">00</span></td>
+<td class="py-3 px-4 font-medium">5,000.<span class="opacity-70 text-xs">00</span></td>
+</tr>
+<tr class="border-b border-outline-variant/50 hover:bg-surface-container-lowest transition-colors h-[52px]">
+<td class="py-3 px-4">
+<div class="font-medium text-on-background">ترخيص برنامج المحاسبة</div>
+<div class="text-xs text-on-surface-variant mt-1">اشتراك سنوي لخمسة مستخدمين</div>
+</td>
+<td class="py-3 px-4 text-center">5</td>
+<td class="py-3 px-4">1,200.<span class="opacity-70 text-xs">00</span></td>
+<td class="py-3 px-4 font-medium">6,000.<span class="opacity-70 text-xs">00</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Totals Section -->
+<div class="flex justify-end">
+<div class="w-full md:w-1/2 lg:w-1/3">
+<div class="flex justify-between py-2 border-b border-outline-variant/50">
+<span class="font-body-md text-body-md text-on-surface-variant">المجموع الفرعي</span>
+<span class="font-body-md text-body-md text-on-background">11,000.<span class="opacity-70 text-xs">00</span> ر.س</span>
+</div>
+<div class="flex justify-between py-2 border-b border-outline-variant/50">
+<span class="font-body-md text-body-md text-on-surface-variant">ضريبة القيمة المضافة (15%)</span>
+<span class="font-body-md text-body-md text-on-background">1,650.<span class="opacity-70 text-xs">00</span> ر.س</span>
+</div>
+<div class="flex justify-between py-4 mt-2 bg-surface-container-lowest rounded-lg px-3">
+<span class="font-title-lg text-title-lg font-bold text-on-background">الإجمالي النهائي</span>
+<span class="font-title-lg text-title-lg font-bold text-primary">12,650.<span class="opacity-70 text-sm">00</span> ر.س</span>
+</div>
+<!-- Payment Status Summaries -->
+<div class="mt-4 flex justify-between py-2 text-emerald-700 bg-emerald-50 px-3 rounded">
+<span class="font-label-md text-label-md">المبلغ المدفوع</span>
+<span class="font-body-md text-body-md font-medium">6,000.<span class="opacity-70 text-xs">00</span> ر.س</span>
+</div>
+<div class="mt-2 flex justify-between py-2 text-rose-700 bg-rose-50 px-3 rounded">
+<span class="font-label-md text-label-md">المبلغ المستحق</span>
+<span class="font-body-md text-body-md font-medium">6,650.<span class="opacity-70 text-xs">00</span> ر.س</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

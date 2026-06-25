@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>الفواتير - Finora</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#00217a",
+                        "surface-dim": "#dbd9de",
+                        "on-background": "#1a1b1f",
+                        "primary": "#001540",
+                        "outline-variant": "#c5c6d1",
+                        "on-primary-container": "#7d93ce",
+                        "on-primary-fixed": "#001946",
+                        "on-primary-fixed-variant": "#2e457b",
+                        "inverse-surface": "#2f3034",
+                        "primary-fixed-dim": "#b1c5ff",
+                        "surface-container-highest": "#e3e2e7",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#465d94",
+                        "secondary-fixed-dim": "#b8c4ff",
+                        "tertiary-container": "#003421",
+                        "inverse-primary": "#b1c5ff",
+                        "surface-container-low": "#f4f3f8",
+                        "surface-container-high": "#e9e7ed",
+                        "primary-container": "#0f2a5f",
+                        "tertiary": "#001d11",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#faf8fe",
+                        "surface-container": "#efedf2",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "on-surface-variant": "#44464f",
+                        "on-tertiary-fixed": "#002113",
+                        "on-tertiary-container": "#00a975",
+                        "error": "#ba1a1a",
+                        "secondary": "#3755c3",
+                        "outline": "#757780",
+                        "on-secondary-fixed": "#001453",
+                        "secondary-container": "#708cfd",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "surface-bright": "#faf8fe",
+                        "on-secondary-fixed-variant": "#173bab",
+                        "primary-fixed": "#dae2ff",
+                        "surface": "#faf8fe",
+                        "on-surface": "#1a1b1f",
+                        "surface-variant": "#e3e2e7",
+                        "tertiary-fixed": "#6ffbbe",
+                        "secondary-fixed": "#dde1ff",
+                        "inverse-on-surface": "#f2f0f5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "2xl": "48px",
+                        "sidebar-width": "280px",
+                        "container-max": "1440px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "base": "4px",
+                        "3xl": "64px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "code": ["JetBrains Mono"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "title-lg": ["18px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "code": ["13px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased overflow-x-hidden">
+<!-- TopNav -->
+<header class="fixed top-0 inset-x-0 h-16 z-30 border-b border-outline-variant dark:border-outline bg-surface dark:bg-inverse-surface flex justify-between items-center px-lg ms-0 me-0 md:ms-0 md:me-[280px]">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed md:hidden cursor-pointer">menu</span>
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed md:hidden">Finora</div>
+</div>
+<div class="flex items-center flex-1 max-w-md mx-8 relative">
+<span class="material-symbols-outlined absolute right-3 text-on-surface-variant dark:text-surface-variant">search</span>
+<input class="w-full bg-surface-container-high dark:bg-inverse-surface border-none rounded-full py-2 pr-10 pl-4 text-body-md focus:ring-2 focus:ring-primary/20 transition-all text-on-background dark:text-on-surface placeholder-on-surface-variant" placeholder="بحث..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant relative">
+<span class="material-symbols-outlined">language</span>
+<span class="absolute top-1 left-1 text-[10px] font-bold">AR</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1.5 left-1.5 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<img alt="User profile menu" class="w-8 h-8 rounded-full border border-outline-variant object-cover cursor-pointer hover:ring-2 hover:ring-primary/20 transition-all" data-alt="A small circular avatar placeholder image for a user profile picture in a high-end financial application interface, professional minimalist aesthetic, soft lighting, sharp focus, 8k resolution" src="https://lh3.googleusercontent.com/aida-public/AB6AXuChbzVFE6CO2lS7UUWMhg0P2OjnLnGI-1j_yeVAl0ppSESgO4xfWDyGAEGJcjGFxLB4SztjMd9lg4J8cj-N655pzdon5yUBarPdBUF6lx42YxlDNT452OQtQ2ipxbjnX9Jj6EV_rS010dhuY1zXkfPtX-BlwXcNAhIdhQEFF6pe1rVtjR6BB0IfP0dQaeesvrRKD16FR3QwP_qhDiRkAQsDk3mYT3_YEssKMyVBPZzqojDiEQAGKtrCDqiFTAYndH1Oe8ZycjPDBg"/>
+</div>
+</header>
+<!-- SideNav -->
+<aside class="fixed h-full w-[280px] start-0 top-0 border-l border-outline-variant dark:border-outline bg-surface dark:bg-inverse-surface flex flex-col py-lg px-md gap-sm z-40 hidden md:flex right-0 border-r-0 border-l">
+<div class="flex items-center gap-3 mb-8 px-2">
+<div class="w-8 h-8 rounded bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Finora</h1>
+<p class="text-label-md font-label-md text-on-surface-variant uppercase tracking-widest">Accounting AI</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span>Clients</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-secondary-container dark:text-on-secondary-fixed bg-secondary-container dark:bg-on-secondary-fixed-variant font-semibold scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+<span>Invoices</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span>Payments</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined">description</span>
+<span>Documents</span>
+</a>
+<div class="h-px bg-outline-variant my-4 mx-2"></div>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined">card_membership</span>
+<span>Subscription</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors relative" href="#">
+<span class="material-symbols-outlined text-[#14B8A6]">auto_awesome</span>
+<span>AI Usage</span>
+<div class="absolute bottom-0 left-3 right-3 h-0.5 bg-surface-container overflow-hidden rounded-full">
+<div class="h-full bg-gradient-to-l from-[#10B981] to-[#14B8A6] w-3/4"></div>
+</div>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<button class="mt-auto w-full py-2.5 bg-[#1E40AF] text-white rounded-lg font-medium hover:bg-primary-container transition-colors shadow-[0_4px_12px_rgba(15,23,42,0.05)]">
+            New Invoice
+        </button>
+</aside>
+<!-- Main Content -->
+<main class="md:me-[280px] pt-16 min-h-screen">
+<div class="max-w-[1440px] mx-auto p-lg md:p-xl space-y-xl">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background">الفواتير</h2>
+<p class="text-body-lg font-body-lg text-on-surface-variant mt-1">إنشاء، تتبع وإدارة جميع الفواتير المحاسبية</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 border border-outline-variant bg-white text-on-background rounded-lg hover:bg-surface-container-high transition-colors font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+                        فلترة
+                    </button>
+<button class="px-4 py-2 bg-[#1E40AF] text-white rounded-lg hover:bg-primary-container transition-colors font-medium flex items-center gap-2 shadow-[0_4px_12px_rgba(15,23,42,0.05)]">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                        فاتورة جديدة
+                    </button>
+</div>
+</div>
+<!-- Bento Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+<!-- Stat Card 1 -->
+<div class="bg-white p-4 rounded-xl border border-[#E2E8F0] relative overflow-hidden group hover:shadow-[0_4px_12px_rgba(15,23,42,0.05)] transition-shadow">
+<div class="flex justify-between items-start mb-2">
+<span class="text-label-md font-label-md text-on-surface-variant">إجمالي الفواتير</span>
+<div class="flex items-center text-[#10B981] bg-[#10B981]/10 px-1.5 py-0.5 rounded text-[10px] font-medium">
+<span class="material-symbols-outlined text-[12px]">trending_up</span>
+<span class="mr-1">+12%</span>
+</div>
+</div>
+<div class="font-headline-md text-headline-md font-semibold text-on-background">1,248</div>
+</div>
+<!-- Stat Card 2 -->
+<div class="bg-white p-4 rounded-xl border border-[#E2E8F0] relative overflow-hidden group hover:shadow-[0_4px_12px_rgba(15,23,42,0.05)] transition-shadow">
+<div class="flex justify-between items-start mb-2">
+<span class="text-label-md font-label-md text-on-surface-variant">الفواتير المدفوعة</span>
+</div>
+<div class="font-headline-md text-headline-md font-semibold text-on-background">892</div>
+<div class="w-full bg-surface-container h-1 mt-3 rounded-full overflow-hidden">
+<div class="bg-[#10B981] h-full w-[70%]"></div>
+</div>
+</div>
+<!-- Stat Card 3 -->
+<div class="bg-white p-4 rounded-xl border border-[#E2E8F0] relative overflow-hidden group hover:shadow-[0_4px_12px_rgba(15,23,42,0.05)] transition-shadow">
+<div class="flex justify-between items-start mb-2">
+<span class="text-label-md font-label-md text-on-surface-variant">الفواتير غير المدفوعة</span>
+</div>
+<div class="font-headline-md text-headline-md font-semibold text-on-background">356</div>
+<div class="w-full bg-surface-container h-1 mt-3 rounded-full overflow-hidden">
+<div class="bg-[#F43F5E] h-full w-[30%]"></div>
+</div>
+</div>
+<!-- Stat Card 4 -->
+<div class="bg-white p-4 rounded-xl border border-[#E2E8F0] relative overflow-hidden group hover:shadow-[0_4px_12px_rgba(15,23,42,0.05)] transition-shadow col-span-1 md:col-span-2 lg:col-span-1">
+<div class="flex justify-between items-start mb-2">
+<span class="text-label-md font-label-md text-on-surface-variant">المبالغ المستحقة</span>
+</div>
+<div class="font-headline-md text-headline-md font-semibold text-on-background">
+                        ريال 45,230<span class="text-[14px] opacity-70">.00</span>
+</div>
+</div>
+<!-- Stat Card 5 (AI insight) -->
+<div class="bg-white p-4 rounded-xl border border-[#E2E8F0] relative overflow-hidden group hover:shadow-[0_4px_12px_rgba(15,23,42,0.05)] transition-shadow col-span-1 md:col-span-2 lg:col-span-1">
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-[#14B8A6]/5 rounded-full blur-xl"></div>
+<div class="flex justify-between items-start mb-2 relative z-10">
+<span class="text-label-md font-label-md text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-[#14B8A6]">auto_awesome</span>
+                            الإيرادات الشهرية
+                        </span>
+<div class="flex items-center text-[#10B981] bg-[#10B981]/10 px-1.5 py-0.5 rounded text-[10px] font-medium">
+<span class="material-symbols-outlined text-[12px]">trending_up</span>
+<span class="mr-1">+5.2%</span>
+</div>
+</div>
+<div class="font-headline-md text-headline-md font-semibold text-on-background relative z-10">
+                        ريال 128,500<span class="text-[14px] opacity-70">.00</span>
+</div>
+</div>
+</div>
+<!-- Invoices Table -->
+<div class="bg-white border border-[#E2E8F0] rounded-xl overflow-hidden shadow-[0_4px_12px_rgba(15,23,42,0.05)]">
+<div class="overflow-x-auto">
+<table class="w-full text-right">
+<thead>
+<tr class="bg-[#F1F5F9] border-b border-[#E2E8F0]">
+<th class="px-4 py-3 text-label-md font-label-md text-on-surface-variant whitespace-nowrap">رقم الفاتورة</th>
+<th class="px-4 py-3 text-label-md font-label-md text-on-surface-variant whitespace-nowrap">العميل / المورد</th>
+<th class="px-4 py-3 text-label-md font-label-md text-on-surface-variant whitespace-nowrap">النوع</th>
+<th class="px-4 py-3 text-label-md font-label-md text-on-surface-variant whitespace-nowrap">حالة الدفع</th>
+<th class="px-4 py-3 text-label-md font-label-md text-on-surface-variant whitespace-nowrap">الإجمالي النهائي</th>
+<th class="px-4 py-3 text-label-md font-label-md text-on-surface-variant whitespace-nowrap">المبلغ المدفوع</th>
+<th class="px-4 py-3 text-label-md font-label-md text-on-surface-variant whitespace-nowrap">المبلغ المستحق</th>
+<th class="px-4 py-3 text-label-md font-label-md text-on-surface-variant whitespace-nowrap">التاريخ</th>
+<th class="px-4 py-3 text-label-md font-label-md text-on-surface-variant whitespace-nowrap text-center">الإجراءات</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#E2E8F0]">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors h-[52px]">
+<td class="px-4 py-3 font-code text-code text-on-background">INV-2023-001</td>
+<td class="px-4 py-3 text-body-md font-medium text-on-background">شركة التقنية الحديثة</td>
+<td class="px-4 py-3 text-body-md text-on-surface-variant">مبيعات</td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#10B981]/10 text-[#10B981]">مدفوعة</span>
+</td>
+<td class="px-4 py-3 font-code text-code font-semibold">ريال 12,500.00</td>
+<td class="px-4 py-3 font-code text-code text-on-surface-variant">ريال 12,500.00</td>
+<td class="px-4 py-3 font-code text-code text-on-surface-variant">ريال 0.00</td>
+<td class="px-4 py-3 text-body-md text-on-surface-variant">15 مايو 2024</td>
+<td class="px-4 py-3 text-center">
+<button class="text-on-surface-variant hover:text-[#1E40AF] transition-colors"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors h-[52px]">
+<td class="px-4 py-3 font-code text-code text-on-background">INV-2023-002</td>
+<td class="px-4 py-3 text-body-md font-medium text-on-background">مؤسسة الأفق للتجارة</td>
+<td class="px-4 py-3 text-body-md text-on-surface-variant">خدمات</td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#F43F5E]/10 text-[#F43F5E]">متأخرة</span>
+</td>
+<td class="px-4 py-3 font-code text-code font-semibold">ريال 8,320.50</td>
+<td class="px-4 py-3 font-code text-code text-on-surface-variant">ريال 0.00</td>
+<td class="px-4 py-3 font-code text-code text-error">ريال 8,320.50</td>
+<td class="px-4 py-3 text-body-md text-on-surface-variant">01 مايو 2024</td>
+<td class="px-4 py-3 text-center">
+<button class="text-on-surface-variant hover:text-[#1E40AF] transition-colors"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors h-[52px]">
+<td class="px-4 py-3 font-code text-code text-on-background">INV-2023-003</td>
+<td class="px-4 py-3 text-body-md font-medium text-on-background">مجموعة الرواد</td>
+<td class="px-4 py-3 text-body-md text-on-surface-variant">مبيعات</td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-500/10 text-slate-600">مسودة</span>
+</td>
+<td class="px-4 py-3 font-code text-code font-semibold">ريال 45,000.00</td>
+<td class="px-4 py-3 font-code text-code text-on-surface-variant">-</td>
+<td class="px-4 py-3 font-code text-code text-on-surface-variant">-</td>
+<td class="px-4 py-3 text-body-md text-on-surface-variant">20 مايو 2024</td>
+<td class="px-4 py-3 text-center">
+<button class="text-on-surface-variant hover:text-[#1E40AF] transition-colors"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors h-[52px] bg-[#14B8A6]/5">
+<td class="px-4 py-3 font-code text-code text-on-background flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px] text-[#14B8A6]" title="تمت المعالجة بواسطة الذكاء الاصطناعي">auto_awesome</span>
+                                    INV-2023-004
+                                </td>
+<td class="px-4 py-3 text-body-md font-medium text-on-background">شركة الإنشاءات المتقدمة</td>
+<td class="px-4 py-3 text-body-md text-on-surface-variant">مقاولات</td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#10B981]/10 text-[#10B981]">مدفوعة</span>
+</td>
+<td class="px-4 py-3 font-code text-code font-semibold">ريال 120,400.00</td>
+<td class="px-4 py-3 font-code text-code text-on-surface-variant">ريال 120,400.00</td>
+<td class="px-4 py-3 font-code text-code text-on-surface-variant">ريال 0.00</td>
+<td class="px-4 py-3 text-body-md text-on-surface-variant">10 مايو 2024</td>
+<td class="px-4 py-3 text-center">
+<button class="text-on-surface-variant hover:text-[#1E40AF] transition-colors"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-4 py-3 border-t border-[#E2E8F0] flex items-center justify-between">
+<span class="text-body-md text-on-surface-variant">عرض 1 إلى 4 من 1,248</span>
+<div class="flex gap-1">
+<button class="p-1 rounded hover:bg-surface-container-high text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">chevron_right</span></button>
+<button class="w-8 h-8 rounded bg-[#1E40AF] text-white text-body-md font-medium flex items-center justify-center">1</button>
+<button class="w-8 h-8 rounded hover:bg-surface-container-high text-on-surface-variant text-body-md font-medium flex items-center justify-center">2</button>
+<button class="w-8 h-8 rounded hover:bg-surface-container-high text-on-surface-variant text-body-md font-medium flex items-center justify-center">3</button>
+<span class="w-8 h-8 flex items-center justify-center text-on-surface-variant">...</span>
+<button class="p-1 rounded hover:bg-surface-container-high text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">chevron_left</span></button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
