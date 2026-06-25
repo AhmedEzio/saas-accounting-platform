@@ -195,6 +195,7 @@ export const translations = {
   'details.paymentMethod':    { en: 'Payment Method',            ar: 'طريقة الدفع' },
   'details.notes':            { en: 'Notes',                     ar: 'ملاحظات' },
   'details.noPayments':       { en: 'No payment records yet.',   ar: 'لا توجد سجلات دفع بعد.' },
+  'details.paymentHistoryUnavailable': { en: 'Payment history is unavailable right now.', ar: 'سجل المدفوعات غير متاح حالياً.' },
   'details.expenseName':      { en: 'Expense Name',              ar: 'اسم المصروف' },
   'details.expenseType':      { en: 'Expense Category',          ar: 'فئة المصروف' },
 };

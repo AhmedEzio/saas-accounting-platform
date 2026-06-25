@@ -12,7 +12,7 @@ Invoice
 
 Current Phase
 
-Phase 2 — Create Invoice
+Phase 3A — Invoice Details Read-Only
 
 Status
 
@@ -153,7 +153,65 @@ PowerShell printed an npm wrapper access warning before the build, but Next.js c
 
 Status
 
+In Progress
+
+## Phase 3A — Invoice Details Read-Only
+
+Status
+
+Completed
+
+## Completed Files
+
+src/components/invoices/InvoiceHeader.js
+
+src/components/invoices/InvoiceSummary.js
+
+src/components/invoices/InvoiceItemsTable.js
+
+src/components/invoices/PaymentTimeline.js
+
+src/app/invoices/[id]/page.js
+
+## Features
+
+* /invoices/[id] page implemented.
+* Invoice details fetched with GET /api/invoices/:id.
+* Payment history fetched with GET /api/payments?invoiceId=:id.
+* Invoice and payment requests load concurrently with Promise.all().
+* Payment history failure does not crash the details page.
+* Loading state implemented.
+* Error state implemented for missing or failed invoice details.
+* Empty payment state implemented.
+* Download, print, share, cancel, payment, and return actions are hidden.
+* RTL/LTR supported.
+* Responsive read-only layout implemented.
+
+## Verification
+
+npm run build
+
+Status
+
+Passed.
+
+Notes
+
+PowerShell printed an npm wrapper access warning before the build, but Next.js completed successfully and included /invoices/[id] in the route list.
+
+## Phase 3B — Actions and Modals
+
+Status
+
 Not Started
+
+Remaining Files
+
+src/components/invoices/CancelModal.js
+
+src/components/invoices/ReturnModal.js
+
+src/components/invoices/PaymentModal.js
 
 ---
 
@@ -268,10 +326,19 @@ Phase 2:
 * src/app/invoices/new/page.js
 * src/locales/invoices.js updated with Phase 2 form labels and errors
 
+Phase 3A:
+
+* src/components/invoices/InvoiceHeader.js
+* src/components/invoices/InvoiceSummary.js
+* src/components/invoices/InvoiceItemsTable.js
+* src/components/invoices/PaymentTimeline.js
+* src/app/invoices/[id]/page.js
+* src/locales/invoices.js updated with Phase 3A payment history fallback label
+
 These files are production-ready and should not be rewritten unless a bug is found.
 
 ---
 
 # Next Task
 
-Wait for approval before starting Phase 3.
+Wait for approval before starting Phase 3B.

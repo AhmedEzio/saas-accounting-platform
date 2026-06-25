@@ -22,7 +22,7 @@ Invoice
 
 # Current Phase
 
-Phase 2 — Create Invoice
+Phase 3A — Invoice Details Read-Only
 
 Status
 
@@ -120,6 +120,35 @@ Verification
 
 ---
 
+### Invoice Details Read-Only
+
+Completed
+
+* src/components/invoices/InvoiceHeader.js
+* src/components/invoices/InvoiceSummary.js
+* src/components/invoices/InvoiceItemsTable.js
+* src/components/invoices/PaymentTimeline.js
+* src/app/invoices/[id]/page.js
+* src/locales/invoices.js updated with Phase 3A payment history fallback label
+
+Features
+
+* Fetches invoice details with GET /api/invoices/:id through src/services/invoices.js.
+* Fetches payment history with GET /api/payments?invoiceId=:id through src/services/invoices.js.
+* Loads invoice details and payment history concurrently with Promise.all().
+* Payment history failure does not crash the page; the timeline shows a graceful fallback.
+* Renders loading, invoice error, and empty payment states.
+* Hides download, print, share, cancel, payment, and return actions.
+* Includes RTL/LTR support and responsive layout.
+
+Verification
+
+* npm run build passed.
+* /invoices/[id] appears in the Next.js route list.
+* PowerShell printed an npm wrapper access warning before build, but the build completed successfully.
+
+---
+
 # Current Design Source
 
 Primary source:
@@ -132,7 +161,11 @@ Do not use Arabic screenshots as the implementation reference.
 
 # Current Files Remaining
 
-None for Phase 2.
+Phase 3B remains:
+
+* src/components/invoices/CancelModal.js
+* src/components/invoices/ReturnModal.js
+* src/components/invoices/PaymentModal.js
 
 ---
 
@@ -300,11 +333,13 @@ Then stop and wait for approval.
 
 Return invoices currently use a simple relatedInvoiceId text input by Phase 2 scope. Advanced original invoice selection belongs to a later approved phase.
 
+Phase 3A is read-only. Cancel, payment, and return actions are intentionally not implemented yet.
+
 ---
 
 # Next Task
 
-Wait for approval before starting Phase 3.
+Wait for approval before starting Phase 3B.
 
 ---
 
@@ -332,4 +367,4 @@ Completed
 
 Current Priority
 
-Phase 2 completed. Do not start Phase 3 without approval.
+Phase 3A completed. Do not start Phase 3B without approval.
