@@ -22,7 +22,7 @@ Invoice
 
 # Current Phase
 
-Phase 1 — Invoice List
+Phase 2 — Create Invoice
 
 Status
 
@@ -89,6 +89,37 @@ Verification
 
 ---
 
+### Create Invoice Page
+
+Completed
+
+* src/components/invoices/ClientSearch.js
+* src/components/invoices/InvoiceTypeSelector.js
+* src/components/invoices/LineItemsEditor.js
+* src/components/invoices/SummaryPanel.js
+* src/components/invoices/InvoiceForm.js
+* src/app/invoices/new/page.js
+* src/locales/invoices.js updated with Phase 2 form labels and errors
+
+Features
+
+* Fetches clients/vendors with GET /api/clients through src/services/invoices.js.
+* Creates invoices with POST /api/invoices through src/services/invoices.js.
+* Supports sale, purchase, sales_return, purchase_return, and expense.
+* Uses a simple relatedInvoiceId input for return invoices.
+* Uses quantity >= 1 validation to match the current backend model.
+* Redirects to /invoices after successful creation.
+* Does not send unsupported backend fields such as discount, dueDate, draft save, proforma, stripe, paypal, or recurring invoice.
+* Includes RTL/LTR support.
+
+Verification
+
+* npm run build passed.
+* /invoices/new appears in the Next.js route list.
+* PowerShell printed an npm wrapper access warning before build, but the build completed successfully.
+
+---
+
 # Current Design Source
 
 Primary source:
@@ -101,7 +132,7 @@ Do not use Arabic screenshots as the implementation reference.
 
 # Current Files Remaining
 
-None for Phase 1.
+None for Phase 2.
 
 ---
 
@@ -267,13 +298,13 @@ Then stop and wait for approval.
 
 # Current Known Issues
 
-The New Invoice action links to /invoices/new, which belongs to Phase 2 and is not implemented yet.
+Return invoices currently use a simple relatedInvoiceId text input by Phase 2 scope. Advanced original invoice selection belongs to a later approved phase.
 
 ---
 
 # Next Task
 
-Wait for approval before starting Phase 2.
+Wait for approval before starting Phase 3.
 
 ---
 
@@ -301,4 +332,4 @@ Completed
 
 Current Priority
 
-Phase 1 completed. Do not start Phase 2 without approval.
+Phase 2 completed. Do not start Phase 3 without approval.

@@ -12,7 +12,7 @@ Invoice
 
 Current Phase
 
-Phase 1 — Invoice List
+Phase 2 — Create Invoice
 
 Status
 
@@ -107,7 +107,45 @@ PowerShell printed an npm wrapper access warning before the build, but Next.js c
 
 Status
 
-Not Started
+Completed
+
+## Completed Files
+
+src/components/invoices/ClientSearch.js
+
+src/components/invoices/InvoiceTypeSelector.js
+
+src/components/invoices/LineItemsEditor.js
+
+src/components/invoices/SummaryPanel.js
+
+src/components/invoices/InvoiceForm.js
+
+src/app/invoices/new/page.js
+
+## Features
+
+* Invoice type selector implemented.
+* Client/vendor search implemented using GET /api/clients.
+* Dynamic line items implemented for non-expense invoices.
+* Expense mode implemented.
+* Simple relatedInvoiceId input implemented for return invoices.
+* Tax, amount paid, total, and due previews implemented.
+* Payloads match backend validation and do not send unsupported fields.
+* Successful creation redirects to /invoices.
+* RTL/LTR supported.
+
+## Verification
+
+npm run build
+
+Status
+
+Passed.
+
+Notes
+
+PowerShell printed an npm wrapper access warning before the build, but Next.js completed successfully and included /invoices/new in the route list.
 
 ---
 
@@ -206,6 +244,8 @@ Completed by Claude:
 
 Completed by Codex:
 
+Phase 1:
+
 * src/components/invoices/useLang.js
 * src/components/invoices/StatusBadge.js
 * src/components/invoices/InvoiceTypeBadge.js
@@ -218,10 +258,20 @@ Completed by Codex:
 * src/components/invoices/ErrorState.js
 * src/app/invoices/page.js
 
+Phase 2:
+
+* src/components/invoices/ClientSearch.js
+* src/components/invoices/InvoiceTypeSelector.js
+* src/components/invoices/LineItemsEditor.js
+* src/components/invoices/SummaryPanel.js
+* src/components/invoices/InvoiceForm.js
+* src/app/invoices/new/page.js
+* src/locales/invoices.js updated with Phase 2 form labels and errors
+
 These files are production-ready and should not be rewritten unless a bug is found.
 
 ---
 
 # Next Task
 
-Wait for approval before starting Phase 2.
+Wait for approval before starting Phase 3.

@@ -98,6 +98,27 @@ export const translations = {
   'form.baseAmount':          { en: 'Amount',           ar: 'المبلغ' },
   'form.reason':              { en: 'Reason',           ar: 'السبب' },
   'form.required':            { en: 'Required',         ar: 'مطلوب' },
+  'form.invoiceDetails':      { en: 'Invoice Details',  ar: 'بيانات الفاتورة' },
+  'form.ready':               { en: 'Ready',            ar: 'جاهزة' },
+  'form.selected':            { en: 'Selected',         ar: 'محدد' },
+  'form.clientSelected':      { en: 'Client selected',  ar: 'تم تحديد العميل' },
+  'form.searchClient':        { en: 'Search for a client...', ar: 'ابحث عن عميل...' },
+  'form.searchVendor':        { en: 'Search for a vendor...', ar: 'ابحث عن مورد...' },
+  'form.noClients':           { en: 'No matching clients or vendors found.', ar: 'لا توجد نتائج مطابقة.' },
+  'form.relatedInvoicePlaceholder': { en: 'Paste the original invoice ID', ar: 'أدخل معرف الفاتورة الأصلية' },
+  'form.relatedInvoiceHint':  { en: 'Use the 24-character original invoice ID for returns.', ar: 'استخدم معرف الفاتورة الأصلية المكوّن من ٢٤ حرفاً للمرتجعات.' },
+  'form.removeItem':          { en: 'Remove item',      ar: 'حذف البند' },
+  'form.submitting':          { en: 'Creating invoice...', ar: 'جارٍ إنشاء الفاتورة...' },
+
+  // ── Form errors ───────────────────────────────────────────────────────────
+  'error.required':           { en: 'This field is required.', ar: 'هذا الحقل مطلوب.' },
+  'error.taxRange':           { en: 'Tax must be between 0 and 100.', ar: 'يجب أن تكون الضريبة بين ٠ و١٠٠.' },
+  'error.nonNegative':        { en: 'Value cannot be negative.', ar: 'لا يمكن أن تكون القيمة سالبة.' },
+  'error.max500':             { en: 'Must not exceed 500 characters.', ar: 'يجب ألا يتجاوز ٥٠٠ حرف.' },
+  'error.amountPositive':     { en: 'Amount must be greater than zero.', ar: 'يجب أن يكون المبلغ أكبر من صفر.' },
+  'error.validObjectId':      { en: 'Enter a valid 24-character invoice ID.', ar: 'أدخل معرف فاتورة صحيحاً مكوناً من ٢٤ حرفاً.' },
+  'error.quantityMin':        { en: 'Quantity must be at least 1.', ar: 'يجب ألا تقل الكمية عن ١.' },
+  'error.submitFailed':       { en: 'Could not create invoice. Try again.', ar: 'تعذر إنشاء الفاتورة. حاول مرة أخرى.' },
 
   // ── Stats cards ───────────────────────────────────────────────────────────
   'stats.totalInvoices':      { en: 'Total Invoices',   ar: 'إجمالي الفواتير' },
