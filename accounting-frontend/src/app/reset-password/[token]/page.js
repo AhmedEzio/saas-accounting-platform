@@ -5,12 +5,16 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
 import { useAuth } from "@/context/AuthContext";
+import { useLang } from "@/context/LanguageContext";
 import { authApi } from "@/services/api";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
   const params = useParams();
   const { setAuth } = useAuth();
+
+  const { t, lang, toggleLang } = useLang();
+  const isRtl = lang === "ar";
 
   const token = params?.token;
 
@@ -26,17 +30,17 @@ export default function ResetPasswordPage() {
     e.preventDefault();
 
     if (!password || !passwordConfirm) {
-      setError("Please fill in all fields.");
+      setError(t("fillAll"));
       return;
     }
 
     if (password.length < 8) {
-      setError("Password must be at least 6 characters.");
+      setError(t("minPassword"));
       return;
     }
 
     if (password !== passwordConfirm) {
-      setError("Passwords do not match.");
+      setError(t("passwordMatch"));
       return;
     }
 
@@ -52,12 +56,15 @@ export default function ResetPasswordPage() {
       });
 
       setAuth(res.data, res.token);
-      setMessage("Password reset successfully. Redirecting to profile...");
-      router.push("/profile");
+
+      setMessage(t("passwordResetSuccess"));
+
+      setTimeout(() => {
+        router.push("/profile");
+      }, 1000);
     } catch (err) {
       setError(
-        err?.response?.data?.message ||
-          "Reset link is invalid or expired. Please request a new link."
+        err?.response?.data?.message || t("invalidResetLink")
       );
     } finally {
       setLoading(false);
@@ -65,21 +72,58 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#e8ecf5] px-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-md p-10">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-[#e8ecf5] relative overflow-hidden">
+      {/* Grid */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right,#c5cde0 1px,transparent 1px),linear-gradient(to bottom,#c5cde0 1px,transparent 1px)",
+          backgroundSize: "52px 52px",
+        }}
+      />
+
+      {/* Glow */}
+      <div className="absolute bottom-0 right-0 w-125 h-100 bg-[#c8ede0] rounded-full blur-[80px] opacity-70 pointer-events-none" />
+
+      {/* Language Switch */}
+    <div className="absolute top-5 right-5 z-10">
+        <button
+          onClick={toggleLang}
+          className="flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-gray-300 bg-white/80 text-sm font-medium text-gray-600 hover:bg-white transition cursor-pointer"
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            viewBox="0 0 24 24"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20" />
+          </svg>
+          {isRtl ? "EN" : "AR"}
+        </button>
+      </div>
+
+      {/* Card */}
+      <div className="relative z-10 w-full max-w-md bg-white rounded-2xl shadow-md p-10">
         <div className="text-center mb-8">
           <div className="mx-auto w-16 h-16 rounded-xl bg-[#1b2b6b] flex flex-col items-center justify-center gap-0.5 mb-5">
             <span className="text-white text-3xl font-extrabold leading-none">
               F
             </span>
+
             <div className="w-7 h-0.75 rounded-full bg-[#1fc99e]" />
-            <div className="w-5 h-[2.5px] rounded-full bg-[#1fc99e] opacity-70" />
+            <div className="w-5 h-0.5 rounded-full bg-[#1fc99e] opacity-70" />
           </div>
 
-          <h1 className="text-2xl font-bold text-gray-800">Reset Password</h1>
+          <h1 className="text-2xl font-bold text-gray-800">
+            {t("resetPassword")}
+          </h1>
 
           <p className="text-sm text-gray-500 mt-2">
-            Enter your new password to access your account again.
+            {t("resetSubtitle")}
           </p>
         </div>
 
@@ -97,8 +141,12 @@ export default function ResetPasswordPage() {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700">
-              New Password
+            <label
+              className={`block mb-2 text-sm font-medium text-gray-700 ${
+                isRtl ? "text-right" : ""
+              }`}
+            >
+              {t("newPassword")}
             </label>
 
             <div className="relative">
@@ -109,23 +157,31 @@ export default function ResetPasswordPage() {
                   setPassword(e.target.value);
                   setError("");
                 }}
-                placeholder="••••••••"
-                className="w-full px-4 py-3 pr-12 rounded-lg border border-gray-200 bg-gray-50 outline-none focus:ring-2 focus:ring-[#1b2b6b]/25 focus:border-[#1b2b6b]"
+                placeholder={t("passwordPlaceholder")}
+                className={`w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 outline-none focus:ring-2 focus:ring-[#1b2b6b]/25 focus:border-[#1b2b6b] ${
+                  isRtl ? "text-right pl-12" : "pr-12"
+                }`}
               />
 
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-gray-500"
+                className={`absolute top-1/2 -translate-y-1/2 text-sm font-semibold text-gray-500 ${
+                  isRtl ? "left-3" : "right-3"
+                }`}
               >
-                {showPassword ? "Hide" : "Show"}
+                {showPassword ? t("hide") : t("show")}
               </button>
             </div>
           </div>
 
           <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700">
-              Confirm Password
+            <label
+              className={`block mb-2 text-sm font-medium text-gray-700 ${
+                isRtl ? "text-right" : ""
+              }`}
+            >
+              {t("confirmPassword")}
             </label>
 
             <div className="relative">
@@ -136,16 +192,22 @@ export default function ResetPasswordPage() {
                   setPasswordConfirm(e.target.value);
                   setError("");
                 }}
-                placeholder="••••••••"
-                className="w-full px-4 py-3 pr-12 rounded-lg border border-gray-200 bg-gray-50 outline-none focus:ring-2 focus:ring-[#1b2b6b]/25 focus:border-[#1b2b6b]"
+                placeholder={t("passwordPlaceholder")}
+                className={`w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 outline-none focus:ring-2 focus:ring-[#1b2b6b]/25 focus:border-[#1b2b6b] ${
+                  isRtl ? "text-right pl-12" : "pr-12"
+                }`}
               />
 
               <button
                 type="button"
-                onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-gray-500"
+                onClick={() =>
+                  setShowPasswordConfirm(!showPasswordConfirm)
+                }
+                className={`absolute top-1/2 -translate-y-1/2 text-sm font-semibold text-gray-500 ${
+                  isRtl ? "left-3" : "right-3"
+                }`}
               >
-                {showPasswordConfirm ? "Hide" : "Show"}
+                {showPasswordConfirm ? t("hide") : t("show")}
               </button>
             </div>
           </div>
@@ -155,7 +217,7 @@ export default function ResetPasswordPage() {
             disabled={loading}
             className="w-full py-3 rounded-xl bg-[#2d3ebd] text-white font-bold hover:bg-[#2233aa] disabled:opacity-60 transition"
           >
-            {loading ? "Resetting..." : "Reset Password"}
+            {loading ? t("resetting") : t("resetPassword")}
           </button>
         </form>
 
@@ -164,7 +226,7 @@ export default function ResetPasswordPage() {
             href="/login"
             className="text-sm font-bold text-gray-700 hover:underline"
           >
-            Back to Login
+            {t("backToLogin")}
           </Link>
         </div>
       </div>
