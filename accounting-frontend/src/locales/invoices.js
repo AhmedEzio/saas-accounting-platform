@@ -169,6 +169,10 @@ export const translations = {
   'return.salesReturn':       { en: 'Sales Return',               ar: 'مرتجع مبيعات' },
   'return.purchaseReturn':    { en: 'Purchase Return',            ar: 'مرتجع مشتريات' },
   'return.itemsHint':         { en: 'Select items and quantities to return.', ar: 'حدد البنود والكميات المراد إرجاعها.' },
+  'return.maxQuantity':       { en: 'Available quantity',        ar: 'الكمية المتاحة' },
+  'return.noItems':           { en: 'This invoice has no returnable items.', ar: 'لا تحتوي هذه الفاتورة على بنود قابلة للمرتجع.' },
+  'return.quantityTooHigh':   { en: 'Return quantity cannot exceed the original quantity.', ar: 'لا يمكن أن تتجاوز كمية المرتجع الكمية الأصلية.' },
+  'return.cannotReturn':      { en: 'This invoice type cannot be returned.', ar: 'لا يمكن إنشاء مرتجع لهذا النوع من الفواتير.' },
   'return.submitting':        { en: 'Creating Return...',         ar: 'جارٍ إنشاء المرتجع...' },
 
   // ── Payment modal ─────────────────────────────────────────────────────────
@@ -176,6 +180,8 @@ export const translations = {
   'payment.amount':           { en: 'Amount',                     ar: 'المبلغ' },
   'payment.method':           { en: 'Payment Method',             ar: 'طريقة الدفع' },
   'payment.notes':            { en: 'Notes (optional)',           ar: 'ملاحظات (اختياري)' },
+  'payment.amountTooHigh':    { en: 'Amount cannot be greater than the due amount.', ar: 'لا يمكن أن يكون المبلغ أكبر من المبلغ المستحق.' },
+  'payment.submitFailed':     { en: 'Could not record payment. Try again.', ar: 'تعذر تسجيل الدفعة. حاول مرة أخرى.' },
   'payment.submitting':       { en: 'Recording...',               ar: 'جارٍ التسجيل...' },
   'payment.success':          { en: 'Payment recorded.',          ar: 'تم تسجيل الدفعة.' },
 

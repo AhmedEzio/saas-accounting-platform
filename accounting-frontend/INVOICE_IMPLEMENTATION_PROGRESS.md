@@ -12,7 +12,7 @@ Invoice
 
 Current Phase
 
-Phase 3A — Invoice Details Read-Only
+Phase 3B — Actions and Modals
 
 Status
 
@@ -203,15 +203,46 @@ PowerShell printed an npm wrapper access warning before the build, but Next.js c
 
 Status
 
-Not Started
+Completed
 
-Remaining Files
+Completed Files
 
 src/components/invoices/CancelModal.js
 
 src/components/invoices/ReturnModal.js
 
 src/components/invoices/PaymentModal.js
+
+Modified Files
+
+src/app/invoices/[id]/page.js
+
+src/locales/invoices.js
+
+## Features
+
+* Cancel modal implemented with confirmation and required 3-500 character reason.
+* Cancel action is hidden for cancelled invoices and return invoice types.
+* Record payment modal implemented for invoices with dueAmount > 0.
+* Payment validation enforces amount > 0 and amount <= dueAmount.
+* Return modal implemented for sale and purchase invoices only.
+* Return creation preloads invoice items, keeps description and unitPrice unchanged, and lets the user edit quantity only.
+* Return creation redirects to /invoices after success.
+* Cancel and payment success refresh invoice details and payment history without a full page reload.
+* Modal failures show inline errors and preserve the current details page state.
+* RTL/LTR modal layout support follows the existing details page direction.
+
+## Verification
+
+npm run build
+
+Status
+
+Passed.
+
+Notes
+
+PowerShell printed the existing npm wrapper access warning before the build, but Next.js completed successfully and included /invoices/[id] in the route list.
 
 ---
 
@@ -341,4 +372,4 @@ These files are production-ready and should not be rewritten unless a bug is fou
 
 # Next Task
 
-Wait for approval before starting Phase 3B.
+Wait for approval before starting Phase 4.

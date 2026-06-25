@@ -22,7 +22,7 @@ Invoice
 
 # Current Phase
 
-Phase 3A — Invoice Details Read-Only
+Phase 3B — Actions and Modals
 
 Status
 
@@ -149,6 +149,36 @@ Verification
 
 ---
 
+### Invoice Details Actions
+
+Completed
+
+* src/components/invoices/CancelModal.js
+* src/components/invoices/PaymentModal.js
+* src/components/invoices/ReturnModal.js
+* src/app/invoices/[id]/page.js updated with Phase 3B action integration
+* src/locales/invoices.js updated with Phase 3B modal labels and errors
+
+Features
+
+* Cancels invoices through POST /api/invoices/:id/cancel with a required 3-500 character reason.
+* Hides cancel for cancelled invoices, sales_return invoices, and purchase_return invoices.
+* Records payments through POST /api/payments when the invoice is not cancelled and dueAmount > 0.
+* Validates payment amount > 0 and amount <= dueAmount before submitting.
+* Creates return invoices through POST /api/invoices for sale and purchase invoices only.
+* Preloads invoice items for returns, keeps description and unitPrice unchanged, and allows quantity edits only.
+* Redirects to /invoices after successful return creation.
+* Refreshes invoice details and payment history after successful payment or cancellation without a full page reload.
+* Shows inline modal errors and preserves the current page state on failed actions.
+
+Verification
+
+* npm run build passed.
+* /invoices/[id] appears in the Next.js route list.
+* PowerShell printed the existing npm wrapper access warning before build, but the build completed successfully.
+
+---
+
 # Current Design Source
 
 Primary source:
@@ -161,11 +191,9 @@ Do not use Arabic screenshots as the implementation reference.
 
 # Current Files Remaining
 
-Phase 3B remains:
+Phase 3 is completed.
 
-* src/components/invoices/CancelModal.js
-* src/components/invoices/ReturnModal.js
-* src/components/invoices/PaymentModal.js
+Phase 4 remains.
 
 ---
 
@@ -333,13 +361,13 @@ Then stop and wait for approval.
 
 Return invoices currently use a simple relatedInvoiceId text input by Phase 2 scope. Advanced original invoice selection belongs to a later approved phase.
 
-Phase 3A is read-only. Cancel, payment, and return actions are intentionally not implemented yet.
+Phase 4 has not started. Do not begin final polish without approval.
 
 ---
 
 # Next Task
 
-Wait for approval before starting Phase 3B.
+Wait for approval before starting Phase 4.
 
 ---
 
@@ -367,4 +395,4 @@ Completed
 
 Current Priority
 
-Phase 3A completed. Do not start Phase 3B without approval.
+Phase 3B completed. Do not start Phase 4 without approval.
