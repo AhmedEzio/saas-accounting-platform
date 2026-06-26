@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+
+<html class="dark" dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>إنشاء فاتورة - Finora</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "on-tertiary": "#ffffff",
+                "on-secondary-container": "#00217a",
+                "surface-dim": "#dbd9de",
+                "on-background": "#1a1b1f",
+                "primary": "#001540",
+                "outline-variant": "#c5c6d1",
+                "on-primary-container": "#7d93ce",
+                "on-primary-fixed": "#001946",
+                "on-primary-fixed-variant": "#2e457b",
+                "inverse-surface": "#2f3034",
+                "primary-fixed-dim": "#b1c5ff",
+                "surface-container-highest": "#e3e2e7",
+                "error-container": "#ffdad6",
+                "surface-tint": "#465d94",
+                "secondary-fixed-dim": "#b8c4ff",
+                "tertiary-container": "#003421",
+                "inverse-primary": "#b1c5ff",
+                "surface-container-low": "#f4f3f8",
+                "surface-container-high": "#e9e7ed",
+                "primary-container": "#0f2a5f",
+                "tertiary": "#001d11",
+                "on-error-container": "#93000a",
+                "on-error": "#ffffff",
+                "surface-container-lowest": "#ffffff",
+                "background": "#faf8fe",
+                "surface-container": "#efedf2",
+                "on-primary": "#ffffff",
+                "on-tertiary-fixed-variant": "#005236",
+                "on-surface-variant": "#44464f",
+                "on-tertiary-fixed": "#002113",
+                "on-tertiary-container": "#00a975",
+                "error": "#ba1a1a",
+                "secondary": "#3755c3",
+                "outline": "#757780",
+                "on-secondary-fixed": "#001453",
+                "secondary-container": "#708cfd",
+                "on-secondary": "#ffffff",
+                "tertiary-fixed-dim": "#4edea3",
+                "surface-bright": "#faf8fe",
+                "on-secondary-fixed-variant": "#173bab",
+                "primary-fixed": "#dae2ff",
+                "surface": "#faf8fe",
+                "on-surface": "#1a1b1f",
+                "surface-variant": "#e3e2e7",
+                "tertiary-fixed": "#6ffbbe",
+                "secondary-fixed": "#dde1ff",
+                "inverse-on-surface": "#f2f0f5"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "xs": "4px",
+                "2xl": "48px",
+                "sidebar-width": "280px",
+                "container-max": "1440px",
+                "xl": "32px",
+                "sm": "8px",
+                "base": "4px",
+                "3xl": "64px",
+                "md": "16px",
+                "lg": "24px",
+                "gutter": "24px"
+        },
+        "fontFamily": {
+                "body-md": [
+                        "Inter"
+                ],
+                "title-lg": [
+                        "Inter"
+                ],
+                "headline-md": [
+                        "Plus Jakarta Sans"
+                ],
+                "display-lg": [
+                        "Plus Jakarta Sans"
+                ],
+                "code": [
+                        "JetBrains Mono"
+                ],
+                "label-md": [
+                        "Inter"
+                ],
+                "headline-lg-mobile": [
+                        "Plus Jakarta Sans"
+                ],
+                "headline-lg": [
+                        "Plus Jakarta Sans"
+                ],
+                "body-lg": [
+                        "Inter"
+                ]
+        },
+        "fontSize": {
+                "body-md": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "title-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "display-lg": [
+                        "48px",
+                        {
+                                "lineHeight": "60px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "code": [
+                        "13px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "label-md": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-lg": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+    /* Custom Scrollbar for sleekness */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #e3e2e7;
+        border-radius: 4px;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+        background: #44464f;
+    }
+    /* Suppress number input arrows */
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none; 
+        margin: 0; 
+    }
+</style>
+</head>
+<body class="bg-surface dark:bg-inverse-surface text-on-surface dark:text-inverse-on-surface font-body-md font-body-md antialiased min-h-screen">
+<!-- SideNavBar -->
+<nav class="fixed h-full w-[280px] start-0 top-0 border-e border-outline-variant dark:border-outline bg-surface dark:bg-inverse-surface hidden md:flex flex-col py-lg px-md gap-sm ltr:border-e rtl:border-s z-40">
+<div class="flex items-center gap-sm mb-xl px-sm">
+<div class="w-8 h-8 rounded-lg bg-primary dark:bg-primary-fixed flex items-center justify-center text-on-primary dark:text-on-primary-fixed">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Finora</h1>
+<p class="font-label-md text-label-md text-on-surface-variant dark:text-surface-variant">Accounting AI</p>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary hover:bg-primary/90 rounded-lg py-md px-md mb-lg font-title-lg text-title-lg transition-colors flex items-center justify-center gap-sm shadow-[0px_4px_12px_rgba(15,23,42,0.05)]">
+<span class="material-symbols-outlined">add</span>
+        إنشاء فاتورة
+    </button>
+<div class="flex-1 overflow-y-auto flex flex-col gap-xs">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors font-body-md text-body-md w-full text-start" href="#">
+<span class="material-symbols-outlined w-6 text-center">dashboard</span>
+            نظرة عامة
+        </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors font-body-md text-body-md w-full text-start" href="#">
+<span class="material-symbols-outlined w-6 text-center">group</span>
+            العملاء
+        </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-secondary-container dark:text-on-secondary-fixed bg-secondary-container dark:bg-on-secondary-fixed-variant font-semibold transition-transform active:scale-95 font-body-md text-body-md w-full text-start" href="#">
+<span class="material-symbols-outlined w-6 text-center" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+            الفواتير
+        </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors font-body-md text-body-md w-full text-start" href="#">
+<span class="material-symbols-outlined w-6 text-center">payments</span>
+            المدفوعات
+        </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors font-body-md text-body-md w-full text-start" href="#">
+<span class="material-symbols-outlined w-6 text-center">description</span>
+            المستندات
+        </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors font-body-md text-body-md w-full text-start" href="#">
+<span class="material-symbols-outlined w-6 text-center">card_membership</span>
+            الاشتراك
+        </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors font-body-md text-body-md w-full text-start relative overflow-hidden group" href="#">
+<div class="absolute inset-0 bg-gradient-to-r from-teal-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity blur-[2px]"></div>
+<span class="material-symbols-outlined w-6 text-center text-teal-600 dark:text-teal-400 z-10">auto_awesome</span>
+<span class="z-10">استخدام الذكاء الاصطناعي</span>
+</a>
+</div>
+<div class="mt-auto pt-lg border-t border-outline-variant dark:border-outline">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors font-body-md text-body-md w-full text-start" href="#">
+<span class="material-symbols-outlined w-6 text-center">settings</span>
+            الإعدادات
+        </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="md:ms-[280px] rtl:md:me-[280px] rtl:md:ms-0 min-h-screen flex flex-col bg-background dark:bg-on-background">
+<!-- TopNavBar -->
+<header class="fixed top-0 inset-x-0 h-16 z-30 border-b border-outline-variant dark:border-outline bg-surface dark:bg-inverse-surface flex justify-between items-center px-lg ms-[280px] rtl:me-[280px] rtl:ms-0 transition-all">
+<div class="flex items-center gap-md w-full max-w-md">
+<div class="relative w-full hidden sm:block">
+<span class="material-symbols-outlined absolute start-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low dark:bg-inverse-surface border border-outline-variant dark:border-outline rounded-full py-2 ps-10 pe-4 text-on-surface dark:text-inverse-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-body-md text-body-md" placeholder="البحث في الفواتير..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors relative flex items-center gap-xs">
+<span class="material-symbols-outlined">language</span>
+<span class="font-label-md text-label-md">AR</span>
+</button>
+<button class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 end-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant cursor-pointer">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of an Arab business executive, well-lit studio photography, corporate modern aesthetic, neutral background, sharp focus, 85mm lens, corporate style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3Y1fZw_FciGcHYAMT0q_qbXy6hPLUMgdm18t6Ge_oI8VMrC4dVXSRrD_4t10abuhKEASXcaEACeEaI14_5_Bbrs9cAYNGL26y1RxbmBm5w0asa7mZOB610Ipd-nWN14crKdZxx0C_X0lQ9XLiRqO8ZtFyiHnBOC66a2kHWE2uiIo1-C1Y-5Xh0EnO81VisaaFbNJac8dpPJ_4RNJ8Hi58v76zzaqyQce7dlAsJ0bnsjtRXFnKnqxVPk0oPmKSCQAF8B62uaZvaA"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 pt-24 px-lg pb-24 lg:px-xl overflow-x-hidden">
+<div class="max-w-[800px] mx-auto">
+<!-- Page Header -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-xl gap-md">
+<div>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-on-surface dark:text-inverse-on-surface tracking-tight">إنشاء فاتورة جديدة</h2>
+<p class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant mt-1">قم بتعبئة تفاصيل الفاتورة أدناه.</p>
+</div>
+<div class="flex gap-sm">
+<button class="px-md py-2 border border-outline-variant dark:border-outline bg-surface dark:bg-inverse-surface rounded-lg font-title-lg text-title-lg text-on-surface dark:text-inverse-on-surface hover:bg-surface-container-low transition-colors">إلغاء</button>
+<button class="px-md py-2 bg-primary dark:bg-primary-fixed rounded-lg font-title-lg text-title-lg text-on-primary dark:text-on-primary-fixed hover:bg-primary/90 transition-colors shadow-[0px_4px_12px_rgba(15,23,42,0.05)] flex items-center gap-xs">
+<span class="material-symbols-outlined text-sm">save</span>
+                        حفظ كمسودة
+                    </button>
+</div>
+</div>
+<!-- Form Container -->
+<div class="bg-surface dark:bg-inverse-surface rounded-xl border border-outline-variant dark:border-outline overflow-hidden shadow-sm">
+<!-- Section 1: Basic Info -->
+<div class="p-lg border-b border-outline-variant dark:border-outline bg-[#F8FAFC] dark:bg-[#1E293B]/30">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Client / Vendor -->
+<div class="space-y-sm">
+<label class="font-label-md text-label-md text-on-surface-variant dark:text-surface-variant block">العميل / المورد</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute start-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">person</span>
+<select class="w-full bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline rounded-lg py-2 ps-10 pe-10 text-on-surface dark:text-inverse-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-body-md text-body-md appearance-none">
+<option disabled="" selected="" value="">اختر العميل...</option>
+<option value="1">شركة التقنية المتقدمة</option>
+<option value="2">مؤسسة الأفق</option>
+<option value="3">+ إضافة عميل جديد</option>
+</select>
+<span class="material-symbols-outlined absolute end-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Invoice Type -->
+<div class="space-y-sm">
+<label class="font-label-md text-label-md text-on-surface-variant dark:text-surface-variant block">نوع الفاتورة</label>
+<div class="flex bg-surface-container-low dark:bg-[#0F172A] rounded-lg p-1 border border-outline-variant dark:border-outline">
+<button class="flex-1 py-1 px-3 rounded-md bg-surface shadow-sm font-title-lg text-title-lg text-on-surface dark:bg-inverse-surface dark:text-inverse-on-surface transition-all text-center">بيع</button>
+<button class="flex-1 py-1 px-3 rounded-md font-body-md text-body-md text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high transition-all text-center">شراء</button>
+<button class="flex-1 py-1 px-3 rounded-md font-body-md text-body-md text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high transition-all text-center">مصروف</button>
+</div>
+</div>
+<!-- Date -->
+<div class="space-y-sm">
+<label class="font-label-md text-label-md text-on-surface-variant dark:text-surface-variant block">تاريخ الفاتورة</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute start-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">calendar_today</span>
+<input class="w-full bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline rounded-lg py-2 ps-10 pe-4 text-on-surface dark:text-inverse-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-body-md text-body-md" type="date" value="2023-10-27"/>
+</div>
+</div>
+<!-- Payment Method -->
+<div class="space-y-sm">
+<label class="font-label-md text-label-md text-on-surface-variant dark:text-surface-variant block">طريقة الدفع</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute start-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">payments</span>
+<select class="w-full bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline rounded-lg py-2 ps-10 pe-10 text-on-surface dark:text-inverse-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-body-md text-body-md appearance-none">
+<option value="transfer">تحويل بنكي</option>
+<option value="card">بطاقة ائتمان</option>
+<option value="cash">نقدي</option>
+</select>
+<span class="material-symbols-outlined absolute end-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 2: Line Items -->
+<div class="p-lg">
+<h3 class="font-title-lg text-title-lg text-on-surface dark:text-inverse-on-surface mb-md">تفاصيل الأصناف</h3>
+<div class="border border-outline-variant dark:border-outline rounded-lg overflow-hidden">
+<!-- Table Header (Hidden on small screens, stacked on mobile) -->
+<div class="hidden sm:grid grid-cols-12 gap-sm p-sm bg-[#F1F5F9] dark:bg-[#1E293B]/50 border-b border-outline-variant dark:border-outline font-label-md text-label-md text-on-surface-variant dark:text-surface-variant">
+<div class="col-span-5">الوصف</div>
+<div class="col-span-2 text-center">الكمية</div>
+<div class="col-span-2 text-end">السعر</div>
+<div class="col-span-2 text-end">الإجمالي</div>
+<div class="col-span-1"></div>
+</div>
+<!-- Line Item 1 -->
+<div class="grid grid-cols-1 sm:grid-cols-12 gap-y-sm gap-x-sm p-sm border-b border-outline-variant dark:border-outline items-center relative group">
+<!-- AI Glow Effect Placeholder -->
+<div class="absolute inset-0 bg-gradient-to-r from-teal-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity blur-[2px] pointer-events-none"></div>
+<div class="col-span-1 sm:col-span-5 relative">
+<label class="sm:hidden font-label-md text-label-md text-on-surface-variant block mb-1">الوصف</label>
+<textarea class="w-full bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline rounded-md py-1.5 px-3 text-on-surface dark:text-inverse-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-body-md text-body-md resize-none" placeholder="وصف الخدمة أو المنتج..." rows="2">استشارات تطوير البرمجيات - شهر أكتوبر</textarea>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-7 col-span-1 sm:col-span-7 gap-sm items-center">
+<div class="col-span-1 sm:col-span-2">
+<label class="sm:hidden font-label-md text-label-md text-on-surface-variant block mb-1">الكمية</label>
+<input class="w-full bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline rounded-md py-1.5 px-3 text-on-surface dark:text-inverse-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-body-md text-body-md text-center" type="number" value="40"/>
+</div>
+<div class="col-span-1 sm:col-span-2">
+<label class="sm:hidden font-label-md text-label-md text-on-surface-variant block mb-1">السعر</label>
+<div class="relative">
+<input class="w-full bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline rounded-md py-1.5 px-3 text-on-surface dark:text-inverse-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-body-md text-body-md text-end" type="number" value="150"/>
+<span class="absolute start-3 top-1/2 -translate-y-1/2 text-on-surface-variant font-body-md text-sm pointer-events-none opacity-70">ر.س</span>
+</div>
+</div>
+<div class="col-span-2 sm:col-span-2 text-end sm:pt-0 pt-2 border-t sm:border-0 border-outline-variant border-dashed">
+<label class="sm:hidden font-label-md text-label-md text-on-surface-variant inline-block me-2">الإجمالي:</label>
+<span class="font-title-lg text-title-lg font-semibold text-on-surface dark:text-inverse-on-surface">6,000</span>
+<span class="text-sm opacity-70 ms-1">.00</span>
+</div>
+<div class="col-span-2 sm:col-span-1 flex justify-end">
+<button class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container rounded-md transition-colors" title="حذف السطر">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Line Item 2 -->
+<div class="grid grid-cols-1 sm:grid-cols-12 gap-y-sm gap-x-sm p-sm items-center relative group">
+<!-- AI Glow Effect Placeholder -->
+<div class="absolute inset-0 bg-gradient-to-r from-teal-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity blur-[2px] pointer-events-none"></div>
+<div class="col-span-1 sm:col-span-5 relative">
+<label class="sm:hidden font-label-md text-label-md text-on-surface-variant block mb-1">الوصف</label>
+<textarea class="w-full bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline rounded-md py-1.5 px-3 text-on-surface dark:text-inverse-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-body-md text-body-md resize-none" placeholder="وصف الخدمة أو المنتج..." rows="1"></textarea>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-7 col-span-1 sm:col-span-7 gap-sm items-center">
+<div class="col-span-1 sm:col-span-2">
+<label class="sm:hidden font-label-md text-label-md text-on-surface-variant block mb-1">الكمية</label>
+<input class="w-full bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline rounded-md py-1.5 px-3 text-on-surface dark:text-inverse-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-body-md text-body-md text-center" placeholder="1" type="number"/>
+</div>
+<div class="col-span-1 sm:col-span-2">
+<label class="sm:hidden font-label-md text-label-md text-on-surface-variant block mb-1">السعر</label>
+<div class="relative">
+<input class="w-full bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline rounded-md py-1.5 px-3 text-on-surface dark:text-inverse-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-body-md text-body-md text-end" placeholder="0.00" type="number"/>
+</div>
+</div>
+<div class="col-span-2 sm:col-span-2 text-end sm:pt-0 pt-2 border-t sm:border-0 border-outline-variant border-dashed">
+<label class="sm:hidden font-label-md text-label-md text-on-surface-variant inline-block me-2">الإجمالي:</label>
+<span class="font-title-lg text-title-lg font-semibold text-on-surface dark:text-inverse-on-surface opacity-50">0.00</span>
+</div>
+<div class="col-span-2 sm:col-span-1 flex justify-end">
+<button class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container rounded-md transition-colors" title="حذف السطر">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-md flex justify-between items-center">
+<button class="flex items-center gap-xs text-secondary dark:text-secondary-fixed font-title-lg text-title-lg hover:bg-secondary/10 px-3 py-1.5 rounded-md transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+                            إضافة صنف
+                        </button>
+<!-- AI Insight Spark -->
+<div class="flex items-center gap-xs text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/20 px-3 py-1.5 rounded-full font-label-md text-label-md border border-teal-100 dark:border-teal-900">
+<span class="material-symbols-outlined text-sm">auto_awesome</span>
+                            تم التعرف على الأسعار تلقائياً
+                        </div>
+</div>
+</div>
+<!-- Section 3: Summary -->
+<div class="p-lg bg-[#F8FAFC] dark:bg-[#1E293B]/30 border-t border-outline-variant dark:border-outline">
+<div class="flex flex-col md:flex-row justify-between gap-xl">
+<!-- Notes -->
+<div class="flex-1">
+<label class="font-label-md text-label-md text-on-surface-variant dark:text-surface-variant block mb-1">ملاحظات الفاتورة</label>
+<textarea class="w-full bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline rounded-lg py-2 px-3 text-on-surface dark:text-inverse-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-body-md text-body-md resize-none" placeholder="شروط الدفع، تفاصيل إضافية..." rows="4"></textarea>
+</div>
+<!-- Calculations -->
+<div class="w-full md:w-64 space-y-sm font-body-md text-body-md">
+<div class="flex justify-between text-on-surface-variant dark:text-surface-variant">
+<span>المجموع الفرعي</span>
+<span>6,000.00 ر.س</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant dark:text-surface-variant">
+<div class="flex items-center gap-2">
+<span>المبلغ الضريبي</span>
+<input class="w-16 bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline rounded py-1 px-2 text-center text-sm focus:outline-none focus:ring-1 focus:ring-primary/20" title="نسبة الضريبة" type="number" value="15"/> %
+                                </div>
+<span>900.00 ر.س</span>
+</div>
+<hr class="border-outline-variant dark:border-outline my-2"/>
+<div class="flex justify-between items-end font-headline-md text-headline-md font-bold text-on-surface dark:text-inverse-on-surface">
+<span>الإجمالي النهائي</span>
+<div class="text-end">
+<span>6,900</span><span class="text-lg opacity-70 font-normal">.00</span>
+<span class="block text-sm font-normal text-on-surface-variant mt-1">ر.س</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Bar Footer -->
+<div class="p-lg border-t border-outline-variant dark:border-outline flex justify-end gap-md bg-surface dark:bg-inverse-surface">
+<button class="px-lg py-2.5 border border-outline-variant dark:border-outline bg-surface dark:bg-inverse-surface rounded-lg font-title-lg text-title-lg text-on-surface dark:text-inverse-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-sm shadow-sm">
+<span class="material-symbols-outlined text-sm">visibility</span>
+                        معاينة
+                    </button>
+<button class="px-lg py-2.5 bg-[#1E40AF] rounded-lg font-title-lg text-title-lg text-white hover:bg-[#1E40AF]/90 transition-colors shadow-[0px_4px_12px_rgba(15,23,42,0.05)] flex items-center gap-sm">
+<span class="material-symbols-outlined text-sm">send</span>
+                        إصدار الفاتورة
+                    </button>
+</div>
+</div>
+<p class="text-center mt-xl font-label-md text-label-md text-on-surface-variant pb-8">
+                تأكد من مراجعة التفاصيل قبل إصدار الفاتورة النهائية.
+            </p>
+</div>
+</main>
+</div>
+</body></html>

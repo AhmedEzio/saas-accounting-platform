@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html dir="ltr" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Finora - Invoice UI Gallery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#00217a",
+                        "surface-dim": "#dbd9de",
+                        "on-background": "#1a1b1f",
+                        "primary": "#001540",
+                        "outline-variant": "#c5c6d1",
+                        "on-primary-container": "#7d93ce",
+                        "on-primary-fixed": "#001946",
+                        "on-primary-fixed-variant": "#2e457b",
+                        "inverse-surface": "#2f3034",
+                        "primary-fixed-dim": "#b1c5ff",
+                        "surface-container-highest": "#e3e2e7",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#465d94",
+                        "secondary-fixed-dim": "#b8c4ff",
+                        "tertiary-container": "#003421",
+                        "inverse-primary": "#b1c5ff",
+                        "surface-container-low": "#f4f3f8",
+                        "surface-container-high": "#e9e7ed",
+                        "primary-container": "#0f2a5f",
+                        "tertiary": "#001d11",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#faf8fe",
+                        "surface-container": "#efedf2",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "on-surface-variant": "#44464f",
+                        "on-tertiary-fixed": "#002113",
+                        "on-tertiary-container": "#00a975",
+                        "error": "#ba1a1a",
+                        "secondary": "#3755c3",
+                        "outline": "#757780",
+                        "on-secondary-fixed": "#001453",
+                        "secondary-container": "#708cfd",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "surface-bright": "#faf8fe",
+                        "on-secondary-fixed-variant": "#173bab",
+                        "primary-fixed": "#dae2ff",
+                        "surface": "#faf8fe",
+                        "on-surface": "#1a1b1f",
+                        "surface-variant": "#e3e2e7",
+                        "tertiary-fixed": "#6ffbbe",
+                        "secondary-fixed": "#dde1ff",
+                        "inverse-on-surface": "#f2f0f5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "2xl": "48px",
+                        "sidebar-width": "280px",
+                        "container-max": "1440px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "base": "4px",
+                        "3xl": "64px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "code": ["JetBrains Mono"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "title-lg": ["18px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "code": ["13px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .ai-glow {
+            box-shadow: 0 0 15px 2px rgba(20, 184, 166, 0.15);
+        }
+        /* Hide scrollbar for gallery view */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        body {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+<!-- Top Navigation Shell -->
+<nav aria-label="Top Navigation" class="bg-surface dark:bg-inverse-surface fixed top-0 inset-x-0 h-16 z-30 border-b border-outline-variant dark:border-outline flex justify-between items-center px-lg ms-[280px] rtl:me-[280px] rtl:ms-0">
+<div class="flex items-center gap-md">
+<!-- Search Placeholder -->
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container pl-10 pr-4 py-2 rounded-lg border-none focus:ring-2 focus:ring-primary/20 transition-all font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant outline-none" placeholder="Search..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-xs p-2 rounded-lg hover:bg-surface-container">
+<span class="material-symbols-outlined" data-icon="language">language</span>
+<span class="font-label-md text-label-md uppercase">EN</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-lg hover:bg-surface-container relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-variant border border-outline-variant overflow-hidden cursor-pointer">
+<img alt="User profile menu" class="w-full h-full object-cover" data-alt="A professional headshot of a person looking confident, lit with bright, soft light against a neutral background. The image should convey trust and corporate professionalism. Shot in 4k resolution." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuXFkLtd3TQsHlXy4avZ_7Uuf884I3kTjj4jsoMNNk6RD2cYKXP2uaD_dhpZ_DV9GR76U_awbwKWkUGMzQ6Qla2pU10_lJo2TtWk6RpAf30av5agHyt0Cug_2jnQZqQXIXXI-inlZAJ4qST7KSFy36EoZ__Jo4vvETJpsm7aIzlndk7QrT5Dv9Q6MBhbFEmWb3qTTHjRv5mx7Ou7QXs4Lz8kb6KwmqIxjhJJuMu7LZjJohfDs7snkEd1M3Cbfsuf8eaPRCNAV5EQ"/>
+</div>
+</div>
+</nav>
+<!-- Side Navigation Shell -->
+<aside aria-label="Sidebar Navigation" class="bg-surface dark:bg-inverse-surface fixed h-full w-[280px] start-0 top-0 border-e border-outline-variant dark:border-outline flex flex-col py-lg px-md gap-sm z-40">
+<div class="flex items-center gap-sm px-sm mb-xl">
+<div class="w-8 h-8 rounded bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed tracking-tight">Finora</h1>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Accounting AI</p>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container py-3 px-4 rounded-lg font-label-md text-label-md flex items-center justify-center gap-sm transition-colors mb-md">
+<span class="material-symbols-outlined text-[18px]">add</span>
+            New Invoice
+        </button>
+<nav class="flex-1 flex flex-col gap-xs overflow-y-auto">
+<a class="text-on-surface-variant dark:text-surface-variant flex items-center gap-md px-sm py-2 rounded-lg hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md">Overview</span>
+</a>
+<a class="text-on-surface-variant dark:text-surface-variant flex items-center gap-md px-sm py-2 rounded-lg hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-body-md text-body-md">Clients</span>
+</a>
+<a class="text-on-secondary-container dark:text-on-secondary-fixed bg-secondary-container dark:bg-on-secondary-fixed-variant rounded-lg font-semibold flex items-center gap-md px-sm py-2 hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors scale-95 origin-left" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+<span class="font-body-md text-body-md">Invoices</span>
+</a>
+<a class="text-on-surface-variant dark:text-surface-variant flex items-center gap-md px-sm py-2 rounded-lg hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-body-md text-body-md">Payments</span>
+</a>
+<a class="text-on-surface-variant dark:text-surface-variant flex items-center gap-md px-sm py-2 rounded-lg hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-body-md text-body-md">Documents</span>
+</a>
+</nav>
+<div class="mt-auto pt-md border-t border-outline-variant flex flex-col gap-xs">
+<a class="text-on-surface-variant dark:text-surface-variant flex items-center gap-md px-sm py-2 rounded-lg hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="card_membership">card_membership</span>
+<span class="font-body-md text-body-md">Subscription</span>
+</a>
+<a class="text-on-surface-variant dark:text-surface-variant flex items-center gap-md px-sm py-2 rounded-lg hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="auto_awesome" style="color: #14B8A6;">auto_awesome</span>
+<span class="font-body-md text-body-md">AI Usage</span>
+</a>
+<a class="text-on-surface-variant dark:text-surface-variant flex items-center gap-md px-sm py-2 rounded-lg hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ms-[280px] pt-16 min-h-screen p-lg lg:p-xl max-w-container-max mx-auto">
+<header class="mb-xl flex items-end justify-between">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-background mb-xs">Invoice UI Gallery</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Design patterns and states for the Invoices module.</p>
+</div>
+</header>
+<!-- Gallery Grid -->
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-xl">
+<!-- 1. Cancel Invoice Modal (Simulated inside a card) -->
+<section class="bg-surface border border-outline-variant rounded-xl p-lg flex flex-col justify-center items-center relative overflow-hidden" style="min-height: 400px;">
+<div class="absolute inset-0 bg-on-background/5 z-0"></div> <!-- Simulated overlay backdrop -->
+<div class="bg-surface rounded-xl shadow-[0px_12px_32px_rgba(15,23,42,0.1)] w-full max-w-md z-10 border border-outline-variant overflow-hidden flex flex-col">
+<div class="p-lg flex flex-col items-center text-center">
+<div class="w-12 h-12 rounded-full bg-error-container flex items-center justify-center mb-md">
+<span class="material-symbols-outlined text-error text-[24px]">warning</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-background mb-xs">Cancel Invoice #INV-2023-004</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-lg">This action cannot be undone. The invoice will be marked as canceled and will not be included in revenue reports.</p>
+<div class="w-full text-left">
+<label class="block font-label-md text-label-md text-on-surface mb-sm" for="cancel-reason">Cancellation Reason <span class="text-error">*</span></label>
+<textarea class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-3 font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none" id="cancel-reason" placeholder="Enter reason for cancellation..." rows="3"></textarea>
+</div>
+</div>
+<div class="bg-surface-container-low p-md flex justify-end gap-sm border-t border-outline-variant">
+<button class="px-4 py-2 bg-surface-container-lowest border border-outline-variant text-on-surface rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors">Keep Invoice</button>
+<button class="px-4 py-2 bg-error text-on-error rounded-lg font-label-md text-label-md hover:bg-on-error-container transition-colors shadow-sm">Cancel Invoice</button>
+</div>
+</div>
+</section>
+<!-- 2. Return Invoice Flow -->
+<section class="bg-surface border border-outline-variant rounded-xl p-lg shadow-[0px_4px_12px_rgba(15,23,42,0.05)]">
+<div class="flex items-center gap-sm mb-lg border-b border-outline-variant pb-md">
+<span class="material-symbols-outlined text-secondary">assignment_return</span>
+<h3 class="font-title-lg text-title-lg text-on-background">Create Return</h3>
+</div>
+<div class="space-y-md">
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-sm">Return Type</label>
+<div class="flex gap-md">
+<label class="flex-1 cursor-pointer">
+<input checked="" class="peer sr-only" name="return_type" type="radio"/>
+<div class="p-sm border border-outline-variant rounded-lg text-center peer-checked:border-primary peer-checked:bg-primary-fixed peer-checked:text-on-primary-fixed hover:bg-surface-container transition-colors">
+<span class="font-body-md text-body-md">Sales Return</span>
+</div>
+</label>
+<label class="flex-1 cursor-pointer">
+<input class="peer sr-only" name="return_type" type="radio"/>
+<div class="p-sm border border-outline-variant rounded-lg text-center peer-checked:border-primary peer-checked:bg-primary-fixed peer-checked:text-on-primary-fixed hover:bg-surface-container transition-colors">
+<span class="font-body-md text-body-md">Purchase Return</span>
+</div>
+</label>
+</div>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-sm">Related Original Invoice</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant pl-10 pr-4 py-2 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-body-md text-body-md text-on-surface outline-none" placeholder="Search by Invoice # or Client Name..." type="text"/>
+</div>
+<p class="mt-1 font-body-md text-[12px] text-on-surface-variant">Select the invoice this return applies to.</p>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-sm">Return Reason</label>
+<select class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-2 font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all appearance-none">
+<option value="">Select a reason...</option>
+<option value="damaged">Damaged Goods</option>
+<option value="wrong_item">Wrong Item Shipped</option>
+<option value="customer_cancel">Customer Cancellation</option>
+<option value="other">Other</option>
+</select>
+</div>
+<div class="pt-md flex justify-end">
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-primary-container transition-colors shadow-sm">Continue to Details</button>
+</div>
+</div>
+</section>
+<!-- 3. UX States: Empty State -->
+<section class="bg-surface border border-outline-variant rounded-xl p-lg flex flex-col items-center justify-center text-center min-h-[300px]">
+<div class="w-32 h-32 mb-md opacity-80" data-alt="A clean, modern, minimalist 3d illustration of an empty file folder or a blank document with a subtle teal glowing accent, rendered in a light mode studio setting. Soft shadows, high key lighting, corporate aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCuJ8UHB4-CczyX-H7osQPgt3AbPDAKEtqpdpWJZk9wVQBRJMjFc8BElcMyiezUJtI1C_aXeENSYpmTd6m-gHpqAk3FBAElb2FQYyxlPjS0HWA2M24zI1B55KbiC0NHUudghyVn3uW745JCT4BC3tOxWpk6X-YKSwf_7asf_k8-2Fyzq6KLVG65h16BEjBl6GOdaNmEPlL9RTgwcJiotC1pbANp23ufomwEWvWIopI8WntCqIkB1eOWD5s4uhjzDoH3bzxn0CNScA');"></div>
+<h3 class="font-title-lg text-title-lg text-on-background mb-xs">No invoices yet</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-sm mb-lg">Get started by creating your first invoice. You can also import existing invoices from a CSV file.</p>
+<div class="flex gap-sm">
+<button class="px-4 py-2 bg-surface-container-lowest border border-outline-variant text-on-surface rounded-lg font-label-md text-label-md hover:bg-surface-container transition-colors">Import CSV</button>
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-primary-container flex items-center gap-xs transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                        Create Invoice
+                    </button>
+</div>
+</section>
+<!-- 4. UX States: Loading Skeleton & Error -->
+<div class="space-y-xl">
+<!-- Loading Skeleton -->
+<section class="bg-surface border border-outline-variant rounded-xl overflow-hidden">
+<div class="p-md border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+<div class="h-6 w-32 bg-surface-variant rounded animate-pulse"></div>
+<div class="h-8 w-24 bg-surface-variant rounded animate-pulse"></div>
+</div>
+<div class="p-0">
+<div class="flex border-b border-outline-variant/50 p-md gap-4">
+<div class="h-4 w-1/4 bg-surface-variant rounded animate-pulse"></div>
+<div class="h-4 w-1/4 bg-surface-variant rounded animate-pulse"></div>
+<div class="h-4 w-1/4 bg-surface-variant rounded animate-pulse"></div>
+<div class="h-4 w-1/4 bg-surface-variant rounded animate-pulse"></div>
+</div>
+<div class="flex border-b border-outline-variant/50 p-md gap-4 items-center">
+<div class="h-10 w-10 bg-surface-variant rounded-full animate-pulse shrink-0"></div>
+<div class="h-4 w-1/4 bg-surface-variant rounded animate-pulse"></div>
+<div class="h-4 w-1/4 bg-surface-variant rounded animate-pulse"></div>
+<div class="h-6 w-16 bg-surface-variant rounded-full animate-pulse ml-auto"></div>
+</div>
+<div class="flex p-md gap-4 items-center">
+<div class="h-10 w-10 bg-surface-variant rounded-full animate-pulse shrink-0"></div>
+<div class="h-4 w-1/4 bg-surface-variant rounded animate-pulse"></div>
+<div class="h-4 w-1/4 bg-surface-variant rounded animate-pulse"></div>
+<div class="h-6 w-16 bg-surface-variant rounded-full animate-pulse ml-auto"></div>
+</div>
+</div>
+</section>
+<!-- Network Error State -->
+<section class="bg-surface border border-outline-variant rounded-xl p-lg flex flex-col items-center justify-center text-center py-xl">
+<div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center mb-md">
+<span class="material-symbols-outlined text-outline text-[32px]">wifi_off</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-background mb-xs">Connection Error</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md max-w-sm">We couldn't load your invoice data. Please check your internet connection and try again.</p>
+<button class="px-4 py-2 border border-outline-variant text-on-surface rounded-lg font-label-md text-label-md hover:bg-surface-container flex items-center gap-xs transition-colors">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+                        Retry Connection
+                    </button>
+</section>
+</div>
+</div>
+</main>
+</body></html>
