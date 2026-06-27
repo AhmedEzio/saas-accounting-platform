@@ -8,7 +8,8 @@ import {
   getActivity,
   getSubscription,
   getAIUsage,
-} from "../controllers/dashboard.controller.js";
+} from "../controllers/dashboard-controllers/dashboard.controller.js";
+import { serachResults } from "../controllers/dashboard-controllers/accountants.controller.js";
 
 const router = Router();
 
@@ -104,5 +105,11 @@ router.get("/subscription", getSubscription);
  * - Token usage
  */
 router.get("/ai-usage", getAIUsage);
+
+/**
+ * Acountants page routes
+ * GET /api/dashboard/accountant?search=abc
+ */
+router.get("/accountant", serachResults);
 
 export default router;

@@ -1,4 +1,4 @@
-import * as DashboardService from "../services/dashboard.service.js";
+import * as DashboardService from "../../services/dashboard-services/dashboard.service.js";
 
 /** Parses a `?date=YYYY-MM-DD` query param, falling back to "now" if missing/invalid. */
 function parseDateParam(value) {
