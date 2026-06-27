@@ -17,7 +17,7 @@ export default function RecentInvoicesTable({
     <section className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <h2 className="text-base font-bold text-gray-900">{t("table.title")}</h2>
-        <div className={`flex flex-col gap-2 sm:flex-row sm:items-center ${isRtl ? "sm:flex-row-reverse" : ""}`}>
+        <div className={`flex flex-col gap-2 print:hidden sm:flex-row sm:items-center ${isRtl ? "sm:flex-row-reverse" : ""}`}>
           <div className={`flex flex-wrap gap-1 rounded-lg bg-gray-50 p-1 ${isRtl ? "justify-end" : "justify-start"}`} aria-label={t("filter.status")}>
             {statuses.map((status) => {
               const active = statusFilter === status;

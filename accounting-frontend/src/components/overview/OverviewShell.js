@@ -22,6 +22,12 @@ export default function OverviewShell({
   setMobileNavOpen,
   searchTerm,
   onSearchChange,
+  onExport,
+  onExportExcel,
+  onPrint,
+  exporting,
+  exportingExcel,
+  printing,
 }) {
   const initials = user?.name
     ? user.name
@@ -102,7 +108,7 @@ export default function OverviewShell({
   return (
     <div className="min-h-dvh bg-[#f4f5f8] text-gray-900">
       <div
-        className={`fixed inset-y-0 z-30 hidden w-64 border-gray-100 lg:block ${
+        className={`fixed inset-y-0 z-30 hidden w-64 border-gray-100 print:hidden lg:block ${
           isRtl ? "right-0 border-l" : "left-0 border-r"
         }`}
       >
@@ -110,7 +116,7 @@ export default function OverviewShell({
       </div>
 
       {mobileNavOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden">
+        <div className="fixed inset-0 z-40 print:hidden lg:hidden">
           <button
             type="button"
             className="absolute inset-0 bg-black/40"
@@ -128,7 +134,7 @@ export default function OverviewShell({
       )}
 
       <header
-        className={`sticky top-0 z-20 flex min-h-16 items-center gap-3 border-b border-gray-100 bg-white/95 px-4 backdrop-blur lg:fixed lg:h-16 ${
+        className={`sticky top-0 z-20 flex min-h-16 items-center gap-3 border-b border-gray-100 bg-white/95 px-4 backdrop-blur print:hidden lg:fixed lg:h-16 ${
           isRtl ? "lg:left-0 lg:right-64" : "lg:left-64 lg:right-0"
         }`}
       >
@@ -158,29 +164,36 @@ export default function OverviewShell({
         <div className={`ms-auto flex items-center gap-2 ${isRtl ? "mr-auto ms-0" : ""}`}>
           <button
             type="button"
-            disabled
-            title={t("action.exportSoon")}
-            aria-label={t("action.exportSoon")}
-            className="hidden min-h-11 items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-400 disabled:cursor-not-allowed sm:flex"
+            onClick={onExport}
+            disabled={exporting}
+            title={t("action.exportCsv")}
+            aria-label={exporting ? t("action.preparingExport") : t("action.exportCsv")}
+            className="hidden min-h-11 items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] focus:ring-offset-2 disabled:cursor-wait disabled:text-gray-400 sm:flex"
           >
             {OverviewIcons.download}
-            {t("action.export")}
-            <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold text-gray-400">
-              {t("action.comingSoon")}
-            </span>
+            {exporting ? t("action.preparingExport") : t("action.exportCsv")}
           </button>
           <button
             type="button"
-            disabled
-            title={t("action.reportSoon")}
-            aria-label={t("action.reportSoon")}
-            className="hidden min-h-11 items-center gap-2 rounded-lg bg-[#1b2b6b] px-3 text-sm font-semibold text-white opacity-55 disabled:cursor-not-allowed sm:flex"
+            onClick={onExportExcel}
+            disabled={exportingExcel}
+            title={t("action.exportExcel")}
+            aria-label={exportingExcel ? t("action.preparingExcel") : t("action.exportExcel")}
+            className="hidden min-h-11 items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] focus:ring-offset-2 disabled:cursor-wait disabled:text-gray-400 sm:flex"
+          >
+            {OverviewIcons.download}
+            {exportingExcel ? t("action.preparingExcel") : t("action.exportExcel")}
+          </button>
+          <button
+            type="button"
+            onClick={onPrint}
+            disabled={printing}
+            title={t("action.printReport")}
+            aria-label={printing ? t("action.preparingReport") : t("action.printReport")}
+            className="hidden min-h-11 items-center gap-2 rounded-lg bg-[#1b2b6b] px-3 text-sm font-semibold text-white transition hover:bg-[#162358] focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] focus:ring-offset-2 disabled:cursor-wait disabled:opacity-60 sm:flex"
           >
             {OverviewIcons.report}
-            {t("action.createReport")}
-            <span className="rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold">
-              {t("action.comingSoon")}
-            </span>
+            {printing ? t("action.preparingReport") : t("action.printReport")}
           </button>
           <button
             type="button"
@@ -203,7 +216,7 @@ export default function OverviewShell({
         </div>
       </header>
 
-      <main className={`min-h-dvh px-4 py-5 lg:px-7 lg:pb-8 lg:pt-24 ${isRtl ? "lg:mr-64" : "lg:ml-64"}`}>
+      <main className={`min-h-dvh px-4 py-5 print:m-0 print:bg-white print:p-0 lg:px-7 lg:pb-8 lg:pt-24 ${isRtl ? "lg:mr-64 print:mr-0" : "lg:ml-64 print:ml-0"}`}>
         {children}
       </main>
     </div>

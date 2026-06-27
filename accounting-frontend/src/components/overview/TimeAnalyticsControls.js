@@ -26,7 +26,7 @@ export default function TimeAnalyticsControls({
   isRtl,
 }) {
   return (
-    <section className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+    <section className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm print:hidden">
       <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
         <div className={isRtl ? "text-right" : "text-left"}>
           <p className="text-sm font-bold text-gray-900">{t("analytics.title")}</p>

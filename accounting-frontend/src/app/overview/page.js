@@ -19,6 +19,8 @@ import FinancialHealthPanel from "@/components/overview/FinancialHealthPanel";
 import { EmptyPanel, ErrorPanel, LoadingPanel } from "@/components/overview/OverviewStates";
 import useOverviewLang from "@/components/overview/useOverviewLang";
 import { buildOverviewModel } from "@/components/overview/overviewCalculations";
+import { buildOverviewCsv } from "@/components/overview/exportOverviewCsv";
+import { exportOverviewExcel } from "@/components/overview/exportOverviewExcel";
 
 export default function OverviewPage() {
   const router = useRouter();
@@ -33,6 +35,10 @@ export default function OverviewPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [dateRange, setDateRange] = useState("last30");
   const [chartPeriod, setChartPeriod] = useState("daily");
+  const [exporting, setExporting] = useState(false);
+  const [exportingExcel, setExportingExcel] = useState(false);
+  const [printing, setPrinting] = useState(false);
+  const [actionMessage, setActionMessage] = useState("");
 
   useEffect(() => {
     if (!authLoading && !token) router.push("/login");
@@ -255,6 +261,159 @@ export default function OverviewPage() {
       .slice(0, 8);
   }, [currency, model.allRecentActivity, model.recentActivity, normalizedSearch, t]);
 
+  const rangeSummary = t(`range.summary.${dateRange}`);
+  const hasRangeData = model.counts.clients > 0 || model.counts.invoices > 0 || model.counts.payments > 0;
+
+  const exportCsv = useCallback(() => {
+    if (!hasRangeData) {
+      setActionMessage(t("action.noDataExport"));
+      return;
+    }
+
+    setExporting(true);
+    setActionMessage(t("action.preparingExport"));
+
+    try {
+      const csv = buildOverviewCsv({
+        model,
+        recentInvoices: filteredInvoices.slice(0, 6),
+        rangeLabel: rangeSummary,
+        generatedLabel: t("report.generatedFromRange"),
+        labels: {
+          section: t("export.section"),
+          value: t("export.value"),
+          generatedFrom: t("export.generatedFrom"),
+          dateRange: t("analytics.dateRange"),
+          totalClients: t("kpi.totalClients"),
+          totalInvoices: t("kpi.totalInvoices"),
+          sales: t("kpi.sales"),
+          purchases: t("kpi.purchases"),
+          expenses: t("kpi.expenses"),
+          profit: t("kpi.profit"),
+          receivables: t("summary.receivables"),
+          cashIn: t("kpi.cashIn"),
+          cashOut: t("kpi.cashOut"),
+          paid: t("insight.paid"),
+          partial: t("insight.partial"),
+          unpaid: t("insight.unpaid"),
+          cancelled: t("insight.cancelled"),
+          collectionRate: t("insight.collectionRate"),
+          averageInvoice: t("insight.averageInvoice"),
+          recentInvoices: t("table.title"),
+          invoiceNumber: t("table.invoice"),
+          client: t("table.client"),
+          type: t("table.type"),
+          amount: t("table.amount"),
+          due: t("table.due"),
+          status: t("table.status"),
+          date: t("table.date"),
+          noRecentInvoices: t("table.empty"),
+        },
+        formatCurrency: currency,
+        formatPercent: percentValue,
+        formatNumber: numberValue,
+        formatDate: date,
+        formatType: (type) => t(`type.${type}`),
+        formatStatus: (status) => t(`status.${status}`),
+      });
+      const blob = new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `overview-${dateRange}-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      setActionMessage(t("action.exportReady"));
+    } finally {
+      window.setTimeout(() => setExporting(false), 150);
+    }
+  }, [currency, date, dateRange, filteredInvoices, hasRangeData, model, numberValue, percentValue, rangeSummary, t]);
+
+  const exportExcel = useCallback(() => {
+    if (!hasRangeData) {
+      setActionMessage(t("action.noDataExport"));
+      return;
+    }
+
+    setExportingExcel(true);
+    setActionMessage(t("action.preparingExcel"));
+
+    try {
+      exportOverviewExcel({
+        model,
+        recentInvoices: filteredInvoices.slice(0, 6),
+        rangeLabel: rangeSummary,
+        generatedLabel: t("report.generatedFromRange"),
+        isRtl,
+        filename: `overview-${dateRange}-${new Date().toISOString().slice(0, 10)}.xlsx`,
+        labels: {
+          sheetKpis: t("excel.sheetKpis"),
+          sheetStatus: t("excel.sheetStatus"),
+          sheetInsights: t("excel.sheetInsights"),
+          sheetTop: t("excel.sheetTop"),
+          sheetRecent: t("excel.sheetRecent"),
+          section: t("export.section"),
+          value: t("export.value"),
+          generatedFrom: t("export.generatedFrom"),
+          dateRange: t("analytics.dateRange"),
+          totalClients: t("kpi.totalClients"),
+          totalInvoices: t("kpi.totalInvoices"),
+          sales: t("kpi.sales"),
+          purchases: t("kpi.purchases"),
+          expenses: t("kpi.expenses"),
+          profit: t("kpi.profit"),
+          receivables: t("summary.receivables"),
+          cashIn: t("kpi.cashIn"),
+          cashOut: t("kpi.cashOut"),
+          status: t("table.status"),
+          count: t("excel.count"),
+          paid: t("insight.paid"),
+          partial: t("insight.partial"),
+          unpaid: t("insight.unpaid"),
+          cancelled: t("insight.cancelled"),
+          insight: t("excel.insight"),
+          collectionRate: t("insight.collectionRate"),
+          averageInvoice: t("insight.averageInvoice"),
+          financialHealth: t("health.title"),
+          healthMessage: (key) => t(key),
+          client: t("table.client"),
+          outstanding: t("top.outstanding"),
+          invoiceNumber: t("table.invoice"),
+          type: t("table.type"),
+          amount: t("table.amount"),
+          due: t("table.due"),
+          date: t("table.date"),
+        },
+        formatCurrency: currency,
+        formatPercent: percentValue,
+        formatNumber: numberValue,
+        formatDate: date,
+        formatType: (type) => t(`type.${type}`),
+        formatStatus: (status) => t(`status.${status}`),
+      });
+      setActionMessage(t("action.excelReady"));
+    } finally {
+      window.setTimeout(() => setExportingExcel(false), 150);
+    }
+  }, [currency, date, dateRange, filteredInvoices, hasRangeData, isRtl, model, numberValue, percentValue, rangeSummary, t]);
+
+  const printReport = useCallback(() => {
+    if (!hasRangeData) {
+      setActionMessage(t("action.noDataExport"));
+      return;
+    }
+
+    setPrinting(true);
+    setActionMessage(t("action.preparingReport"));
+    window.setTimeout(() => {
+      window.print();
+      setPrinting(false);
+      setActionMessage(t("action.reportReady"));
+    }, 100);
+  }, [hasRangeData, t]);
+
   return (
     <div dir={dir} lang={lang}>
       <OverviewShell
@@ -268,38 +427,61 @@ export default function OverviewPage() {
         setMobileNavOpen={setMobileNavOpen}
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
+        onExport={exportCsv}
+        onExportExcel={exportExcel}
+        onPrint={printReport}
+        exporting={exporting}
+        exportingExcel={exportingExcel}
+        printing={printing}
       >
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div id="overview-report" className="mx-auto max-w-7xl print:max-w-none print:bg-white print:p-6 print:text-black">
+          <div className="mb-6 flex flex-col gap-4 print:mb-4 sm:flex-row sm:items-start sm:justify-between">
             <div className={isRtl ? "text-right" : "text-left"}>
               <h1 className="text-2xl font-extrabold text-gray-900">{t("page.title")}</h1>
               <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">{t("page.subtitle")}</p>
+              <p className="mt-2 text-xs font-semibold text-gray-500 print:text-gray-700">
+                {t("report.generatedFromRange")}: {rangeSummary}
+              </p>
             </div>
-            <div className="flex flex-wrap gap-2 sm:hidden">
+            <div className="flex flex-wrap gap-2 print:hidden sm:hidden">
               <button
                 type="button"
-                disabled
-                className="min-h-11 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-400 disabled:cursor-not-allowed"
-                aria-label={t("action.exportSoon")}
+                onClick={exportCsv}
+                disabled={exporting}
+                className="min-h-11 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 disabled:cursor-wait disabled:text-gray-400"
+                aria-label={exporting ? t("action.preparingExport") : t("action.exportCsv")}
               >
-                {t("action.export")}
-                <span className="ms-2 rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold">
-                  {t("action.comingSoon")}
-                </span>
+                {exporting ? t("action.preparingExport") : t("action.exportCsv")}
               </button>
               <button
                 type="button"
-                disabled
-                className="min-h-11 rounded-lg bg-[#1b2b6b] px-3 text-sm font-semibold text-white opacity-55 disabled:cursor-not-allowed"
-                aria-label={t("action.reportSoon")}
+                onClick={exportExcel}
+                disabled={exportingExcel}
+                className="min-h-11 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 disabled:cursor-wait disabled:text-gray-400"
+                aria-label={exportingExcel ? t("action.preparingExcel") : t("action.exportExcel")}
               >
-                {t("action.createReport")}
-                <span className="ms-2 rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold">
-                  {t("action.comingSoon")}
-                </span>
+                {exportingExcel ? t("action.preparingExcel") : t("action.exportExcel")}
+              </button>
+              <button
+                type="button"
+                onClick={printReport}
+                disabled={printing}
+                className="min-h-11 rounded-lg bg-[#1b2b6b] px-3 text-sm font-semibold text-white disabled:cursor-wait disabled:opacity-60"
+                aria-label={printing ? t("action.preparingReport") : t("action.printReport")}
+              >
+                {printing ? t("action.preparingReport") : t("action.printReport")}
               </button>
             </div>
           </div>
+
+          <p className="sr-only" role="status" aria-live="polite">
+            {actionMessage}
+          </p>
+          {actionMessage ? (
+            <p className={`mb-4 rounded-lg bg-white px-3 py-2 text-xs font-semibold text-gray-500 shadow-sm ring-1 ring-gray-100 print:hidden ${isRtl ? "text-right" : "text-left"}`}>
+              {actionMessage}
+            </p>
+          ) : null}
 
           {loading ? (
             <LoadingPanel t={t} />
@@ -309,7 +491,7 @@ export default function OverviewPage() {
             <EmptyPanel t={t} />
           ) : (
             <div className="space-y-5">
-              <label className="flex min-h-11 items-center gap-2 rounded-lg bg-white px-3 text-gray-400 shadow-sm ring-1 ring-gray-100 focus-within:ring-2 focus-within:ring-[#1b2b6b] sm:hidden">
+              <label className="flex min-h-11 items-center gap-2 rounded-lg bg-white px-3 text-gray-400 shadow-sm ring-1 ring-gray-100 focus-within:ring-2 focus-within:ring-[#1b2b6b] print:hidden sm:hidden">
                 <span aria-hidden="true">{OverviewIcons.search}</span>
                 <input
                   type="search"
@@ -328,7 +510,7 @@ export default function OverviewPage() {
                 onDateRangeChange={setDateRange}
                 chartPeriod={chartPeriod}
                 onChartPeriodChange={setChartPeriod}
-                summary={t(`range.summary.${dateRange}`)}
+                summary={rangeSummary}
                 t={t}
                 isRtl={isRtl}
               />
