@@ -1,23 +1,59 @@
 import StatusBadge from "./StatusBadge";
 
-export default function RecentInvoicesTable({ invoices, currency, date, t, isRtl, router }) {
+const statuses = ["all", "paid", "partial", "unpaid", "cancelled"];
+
+export default function RecentInvoicesTable({
+  invoices,
+  currency,
+  date,
+  t,
+  isRtl,
+  router,
+  statusFilter,
+  onStatusFilterChange,
+  hasAnyInvoices,
+}) {
   return (
     <section className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
-      <div className="mb-4 flex items-center justify-between gap-3">
+      <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <h2 className="text-base font-bold text-gray-900">{t("table.title")}</h2>
-        <button
-          type="button"
-          onClick={() => router.push("/invoices")}
-          className="min-h-10 rounded-lg px-2 text-xs font-bold text-[#1b2b6b] transition hover:bg-[#e8ebf7] focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] focus:ring-offset-2"
-        >
-          {t("action.viewAll")}
-        </button>
+        <div className={`flex flex-col gap-2 sm:flex-row sm:items-center ${isRtl ? "sm:flex-row-reverse" : ""}`}>
+          <div className={`flex flex-wrap gap-1 rounded-lg bg-gray-50 p-1 ${isRtl ? "justify-end" : "justify-start"}`} aria-label={t("filter.status")}>
+            {statuses.map((status) => {
+              const active = statusFilter === status;
+              return (
+                <button
+                  key={status}
+                  type="button"
+                  onClick={() => onStatusFilterChange(status)}
+                  className={`min-h-10 rounded-md px-3 text-xs font-bold transition focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] focus:ring-offset-2 ${
+                    active ? "bg-white text-[#1b2b6b] shadow-sm" : "text-gray-500 hover:bg-white/70"
+                  }`}
+                  aria-pressed={active}
+                >
+                  {status === "all" ? t("filter.all") : t(`status.${status}`)}
+                </button>
+              );
+            })}
+          </div>
+          <button
+            type="button"
+            onClick={() => router.push("/invoices")}
+            className="min-h-10 rounded-lg px-2 text-xs font-bold text-[#1b2b6b] transition hover:bg-[#e8ebf7] focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] focus:ring-offset-2"
+          >
+            {t("action.viewAll")}
+          </button>
+        </div>
       </div>
 
       {!invoices.length ? (
         <div className="rounded-lg bg-gray-50 px-4 py-10 text-center">
-          <p className="font-semibold text-gray-700">{t("table.empty")}</p>
-          <p className="mt-1 text-sm text-gray-400">{t("table.emptyHint")}</p>
+          <p className="font-semibold text-gray-700">
+            {hasAnyInvoices ? t("table.noMatches") : t("table.empty")}
+          </p>
+          <p className="mt-1 text-sm text-gray-400">
+            {hasAnyInvoices ? t("table.noMatchesHint") : t("table.emptyHint")}
+          </p>
         </div>
       ) : (
         <div className="overflow-x-auto">

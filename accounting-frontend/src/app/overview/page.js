@@ -9,8 +9,10 @@ import OverviewShell from "@/components/overview/OverviewShell";
 import KpiCard from "@/components/overview/KpiCard";
 import CashFlowChart from "@/components/overview/CashFlowChart";
 import RecentInvoicesTable from "@/components/overview/RecentInvoicesTable";
+import RecentActivity from "@/components/overview/RecentActivity";
 import FinancialSummary from "@/components/overview/FinancialSummary";
 import AiCreditsCard from "@/components/overview/AiCreditsCard";
+import TimeAnalyticsControls from "@/components/overview/TimeAnalyticsControls";
 import { EmptyPanel, ErrorPanel, LoadingPanel } from "@/components/overview/OverviewStates";
 import useOverviewLang from "@/components/overview/useOverviewLang";
 import { buildOverviewModel } from "@/components/overview/overviewCalculations";
@@ -24,6 +26,10 @@ export default function OverviewPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [dateRange, setDateRange] = useState("last30");
+  const [chartPeriod, setChartPeriod] = useState("daily");
 
   useEffect(() => {
     if (!authLoading && !token) router.push("/login");
@@ -59,8 +65,8 @@ export default function OverviewPage() {
   }, [loadOverview]);
 
   const model = useMemo(
-    () => buildOverviewModel(rawData ?? {}),
-    [rawData],
+    () => buildOverviewModel(rawData ?? {}, { dateRange, chartPeriod, lang }),
+    [chartPeriod, dateRange, lang, rawData],
   );
 
   const currency = useCallback(
@@ -86,6 +92,35 @@ export default function OverviewPage() {
     [lang],
   );
 
+  const percent = useCallback(
+    (value) =>
+      new Intl.NumberFormat(lang === "ar" ? "ar-EG" : "en-US", {
+        maximumFractionDigits: 0,
+      }).format(Number(value ?? 0)),
+    [lang],
+  );
+
+  const trend = useCallback(
+    (value) => {
+      if (!value || !value.available) {
+        return {
+          direction: "neutral",
+          text: t("trend.neutral"),
+          ariaLabel: t("trend.neutral"),
+        };
+      }
+
+      const marker = value.direction === "up" ? "↑" : value.direction === "down" ? "↓" : "•";
+      const text = value.direction === "neutral" ? `0%` : `${marker} ${percent(value.percent)}%`;
+      return {
+        direction: value.direction,
+        text,
+        ariaLabel: `${text} ${t("trend.vsPrevious")}`,
+      };
+    },
+    [percent, t],
+  );
+
   const kpis = [
     {
       label: t("kpi.totalClients"),
@@ -105,6 +140,7 @@ export default function OverviewPage() {
       hint: t("kpi.fromRealData"),
       icon: OverviewIcons.trend,
       tone: "green",
+      trend: trend(model.trends.sales),
     },
     {
       label: t("kpi.purchases"),
@@ -112,6 +148,7 @@ export default function OverviewPage() {
       hint: t("kpi.fromRealData"),
       icon: OverviewIcons.cash,
       tone: "amber",
+      trend: trend(model.trends.purchases),
     },
     {
       label: t("kpi.expenses"),
@@ -119,6 +156,7 @@ export default function OverviewPage() {
       hint: t("kpi.fromRealData"),
       icon: OverviewIcons.cash,
       tone: "red",
+      trend: trend(model.trends.expenses),
     },
     {
       label: t("kpi.profit"),
@@ -126,6 +164,7 @@ export default function OverviewPage() {
       hint: t("kpi.fromRealData"),
       icon: OverviewIcons.trend,
       tone: model.metrics.profit < 0 ? "red" : "green",
+      trend: trend(model.trends.profit),
     },
     {
       label: t("kpi.outstanding"),
@@ -137,18 +176,71 @@ export default function OverviewPage() {
     {
       label: t("kpi.cashIn"),
       value: currency(model.metrics.cashIn),
-      hint: t("kpi.monthToDate"),
+      hint: t("kpi.selectedPeriod"),
       icon: OverviewIcons.cash,
       tone: "green",
     },
     {
       label: t("kpi.cashOut"),
       value: currency(model.metrics.cashOut),
-      hint: t("kpi.monthToDate"),
+      hint: t("kpi.selectedPeriod"),
       icon: OverviewIcons.cash,
       tone: "red",
     },
   ];
+
+  const normalizedSearch = searchTerm.trim().toLowerCase();
+
+  const filteredInvoices = useMemo(() => {
+    return model.allRecentInvoices.filter((invoice) => {
+      const matchesStatus = statusFilter === "all" || invoice.status === statusFilter;
+      if (!matchesStatus) return false;
+      if (!normalizedSearch) return true;
+
+      const haystack = [
+        invoice.invoiceNumber,
+        invoice.clientName,
+        invoice.invoiceType,
+        t(`type.${invoice.invoiceType}`),
+        invoice.status,
+        t(`status.${invoice.status}`),
+        String(invoice.finalAmount ?? ""),
+        currency(invoice.finalAmount),
+        String(invoice.dueAmount ?? ""),
+        currency(invoice.dueAmount),
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      return haystack.includes(normalizedSearch);
+    });
+  }, [currency, model.allRecentInvoices, normalizedSearch, statusFilter, t]);
+
+  const filteredActivity = useMemo(() => {
+    if (!normalizedSearch) return model.recentActivity;
+
+    return model.allRecentActivity
+      .filter((item) => {
+        const haystack = [
+          item.title,
+          item.kind,
+          t(`activity.${item.kind}`),
+          item.invoiceNumber,
+          item.clientName,
+          item.invoiceType,
+          item.status,
+          String(item.amount ?? ""),
+          currency(item.amount),
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+
+        return haystack.includes(normalizedSearch);
+      })
+      .slice(0, 8);
+  }, [currency, model.allRecentActivity, model.recentActivity, normalizedSearch, t]);
 
   return (
     <div dir={dir} lang={lang}>
@@ -161,6 +253,8 @@ export default function OverviewPage() {
         t={t}
         mobileNavOpen={mobileNavOpen}
         setMobileNavOpen={setMobileNavOpen}
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
       >
         <div className="mx-auto max-w-7xl">
           <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -173,17 +267,23 @@ export default function OverviewPage() {
                 type="button"
                 disabled
                 className="min-h-11 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-400 disabled:cursor-not-allowed"
-                aria-label={`${t("action.export")} - ${t("action.comingSoon")}`}
+                aria-label={t("action.exportSoon")}
               >
                 {t("action.export")}
+                <span className="ms-2 rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold">
+                  {t("action.comingSoon")}
+                </span>
               </button>
               <button
                 type="button"
                 disabled
                 className="min-h-11 rounded-lg bg-[#1b2b6b] px-3 text-sm font-semibold text-white opacity-55 disabled:cursor-not-allowed"
-                aria-label={`${t("action.createReport")} - ${t("action.comingSoon")}`}
+                aria-label={t("action.reportSoon")}
               >
                 {t("action.createReport")}
+                <span className="ms-2 rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold">
+                  {t("action.comingSoon")}
+                </span>
               </button>
             </div>
           </div>
@@ -196,6 +296,30 @@ export default function OverviewPage() {
             <EmptyPanel t={t} />
           ) : (
             <div className="space-y-5">
+              <label className="flex min-h-11 items-center gap-2 rounded-lg bg-white px-3 text-gray-400 shadow-sm ring-1 ring-gray-100 focus-within:ring-2 focus-within:ring-[#1b2b6b] sm:hidden">
+                <span aria-hidden="true">{OverviewIcons.search}</span>
+                <input
+                  type="search"
+                  value={searchTerm}
+                  onChange={(event) => setSearchTerm(event.target.value)}
+                  aria-label={t("search.label")}
+                  placeholder={t("search.placeholder")}
+                  className={`min-w-0 flex-1 bg-transparent text-sm text-gray-700 placeholder:text-gray-400 outline-none ${
+                    isRtl ? "text-right" : "text-left"
+                  }`}
+                />
+              </label>
+
+              <TimeAnalyticsControls
+                dateRange={dateRange}
+                onDateRangeChange={setDateRange}
+                chartPeriod={chartPeriod}
+                onChartPeriodChange={setChartPeriod}
+                summary={t(`range.summary.${dateRange}`)}
+                t={t}
+                isRtl={isRtl}
+              />
+
               <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
                 {kpis.map((kpi) => (
                   <KpiCard key={kpi.label} {...kpi} loading={loading} />
@@ -218,12 +342,23 @@ export default function OverviewPage() {
               </div>
 
               <RecentInvoicesTable
-                invoices={model.recentInvoices}
+                invoices={filteredInvoices.slice(0, 6)}
                 currency={currency}
                 date={date}
                 t={t}
                 isRtl={isRtl}
                 router={router}
+                statusFilter={statusFilter}
+                onStatusFilterChange={setStatusFilter}
+                hasAnyInvoices={model.allRecentInvoices.length > 0}
+              />
+
+              <RecentActivity
+                activities={filteredActivity}
+                currency={currency}
+                date={date}
+                t={t}
+                isRtl={isRtl}
               />
 
               <p className={`text-xs text-gray-400 ${isRtl ? "text-right" : "text-left"}`}>

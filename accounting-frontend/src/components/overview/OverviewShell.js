@@ -20,6 +20,8 @@ export default function OverviewShell({
   t,
   mobileNavOpen,
   setMobileNavOpen,
+  searchTerm,
+  onSearchChange,
 }) {
   const initials = user?.name
     ? user.name
@@ -139,36 +141,46 @@ export default function OverviewShell({
           {OverviewIcons.menu}
         </button>
 
-        <div className="hidden min-h-11 w-full max-w-xs items-center gap-2 rounded-lg bg-gray-50 px-3 text-gray-400 sm:flex">
+        <label className="hidden min-h-11 w-full max-w-xs items-center gap-2 rounded-lg bg-gray-50 px-3 text-gray-400 transition focus-within:ring-2 focus-within:ring-[#1b2b6b] focus-within:ring-offset-2 sm:flex">
           <span aria-hidden="true">{OverviewIcons.search}</span>
           <input
-            disabled
-            aria-label={t("search.placeholder")}
+            type="search"
+            value={searchTerm}
+            onChange={(event) => onSearchChange(event.target.value)}
+            aria-label={t("search.label")}
             placeholder={t("search.placeholder")}
-            className="min-w-0 flex-1 bg-transparent text-sm text-gray-500 outline-none disabled:cursor-not-allowed"
+            className={`min-w-0 flex-1 bg-transparent text-sm text-gray-700 placeholder:text-gray-400 outline-none ${
+              isRtl ? "text-right" : "text-left"
+            }`}
           />
-        </div>
+        </label>
 
         <div className={`ms-auto flex items-center gap-2 ${isRtl ? "mr-auto ms-0" : ""}`}>
           <button
             type="button"
             disabled
-            title={t("action.comingSoon")}
-            aria-label={`${t("action.export")} - ${t("action.comingSoon")}`}
+            title={t("action.exportSoon")}
+            aria-label={t("action.exportSoon")}
             className="hidden min-h-11 items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-400 disabled:cursor-not-allowed sm:flex"
           >
             {OverviewIcons.download}
             {t("action.export")}
+            <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold text-gray-400">
+              {t("action.comingSoon")}
+            </span>
           </button>
           <button
             type="button"
             disabled
-            title={t("action.comingSoon")}
-            aria-label={`${t("action.createReport")} - ${t("action.comingSoon")}`}
+            title={t("action.reportSoon")}
+            aria-label={t("action.reportSoon")}
             className="hidden min-h-11 items-center gap-2 rounded-lg bg-[#1b2b6b] px-3 text-sm font-semibold text-white opacity-55 disabled:cursor-not-allowed sm:flex"
           >
             {OverviewIcons.report}
             {t("action.createReport")}
+            <span className="rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold">
+              {t("action.comingSoon")}
+            </span>
           </button>
           <button
             type="button"

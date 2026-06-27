@@ -42,9 +42,16 @@ export default function CashFlowChart({ chartData, currency, t, isRtl }) {
             {t("chart.empty")}
           </div>
         ) : (
-          <div className={`flex h-full items-end gap-2 overflow-hidden ${isRtl ? "flex-row-reverse" : ""}`}>
+          <div
+            className={`flex h-full items-end gap-2 overflow-x-auto pb-1 ${
+              isRtl ? "flex-row-reverse" : ""
+            }`}
+          >
             {chartData.map((item) => (
-              <div key={item.label} className="flex min-w-0 flex-1 flex-col items-center justify-end gap-2">
+              <div
+                key={item.key || item.label}
+                className="flex min-w-12 flex-1 flex-col items-center justify-end gap-2"
+              >
                 <div className="flex h-48 w-full items-end justify-center gap-1">
                   <div
                     className="w-full max-w-5 rounded-t bg-[#1b2b6b]"
