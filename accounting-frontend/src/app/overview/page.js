@@ -13,6 +13,9 @@ import RecentActivity from "@/components/overview/RecentActivity";
 import FinancialSummary from "@/components/overview/FinancialSummary";
 import AiCreditsCard from "@/components/overview/AiCreditsCard";
 import TimeAnalyticsControls from "@/components/overview/TimeAnalyticsControls";
+import InsightCards from "@/components/overview/InsightCards";
+import TopEntitiesPanel from "@/components/overview/TopEntitiesPanel";
+import FinancialHealthPanel from "@/components/overview/FinancialHealthPanel";
 import { EmptyPanel, ErrorPanel, LoadingPanel } from "@/components/overview/OverviewStates";
 import useOverviewLang from "@/components/overview/useOverviewLang";
 import { buildOverviewModel } from "@/components/overview/overviewCalculations";
@@ -98,6 +101,16 @@ export default function OverviewPage() {
         maximumFractionDigits: 0,
       }).format(Number(value ?? 0)),
     [lang],
+  );
+
+  const numberValue = useCallback(
+    (value) => Number(value ?? 0).toLocaleString(lang === "ar" ? "ar-EG" : "en-US"),
+    [lang],
+  );
+
+  const percentValue = useCallback(
+    (value) => `${percent(value)}%`,
+    [percent],
   );
 
   const trend = useCallback(
@@ -326,6 +339,15 @@ export default function OverviewPage() {
                 ))}
               </section>
 
+              <InsightCards
+                insights={model.insights}
+                numberValue={numberValue}
+                currency={currency}
+                percentValue={percentValue}
+                t={t}
+                isRtl={isRtl}
+              />
+
               <div className="grid gap-5 xl:grid-cols-3">
                 <div className="xl:col-span-2">
                   <CashFlowChart
@@ -339,6 +361,18 @@ export default function OverviewPage() {
                   <AiCreditsCard subscription={model.subscription} t={t} />
                   <FinancialSummary metrics={model.metrics} currency={currency} t={t} />
                 </div>
+              </div>
+
+              <div className="grid gap-5 xl:grid-cols-3">
+                <div className="xl:col-span-2">
+                  <TopEntitiesPanel
+                    entities={model.insights.topEntities}
+                    currency={currency}
+                    t={t}
+                    isRtl={isRtl}
+                  />
+                </div>
+                <FinancialHealthPanel health={model.insights.health} t={t} isRtl={isRtl} />
               </div>
 
               <RecentInvoicesTable

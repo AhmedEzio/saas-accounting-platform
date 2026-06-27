@@ -61,6 +61,47 @@ export const translations = {
   "kpi.noSubscription": { en: "No active subscription", ar: "لا يوجد اشتراك نشط" },
   "kpi.remaining": { en: "remaining", ar: "متبقي" },
 
+  "insight.cardsTitle": { en: "Invoice Insights", ar: "مؤشرات الفواتير" },
+  "insight.cardsSubtitle": {
+    en: "Calculated from invoices in the selected period.",
+    ar: "محسوبة من فواتير الفترة المحددة.",
+  },
+  "insight.paid": { en: "Paid Invoices", ar: "الفواتير المدفوعة" },
+  "insight.partial": { en: "Partial Invoices", ar: "الفواتير المدفوعة جزئياً" },
+  "insight.unpaid": { en: "Unpaid Invoices", ar: "الفواتير غير المدفوعة" },
+  "insight.cancelled": { en: "Cancelled Invoices", ar: "الفواتير الملغاة" },
+  "insight.collectionRate": { en: "Collection Rate", ar: "معدل التحصيل" },
+  "insight.averageInvoice": { en: "Avg. Invoice Value", ar: "متوسط قيمة الفاتورة" },
+  "insight.statusHint": { en: "Current period status", ar: "حالة الفترة الحالية" },
+  "insight.collectionHint": { en: "Paid amount over invoice value", ar: "المبلغ المحصل من قيمة الفواتير" },
+  "insight.averageHint": { en: "Average active invoice", ar: "متوسط الفواتير النشطة" },
+
+  "top.title": { en: "Top Clients / Vendors", ar: "أبرز العملاء والموردين" },
+  "top.subtitle": {
+    en: "Ranked by sales, purchases, and outstanding amount in the selected period.",
+    ar: "مرتبة حسب المبيعات والمشتريات والمبالغ المستحقة في الفترة المحددة.",
+  },
+  "top.sales": { en: "Sales", ar: "المبيعات" },
+  "top.purchases": { en: "Purchases", ar: "المشتريات" },
+  "top.outstanding": { en: "Outstanding", ar: "المستحق" },
+  "top.empty": { en: "No client or vendor totals for this period.", ar: "لا توجد إجماليات عملاء أو موردين لهذه الفترة." },
+
+  "health.title": { en: "Financial Health", ar: "الصحة المالية" },
+  "health.subtitle": {
+    en: "A quick read on profitability, receivables, and collections.",
+    ar: "قراءة سريعة للربحية والمستحقات والتحصيل.",
+  },
+  "health.profitPositive": { en: "Profit is positive for the selected period.", ar: "الربح إيجابي خلال الفترة المحددة." },
+  "health.profitNegative": { en: "Profit is negative and needs attention.", ar: "الربح سلبي ويحتاج إلى مراجعة." },
+  "health.receivablesHigh": { en: "Receivables are high compared with sales.", ar: "المبالغ المستحقة مرتفعة مقارنة بالمبيعات." },
+  "health.receivablesStable": { en: "Receivables look controlled for this period.", ar: "المبالغ المستحقة تبدو تحت السيطرة لهذه الفترة." },
+  "health.collectionStrong": { en: "Collection rate is strong.", ar: "معدل التحصيل قوي." },
+  "health.collectionWatch": { en: "Collection rate is moderate; keep monitoring.", ar: "معدل التحصيل متوسط ويستحق المتابعة." },
+  "health.collectionWeak": { en: "Collection rate is weak and needs follow-up.", ar: "معدل التحصيل ضعيف ويحتاج إلى متابعة." },
+  "health.collectionEmpty": { en: "No collection rate is available for this period.", ar: "لا يتوفر معدل تحصيل لهذه الفترة." },
+  "health.unpaidAttention": { en: "Open unpaid or partial invoices need attention.", ar: "توجد فواتير غير مدفوعة أو جزئية تحتاج إلى متابعة." },
+  "health.unpaidClear": { en: "No open unpaid invoices in this period.", ar: "لا توجد فواتير مفتوحة غير مدفوعة في هذه الفترة." },
+
   "chart.title": { en: "Sales vs Purchases", ar: "المبيعات مقابل المشتريات" },
   "chart.subtitle": {
     en: "Grouped from real invoice dates and amounts.",

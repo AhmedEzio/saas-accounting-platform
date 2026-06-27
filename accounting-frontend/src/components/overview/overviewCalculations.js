@@ -150,6 +150,100 @@ const financeMetrics = (invoices, payments) => {
   };
 };
 
+const statusCounts = (invoices) =>
+  invoices.reduce(
+    (counts, invoice) => ({
+      ...counts,
+      [invoiceStatus(invoice)]: counts[invoiceStatus(invoice)] + 1,
+    }),
+    { paid: 0, partial: 0, unpaid: 0, cancelled: 0 },
+  );
+
+const collectionStats = (invoices) => {
+  const activeInvoices = invoices.filter((invoice) => !isCancelled(invoice));
+  const finalAmount = activeInvoices.reduce((sum, invoice) => sum + number(invoice.finalAmount), 0);
+  const amountPaid = activeInvoices.reduce((sum, invoice) => sum + number(invoice.amountPaid), 0);
+
+  if (finalAmount <= 0) return { rate: 0, available: false };
+  return { rate: Math.min(100, Math.max(0, (amountPaid / finalAmount) * 100)), available: true };
+};
+
+const averageInvoiceValue = (invoices) => {
+  const activeInvoices = invoices.filter((invoice) => !isCancelled(invoice));
+  if (!activeInvoices.length) return 0;
+  return activeInvoices.reduce((sum, invoice) => sum + number(invoice.finalAmount), 0) / activeInvoices.length;
+};
+
+const topClientsAndVendors = (invoices) => {
+  const map = new Map();
+
+  invoices.forEach((invoice) => {
+    if (isCancelled(invoice)) return;
+
+    const name = clientName(invoice);
+    const current = map.get(name) ?? { name, sales: 0, purchases: 0, outstanding: 0 };
+    const amount = number(invoice.finalAmount);
+
+    if (invoice.invoiceType === "sale") current.sales += amount;
+    if (invoice.invoiceType === "sales_return") current.sales -= amount;
+    if (invoice.invoiceType === "purchase") current.purchases += amount;
+    if (invoice.invoiceType === "purchase_return") current.purchases -= amount;
+    if (["sale", "purchase_return"].includes(invoice.invoiceType)) {
+      current.outstanding += number(invoice.dueAmount);
+    }
+
+    map.set(name, current);
+  });
+
+  return Array.from(map.values())
+    .filter((item) => item.sales || item.purchases || item.outstanding)
+    .map((item) => ({
+      ...item,
+      total: Math.abs(item.sales) + Math.abs(item.purchases) + Math.abs(item.outstanding),
+    }))
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 5);
+};
+
+const healthMessages = (metrics, insights) => {
+  const messages = [];
+  const openInvoices = insights.statusCounts.unpaid + insights.statusCounts.partial;
+
+  messages.push({
+    key: metrics.profit >= 0 ? "health.profitPositive" : "health.profitNegative",
+    tone: metrics.profit >= 0 ? "green" : "red",
+  });
+
+  if (metrics.receivables > 0) {
+    messages.push({
+      key: metrics.sales > 0 && metrics.receivables > metrics.sales * 0.4
+        ? "health.receivablesHigh"
+        : "health.receivablesStable",
+      tone: metrics.sales > 0 && metrics.receivables > metrics.sales * 0.4 ? "amber" : "green",
+    });
+  }
+
+  if (!insights.collectionAvailable) {
+    messages.push({ key: "health.collectionEmpty", tone: "amber" });
+  } else {
+    messages.push({
+      key: insights.collectionRate >= 80
+        ? "health.collectionStrong"
+        : insights.collectionRate >= 50
+          ? "health.collectionWatch"
+          : "health.collectionWeak",
+      tone: insights.collectionRate >= 80 ? "green" : insights.collectionRate >= 50 ? "amber" : "red",
+    });
+  }
+
+  messages.push({
+    key: openInvoices > 0 ? "health.unpaidAttention" : "health.unpaidClear",
+    tone: openInvoices > 0 ? "amber" : "green",
+  });
+
+  return messages;
+};
+
 const trendFor = (current, previous, available) => {
   if (!available || previous === 0) {
     return { direction: "neutral", percent: null, available: false };
@@ -297,6 +391,14 @@ export function buildOverviewModel(
   const metrics = financeMetrics(rangeInvoices, rangePayments);
   const previousMetrics = financeMetrics(previousInvoices, previousPayments);
   const hasComparison = Boolean(range.previousStart && range.previousEnd);
+  const collection = collectionStats(rangeInvoices);
+  const insights = {
+    statusCounts: statusCounts(rangeInvoices),
+    collectionRate: collection.rate,
+    collectionAvailable: collection.available,
+    averageInvoiceValue: averageInvoiceValue(rangeInvoices),
+    topEntities: topClientsAndVendors(rangeInvoices),
+  };
 
   const recentInvoices = [...rangeInvoices]
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -328,6 +430,10 @@ export function buildOverviewModel(
       purchases: trendFor(metrics.purchases, previousMetrics.purchases, hasComparison),
       expenses: trendFor(metrics.expenses, previousMetrics.expenses, hasComparison),
       profit: trendFor(metrics.profit, previousMetrics.profit, hasComparison),
+    },
+    insights: {
+      ...insights,
+      health: healthMessages(metrics, insights),
     },
     chartData: buildChartData(rangeInvoices, chartPeriod, lang, range.start),
     recentInvoices: recentInvoices.slice(0, 6),
