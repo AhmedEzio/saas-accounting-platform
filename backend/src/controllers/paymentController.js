@@ -6,7 +6,7 @@ export const createPayment = async (req, res, next) => {
     const { invoice, paymentTransaction } = await paymentService.createPayment(
       req.body,
       req.user._id,
-      req.user._id
+      req.user._id,
     );
 
     return res.status(201).json({
@@ -39,12 +39,30 @@ export const getClientBalance = async (req, res, next) => {
     const result = await paymentService.getClientBalance(
       req.params.id,
       req.query,
-      req.user._id
+      req.user._id,
     );
 
     return res.status(200).json({
       success: true,
       data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getClientLastBalanceTransactions = async (req, res, next) => {
+  try {
+    const { clientId } = req.params;
+
+    const data = await paymentService.getClientLastBalanceTransactions(
+      clientId,
+      req.user._id,
+    );
+
+    res.status(200).json({
+      success: true,
+      data,
     });
   } catch (err) {
     next(err);
