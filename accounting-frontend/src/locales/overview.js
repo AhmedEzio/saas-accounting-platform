@@ -191,6 +191,11 @@ export const translations = {
     en: "Clients, invoices, and payments will appear here once created.",
     ar: "سيظهر العملاء والفواتير والمدفوعات هنا بعد إنشائها.",
   },
+  "state.emptyRange": { en: "No data in the selected range", ar: "لا توجد بيانات في الفترة المحددة" },
+  "state.emptyRangeHint": {
+    en: "Choose a wider date range or switch to All Time to review existing records.",
+    ar: "اختر فترة زمنية أوسع أو انتقل إلى كل الوقت لمراجعة السجلات الحالية.",
+  },
 };
 
 export const t = (key, lang = "en") =>

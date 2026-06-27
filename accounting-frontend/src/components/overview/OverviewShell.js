@@ -147,7 +147,7 @@ export default function OverviewShell({
           {OverviewIcons.menu}
         </button>
 
-        <label className="hidden min-h-11 w-full max-w-xs items-center gap-2 rounded-lg bg-gray-50 px-3 text-gray-400 transition focus-within:ring-2 focus-within:ring-[#1b2b6b] focus-within:ring-offset-2 sm:flex">
+        <label className="hidden min-h-11 w-full max-w-xs items-center gap-2 rounded-lg bg-gray-50 px-3 text-gray-400 transition focus-within:ring-2 focus-within:ring-[#1b2b6b] focus-within:ring-offset-2 lg:flex">
           <span aria-hidden="true">{OverviewIcons.search}</span>
           <input
             type="search"
@@ -168,7 +168,7 @@ export default function OverviewShell({
             disabled={exporting}
             title={t("action.exportCsv")}
             aria-label={exporting ? t("action.preparingExport") : t("action.exportCsv")}
-            className="hidden min-h-11 items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] focus:ring-offset-2 disabled:cursor-wait disabled:text-gray-400 sm:flex"
+            className="hidden min-h-11 items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] focus:ring-offset-2 disabled:cursor-wait disabled:text-gray-400 lg:flex"
           >
             {OverviewIcons.download}
             {exporting ? t("action.preparingExport") : t("action.exportCsv")}
@@ -179,7 +179,7 @@ export default function OverviewShell({
             disabled={exportingExcel}
             title={t("action.exportExcel")}
             aria-label={exportingExcel ? t("action.preparingExcel") : t("action.exportExcel")}
-            className="hidden min-h-11 items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] focus:ring-offset-2 disabled:cursor-wait disabled:text-gray-400 sm:flex"
+            className="hidden min-h-11 items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] focus:ring-offset-2 disabled:cursor-wait disabled:text-gray-400 lg:flex"
           >
             {OverviewIcons.download}
             {exportingExcel ? t("action.preparingExcel") : t("action.exportExcel")}
@@ -190,7 +190,7 @@ export default function OverviewShell({
             disabled={printing}
             title={t("action.printReport")}
             aria-label={printing ? t("action.preparingReport") : t("action.printReport")}
-            className="hidden min-h-11 items-center gap-2 rounded-lg bg-[#1b2b6b] px-3 text-sm font-semibold text-white transition hover:bg-[#162358] focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] focus:ring-offset-2 disabled:cursor-wait disabled:opacity-60 sm:flex"
+            className="hidden min-h-11 items-center gap-2 rounded-lg bg-[#1b2b6b] px-3 text-sm font-semibold text-white transition hover:bg-[#162358] focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] focus:ring-offset-2 disabled:cursor-wait disabled:opacity-60 lg:flex"
           >
             {OverviewIcons.report}
             {printing ? t("action.preparingReport") : t("action.printReport")}

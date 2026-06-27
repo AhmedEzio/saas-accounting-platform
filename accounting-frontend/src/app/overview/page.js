@@ -443,7 +443,7 @@ export default function OverviewPage() {
                 {t("report.generatedFromRange")}: {rangeSummary}
               </p>
             </div>
-            <div className="flex flex-wrap gap-2 print:hidden sm:hidden">
+            <div className="flex flex-wrap gap-2 print:hidden lg:hidden">
               <button
                 type="button"
                 onClick={exportCsv}
@@ -491,7 +491,7 @@ export default function OverviewPage() {
             <EmptyPanel t={t} />
           ) : (
             <div className="space-y-5">
-              <label className="flex min-h-11 items-center gap-2 rounded-lg bg-white px-3 text-gray-400 shadow-sm ring-1 ring-gray-100 focus-within:ring-2 focus-within:ring-[#1b2b6b] print:hidden sm:hidden">
+              <label className="flex min-h-11 items-center gap-2 rounded-lg bg-white px-3 text-gray-400 shadow-sm ring-1 ring-gray-100 focus-within:ring-2 focus-within:ring-[#1b2b6b] print:hidden lg:hidden">
                 <span aria-hidden="true">{OverviewIcons.search}</span>
                 <input
                   type="search"
@@ -514,6 +514,18 @@ export default function OverviewPage() {
                 t={t}
                 isRtl={isRtl}
               />
+
+              {!hasRangeData ? (
+                <section
+                  className={`rounded-xl border border-amber-100 bg-amber-50 p-4 text-sm text-amber-800 print:hidden ${
+                    isRtl ? "text-right" : "text-left"
+                  }`}
+                  aria-live="polite"
+                >
+                  <h2 className="font-bold">{t("state.emptyRange")}</h2>
+                  <p className="mt-1 leading-6">{t("state.emptyRangeHint")}</p>
+                </section>
+              ) : null}
 
               <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
                 {kpis.map((kpi) => (
