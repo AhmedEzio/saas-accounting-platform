@@ -6,12 +6,14 @@ import ClientBalanceTransaction from "../models/ClientBalanceTransaction.js";
 const round2 = (n) => Math.round((Number(n) + Number.EPSILON) * 100) / 100;
 
 const balanceDeltaToEffect = (delta) => (delta >= 0 ? "debit" : "credit");
-const balanceEffectToDelta = (tx) => (tx.effect === "debit" ? tx.amount : -tx.amount);
+const balanceEffectToDelta = (tx) =>
+  tx.effect === "debit" ? tx.amount : -tx.amount;
 
 const getPaymentDirection = (invoiceType) => {
   // in  = cash received by the accountant
   // out = cash paid by the accountant
-  if (["purchase", "expense", "sales_return"].includes(invoiceType)) return "out";
+  if (["purchase", "expense", "sales_return"].includes(invoiceType))
+    return "out";
   return "in";
 };
 
@@ -19,7 +21,8 @@ const getDueBalanceDelta = (invoiceType, amount) => {
   // Positive balance  => client/vendor owes the accountant.
   // Negative balance  => accountant owes the client/vendor.
   if (["sale", "purchase_return"].includes(invoiceType)) return round2(amount);
-  if (["purchase", "sales_return"].includes(invoiceType)) return round2(-amount);
+  if (["purchase", "sales_return"].includes(invoiceType))
+    return round2(-amount);
   return 0;
 };
 
@@ -95,7 +98,7 @@ const applyClientBalanceDelta = async ({
         notes,
       },
     ],
-    { session }
+    { session },
   );
 
   return tx;
@@ -195,7 +198,7 @@ export const createPayment = async (body, paidBy, accountantId = paidBy) => {
     if (invoice.isCancelled) {
       throw Object.assign(
         new Error("Cannot record payment on a cancelled invoice"),
-        { statusCode: 422 }
+        { statusCode: 422 },
       );
     }
 
@@ -236,12 +239,15 @@ export const createPayment = async (body, paidBy, accountantId = paidBy) => {
           notes,
         }),
       ],
-      { session }
+      { session },
     );
 
     if (invoice.clientId) {
       const settledAmount = round2(Math.min(parsedAmount, oldDueAmount));
-      const delta = getSettlementBalanceDelta(invoice.invoiceType, settledAmount);
+      const delta = getSettlementBalanceDelta(
+        invoice.invoiceType,
+        settledAmount,
+      );
 
       await applyClientBalanceDelta({
         accountantId,
@@ -315,10 +321,13 @@ export const recordSalesReturnRefund = async ({
   }, 0);
 
   const remainingRefundable = round2(
-    originalInvoice.amountPaid - previousRefundedAmount
+    originalInvoice.amountPaid - previousRefundedAmount,
   );
 
-  const refundAmount = Math.min(returnInvoice.finalAmount, Math.max(0, remainingRefundable));
+  const refundAmount = Math.min(
+    returnInvoice.finalAmount,
+    Math.max(0, remainingRefundable),
+  );
 
   returnInvoice.amountPaid = refundAmount;
   returnInvoice.dueAmount = 0;
@@ -342,7 +351,7 @@ export const recordSalesReturnRefund = async ({
         notes: `Cash refund for sales return invoice ${returnInvoice.invoiceNumber}`,
       },
     ],
-    { session }
+    { session },
   );
 
   // Cash refund clears the accountant's liability to the client.
@@ -360,15 +369,7 @@ export const recordSalesReturnRefund = async ({
 };
 
 export const getPayments = async (query, accountantId) => {
-  const {
-    invoiceId,
-    clientId,
-    source,
-    from,
-    to,
-    page = 1,
-    limit = 20,
-  } = query;
+  const { invoiceId, clientId, source, from, to, page = 1, limit = 20 } = query;
 
   const filter = { accountantId };
 
@@ -490,7 +491,7 @@ export const reverseCancelledInvoicePayments = async ({
   }).session(session);
 
   const totalDelta = round2(
-    balanceTransactions.reduce((sum, tx) => sum + balanceEffectToDelta(tx), 0)
+    balanceTransactions.reduce((sum, tx) => sum + balanceEffectToDelta(tx), 0),
   );
 
   const reversalDelta = round2(-totalDelta);
@@ -543,8 +544,44 @@ const reverseInvoicePaymentTransactions = async ({
       direction: tx.direction === "in" ? "out" : "in",
       paidBy: cancelledBy,
       notes: `Payment transaction reversed due to invoice cancellation (${invoice.invoiceNumber})`,
-    })
+    }),
   );
 
   await PaymentTransaction.create(reversalDocs, { session });
+};
+
+export const getClientLastBalanceTransactions = async (
+  clientId,
+  accountantId,
+) => {
+  const client = await Client.findOne({
+    _id: clientId,
+    accountantId,
+  });
+
+  if (!client) {
+    throw Object.assign(new Error("Client/Vendor not found"), {
+      statusCode: 404,
+    });
+  }
+
+  const [lastDebit, lastCredit] = await Promise.all([
+    ClientBalanceTransaction.findOne({
+      accountantId,
+      clientId,
+      effect: "debit",
+    }).sort({ createdAt: -1 }),
+
+    ClientBalanceTransaction.findOne({
+      accountantId,
+      clientId,
+      effect: "credit",
+    }).sort({ createdAt: -1 }),
+  ]);
+
+  return {
+    client,
+    lastDebit,
+    lastCredit,
+  };
 };
