@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
@@ -135,7 +136,7 @@ export default function ClientsPage() {
         next.delete(id);
         return next;
       });
-      // if deleting the last item on this page, go back one
+      // if deleting the last item on this pagce, go back one
       if (clients.length === 1 && page > 1) setPage((p) => p - 1);
       else await fetchClients();
       await fetchStats();
@@ -183,9 +184,16 @@ export default function ClientsPage() {
         <button
           id="add-client-btn"
           onClick={() => setShowModal(true)}
-          className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl bg-[#1b2b6b] hover:bg-[#2d3ebd] text-white text-sm font-bold border-none cursor-pointer transition-colors whitespace-nowrap flex-shrink-0"
+          className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl bg-[#1b2b6b] hover:bg-[#2d3ebd] text-white text-sm font-bold border-none cursor-pointer transition-colors whitespace-nowrap shrink-0"
         >
-          <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+          <svg
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            viewBox="0 0 24 24"
+          >
             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
             <circle cx="9" cy="7" r="4" />
             <line x1="19" y1="8" x2="19" y2="14" />
