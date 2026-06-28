@@ -10,6 +10,9 @@ import {
   getAIUsage,
 } from "../controllers/dashboard-controllers/dashboard.controller.js";
 import { serachResults } from "../controllers/dashboard-controllers/accountants.controller.js";
+import { getAllInvoices } from "../controllers/dashboard-controllers/invoices.controller.js";
+import { getInvoicesRules } from "../validations/invoice.validation.js";
+import { getAllClients } from "../controllers/dashboard-controllers/clients.controller.js";
 
 const router = Router();
 
@@ -111,5 +114,18 @@ router.get("/ai-usage", getAIUsage);
  * GET /api/dashboard/accountant?search=abc
  */
 router.get("/accountant", serachResults);
+
+/**
+ * Invoices page routes
+ * GET /api/dashboard/invoices
+ */
+router.get("/invoices", getInvoicesRules, getAllInvoices);
+
+/**
+ * Clients page routes
+ * // GET /api/dashbaord/clients?type=vendor|client&search=...
+ */
+router.get("/clients", getAllClients);
+
 
 export default router;
