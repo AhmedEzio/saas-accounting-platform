@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 import { useState, useEffect, useCallback, use } from "react";
@@ -200,7 +201,6 @@ export default function ClientDetailPage({ params }) {
   const [deleting, setDeleting] = useState(false);
   const [totalDebit, setTotalDebit] = useState(0);
   const [totalCredit, setTotalCredit] = useState(0);
-
   const fetchClient = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -229,17 +229,17 @@ export default function ClientDetailPage({ params }) {
   const fetchTotals = useCallback(async () => {
     try {
       const data = await apiFetch(`/clients/${id}/totals`);
-      // setTotalDebit(data.data.lastDebit.balanceAfter);
-      // setTotalCredit(data.data.lastCredit.balanceAfter);
-      setTotalDebit(0);
-      setTotalCredit(0);
+      setTotalDebit(data.data.lastDebit.balanceAfter);
+      setTotalCredit(data.data.lastCredit.balanceAfter);
+      // setTotalDebit(0);
+      // setTotalCredit(0);
       console.log("dataaa");
       console.log(data);
-    } catch {
-      setTotalDebit(0);
-      setTotalCredit(0);
+    } catch (err) {
+      console.error("fetchTotals error:", err);
     }
   }, [id]);
+
   useEffect(() => {
     fetchClient();
   }, [fetchClient]);
