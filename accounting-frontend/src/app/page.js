@@ -136,7 +136,10 @@ export default function HomePage() {
         }
       })
       .catch((err) => {
-        console.warn("Could not fetch plans from backend, using default static pricing.", err);
+        console.warn(
+          "Could not fetch plans from backend, using default static pricing.",
+          err
+        );
       });
   }, []);
 
@@ -163,12 +166,25 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#faf8fe] text-[#1a1b1f] selection:bg-secondary/20">
+    <div
+      className="min-h-screen flex flex-col bg-[#faf8fe] text-[#1a1b1f] selection:bg-secondary/20"
+      style={{
+        backgroundColor: "#faf8fe",
+        backgroundImage:
+          "linear-gradient(to bottom, transparent 0%, transparent 72%, #faf8fe 80%, #faf8fe 100%), radial-gradient(rgba(6, 20, 66, 0.09) 1.1px, transparent 1.1px)",
+        backgroundSize: "100% 100%, 24px 24px",
+        backgroundPosition: "top center, top center",
+        backgroundRepeat: "no-repeat, repeat",
+      }}
+    >
       {/* Navigation Header */}
-      <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-[#faf8fe]/80 backdrop-blur-md">
+      <header className="sticky top-0 z-50 w-full border-b border-gray-100/50 bg-[#faf8fe]/45 backdrop-blur-md">
         <div className="mx-auto max-w-7xl px-6 h-20 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 font-display font-bold text-xl text-primary">
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 font-display font-bold text-xl text-primary"
+          >
             <PillarLogo />
             <span>Finora</span>
           </Link>
@@ -181,18 +197,21 @@ export default function HomePage() {
             >
               Features
             </button>
+
             <button
               onClick={() => scrollToSection("platform")}
               className="text-sm font-medium text-gray-600 hover:text-primary transition-colors cursor-pointer"
             >
               Platform
             </button>
+
             <button
               onClick={() => scrollToSection("pricing")}
               className="text-sm font-medium text-gray-600 hover:text-primary transition-colors cursor-pointer"
             >
               Pricing
             </button>
+
             <button
               onClick={() => scrollToSection("ai-assistant")}
               className="text-sm font-medium text-gray-600 hover:text-primary transition-colors cursor-pointer"
@@ -218,6 +237,7 @@ export default function HomePage() {
                 >
                   Login
                 </Link>
+
                 <Link
                   href="/register"
                   className="px-4.5 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-hover shadow-sm transition-all duration-200"
@@ -232,16 +252,8 @@ export default function HomePage() {
 
       {/* Main Content */}
       <main className="flex-1">
-
         {/* Hero Section */}
-        <section
-          id="platform"
-          className="relative py-20 overflow-hidden"
-          style={{
-            backgroundImage: "radial-gradient(rgba(0, 21, 64, 0.04) 1.2px, transparent 1.2px)",
-            backgroundSize: "28px 28px",
-          }}
-        >
+        <section id="platform" className="relative py-20 overflow-hidden">
           <div className="mx-auto max-w-5xl px-6 flex flex-col items-center text-center relative z-10">
             {/* AI Badge */}
             <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-accent-green-bg text-accent-green text-xs font-semibold mb-8 border border-accent-green/10 shadow-sm animate-fade-in">
@@ -252,12 +264,16 @@ export default function HomePage() {
             {/* Title */}
             <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-primary leading-[1.12] max-w-3xl mb-6">
               Accounting Intelligence for the <br />
-              <span className="text-secondary">Modern Accountant</span>
+              <span className="bg-gradient-to-r from-[#061442] via-[#12317f] to-[#3b82f6] bg-clip-text text-transparent">
+                Modern Accountant
+              </span>
             </h1>
 
             {/* Subtitle */}
             <p className="text-base sm:text-lg text-gray-600 max-w-2xl mb-10 leading-relaxed font-normal">
-              Manage clients, automate invoices, track payments, and store documents in one powerful, AI-driven platform built for freelancers and SMBs.
+              Manage clients, automate invoices, track payments, and store
+              documents in one powerful, AI-driven platform built for
+              freelancers and SMBs.
             </p>
 
             {/* Action Buttons */}
@@ -268,6 +284,7 @@ export default function HomePage() {
               >
                 Start Free Trial
               </Link>
+
               <button
                 onClick={() => scrollToSection("pricing")}
                 className="w-full sm:w-auto text-center px-6 py-3 bg-white text-primary border border-gray-200 font-semibold rounded-lg shadow-sm hover:bg-gray-50 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
@@ -279,6 +296,7 @@ export default function HomePage() {
             {/* Tablet Mockup Container */}
             <div className="w-full max-w-4xl rounded-2xl md:rounded-3xl bg-[#1b4343] p-4 sm:p-6 md:p-8 shadow-2xl border border-[#1b4343]/30 relative group">
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl md:rounded-3xl pointer-events-none" />
+
               <div className="bg-slate-900 rounded-xl overflow-hidden shadow-inner border border-slate-800 relative aspect-[16/10] w-full">
                 <Image
                   src="/dashboard_mockup.png"
@@ -294,23 +312,26 @@ export default function HomePage() {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="py-24 bg-white/50 border-y border-gray-100">
+        <section
+          id="features"
+          className="py-24 bg-white/50 border-y border-gray-100"
+        >
           <div className="mx-auto max-w-7xl px-6">
-
             {/* Section Heading */}
             <div className="text-center max-w-3xl mx-auto mb-20">
               <h2 className="font-display text-3xl sm:text-4xl font-bold text-primary tracking-tight mb-4">
                 Everything you need to scale
               </h2>
+
               <p className="text-gray-600 text-base sm:text-lg">
-                A unified suite designed to streamline your financial operations, from client acquisition to final reconciliation.
+                A unified suite designed to streamline your financial
+                operations, from client acquisition to final reconciliation.
               </p>
             </div>
 
             {/* Features Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-              {/* Feature 1 - AI Assistant (2 columns on desktop) */}
+              {/* Feature 1 - AI Assistant */}
               <div
                 id="ai-assistant"
                 className="md:col-span-2 rounded-2xl bg-gradient-to-br from-accent-green-bg/60 via-white to-white p-8 border border-gray-200/80 shadow-sm flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 min-h-[340px]"
@@ -319,11 +340,14 @@ export default function HomePage() {
                   <div className="w-10 h-10 rounded-lg bg-accent-green-bg flex items-center justify-center mb-6 border border-accent-green/10">
                     <SparklesIcon className="w-5 h-5 text-accent-green" />
                   </div>
+
                   <h3 className="font-display text-xl font-bold text-primary mb-3">
                     AI Accounting Assistant
                   </h3>
+
                   <p className="text-gray-600 text-sm leading-relaxed max-w-xl">
-                    Automate data entry, categorize expenses instantly, and receive intelligent financial insights before you even ask.
+                    Automate data entry, categorize expenses instantly, and
+                    receive intelligent financial insights before you even ask.
                   </p>
                 </div>
 
@@ -332,11 +356,19 @@ export default function HomePage() {
                   <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
                     <CheckIcon className="w-4 h-4 text-emerald-600" />
                   </div>
+
                   <div>
-                    <h4 className="text-xs font-bold text-gray-900 mb-0.5">Finora AI Insight</h4>
+                    <h4 className="text-xs font-bold text-gray-900 mb-0.5">
+                      Finora AI Insight
+                    </h4>
+
                     <p className="text-xs text-gray-500 leading-normal">
-                      Identified recurring subscriptions that can be optimized to save $1,200 annually.{" "}
-                      <Link href={user ? "/overview" : "/register"} className="text-secondary hover:underline font-semibold">
+                      Identified recurring subscriptions that can be optimized to
+                      save $1,200 annually.{" "}
+                      <Link
+                        href={user ? "/overview" : "/register"}
+                        className="text-secondary hover:underline font-semibold"
+                      >
                         Review suggestions
                       </Link>
                     </p>
@@ -349,12 +381,16 @@ export default function HomePage() {
                 <div className="w-10 h-10 rounded-lg bg-[#f4f3f8] flex items-center justify-center mb-6">
                   <UsersIcon />
                 </div>
+
                 <div>
                   <h3 className="font-display text-lg font-bold text-primary mb-3">
                     Client Management
                   </h3>
+
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    A dedicated CRM for your accounting practice. Track communications, share contracts, and manage client lifecycles.
+                    A dedicated CRM for your accounting practice. Track
+                    communications, share contracts, and manage client
+                    lifecycles.
                   </p>
                 </div>
               </div>
@@ -364,12 +400,15 @@ export default function HomePage() {
                 <div className="w-10 h-10 rounded-lg bg-[#f4f3f8] flex items-center justify-center mb-6">
                   <InvoiceIcon />
                 </div>
+
                 <div>
                   <h3 className="font-display text-lg font-bold text-primary mb-3">
                     Invoice Management
                   </h3>
+
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    Create professional, customizable invoices. Set up automated reminders and handle tax fees seamlessly.
+                    Create professional, customizable invoices. Set up automated
+                    reminders and handle tax fees seamlessly.
                   </p>
                 </div>
               </div>
@@ -379,12 +418,15 @@ export default function HomePage() {
                 <div className="w-10 h-10 rounded-lg bg-[#f4f3f8] flex items-center justify-center mb-6">
                   <PaymentIcon />
                 </div>
+
                 <div>
                   <h3 className="font-display text-lg font-bold text-primary mb-3">
                     Payment Tracking
                   </h3>
+
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    Real-time reconciliation with bank feeds. Track incoming payments and manage accounts receivable effortlessly.
+                    Real-time reconciliation with bank feeds. Track incoming
+                    payments and manage accounts receivable effortlessly.
                   </p>
                 </div>
               </div>
@@ -394,29 +436,34 @@ export default function HomePage() {
                 <div className="w-10 h-10 rounded-lg bg-[#f4f3f8] flex items-center justify-center mb-6">
                   <VaultIcon />
                 </div>
+
                 <div>
                   <h3 className="font-display text-lg font-bold text-primary mb-3">
                     Global Vault
                   </h3>
+
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    Secure digital document storage with built-in multi-language OCR AI and multi-currency support for global operations.
+                    Secure digital document storage with built-in multi-language
+                    OCR AI and multi-currency support for global operations.
                   </p>
                 </div>
               </div>
-
             </div>
           </div>
         </section>
 
         {/* Pricing Section */}
-        <section id="pricing" className="py-24 bg-gradient-to-b from-transparent to-[#faf8fe]/80">
+        <section
+          id="pricing"
+          className="py-24 bg-gradient-to-b from-transparent to-[#faf8fe]/80"
+        >
           <div className="mx-auto max-w-7xl px-6">
-
             {/* Section Heading */}
             <div className="text-center max-w-3xl mx-auto mb-20">
               <h2 className="font-display text-3xl sm:text-4xl font-bold text-primary tracking-tight mb-4">
                 Transparent Pricing for Growth
               </h2>
+
               <p className="text-gray-600 text-base sm:text-lg">
                 Choose the plan that fits your accounting needs. No hidden fees.
               </p>
@@ -424,18 +471,25 @@ export default function HomePage() {
 
             {/* Pricing Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-5xl mx-auto">
-
               {/* Plan 1: Starter */}
               <div className="rounded-2xl bg-white p-8 border border-gray-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition-all duration-300 relative">
                 <div>
-                  <h3 className="font-display text-xl font-bold text-primary mb-1">Starter</h3>
-                  <p className="text-xs text-gray-500 mb-6">For freelancers and solo practitioners.</p>
+                  <h3 className="font-display text-xl font-bold text-primary mb-1">
+                    Starter
+                  </h3>
+
+                  <p className="text-xs text-gray-500 mb-6">
+                    For freelancers and solo practitioners.
+                  </p>
 
                   <div className="flex items-baseline gap-1 mb-8">
                     <span className="text-4xl font-extrabold text-primary tracking-tight">
                       {getPlanPrice("Starter", "29")}
                     </span>
-                    <span className="text-gray-500 text-sm font-medium">/mo</span>
+
+                    <span className="text-gray-500 text-sm font-medium">
+                      /mo
+                    </span>
                   </div>
 
                   <ul className="space-y-4 mb-8">
@@ -443,10 +497,12 @@ export default function HomePage() {
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
                       <span>Up to 50 Clients</span>
                     </li>
+
                     <li className="flex items-center gap-3 text-sm text-gray-600">
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
                       <span>Basic Invoicing</span>
                     </li>
+
                     <li className="flex items-center gap-3 text-sm text-gray-600">
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
                       <span>5GB Document Storage</span>
@@ -462,7 +518,7 @@ export default function HomePage() {
                 </Link>
               </div>
 
-              {/* Plan 2: Professional (Popular) */}
+              {/* Plan 2: Professional */}
               <div className="rounded-2xl bg-primary text-white p-8 border border-primary/10 shadow-xl flex flex-col justify-between hover:-translate-y-1 transition-all duration-300 relative md:-mt-4 md:mb-4">
                 {/* Popular Badge */}
                 <div className="absolute top-4 right-4 bg-[#00a975] text-white text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full">
@@ -470,14 +526,22 @@ export default function HomePage() {
                 </div>
 
                 <div>
-                  <h3 className="font-display text-xl font-bold mb-1">Professional</h3>
-                  <p className="text-xs text-blue-100/70 mb-6">For growing accounting firms and SMBs.</p>
+                  <h3 className="font-display text-xl font-bold mb-1">
+                    Professional
+                  </h3>
+
+                  <p className="text-xs text-blue-100/70 mb-6">
+                    For growing accounting firms and SMBs.
+                  </p>
 
                   <div className="flex items-baseline gap-1 mb-8">
                     <span className="text-4xl font-extrabold tracking-tight">
                       {getPlanPrice("Professional", "79")}
                     </span>
-                    <span className="text-blue-100/70 text-sm font-medium">/mo</span>
+
+                    <span className="text-blue-100/70 text-sm font-medium">
+                      /mo
+                    </span>
                   </div>
 
                   <ul className="space-y-4 mb-8">
@@ -485,14 +549,17 @@ export default function HomePage() {
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
                       <span>Unlimited Clients</span>
                     </li>
+
                     <li className="flex items-center gap-3 text-sm text-blue-50">
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
                       <span>Advanced Invoicing & Recon</span>
                     </li>
+
                     <li className="flex items-center gap-3 text-sm text-blue-50">
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
                       <span>Basic AI Assistant (500 credits)</span>
                     </li>
+
                     <li className="flex items-center gap-3 text-sm text-blue-50">
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
                       <span>Multi-Currency Support</span>
@@ -511,14 +578,22 @@ export default function HomePage() {
               {/* Plan 3: Business */}
               <div className="rounded-2xl bg-white p-8 border border-gray-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition-all duration-300 relative">
                 <div>
-                  <h3 className="font-display text-xl font-bold text-primary mb-1">Business</h3>
-                  <p className="text-xs text-gray-500 mb-6">For large enterprises needing full automation.</p>
+                  <h3 className="font-display text-xl font-bold text-primary mb-1">
+                    Business
+                  </h3>
+
+                  <p className="text-xs text-gray-500 mb-6">
+                    For large enterprises needing full automation.
+                  </p>
 
                   <div className="flex items-baseline gap-1 mb-8">
                     <span className="text-4xl font-extrabold text-primary tracking-tight">
                       {getPlanPrice("Business", "199")}
                     </span>
-                    <span className="text-gray-500 text-sm font-medium">/mo</span>
+
+                    <span className="text-gray-500 text-sm font-medium">
+                      /mo
+                    </span>
                   </div>
 
                   <ul className="space-y-4 mb-8">
@@ -526,14 +601,17 @@ export default function HomePage() {
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
                       <span>Everything in Pro</span>
                     </li>
+
                     <li className="flex items-center gap-3 text-sm text-gray-600">
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
                       <span>Unlimited AI Assistant</span>
                     </li>
+
                     <li className="flex items-center gap-3 text-sm text-gray-600">
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
                       <span>Custom API Access</span>
                     </li>
+
                     <li className="flex items-center gap-3 text-sm text-gray-600">
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
                       <span>Dedicated Success Manager</span>
@@ -548,11 +626,9 @@ export default function HomePage() {
                   Contact Sales
                 </Link>
               </div>
-
             </div>
           </div>
         </section>
-
       </main>
 
       {/* Footer Section */}
@@ -563,6 +639,7 @@ export default function HomePage() {
             <PillarLogo />
             <span>Finora</span>
           </div>
+
           {/* Copyright */}
           <p className="text-xs text-gray-500">
             &copy; 2026 Finora Inc. All rights reserved.
