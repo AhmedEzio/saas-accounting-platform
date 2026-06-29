@@ -57,3 +57,8 @@ export const authApi = {
   googleLogin: (credential) =>
   api.post("/auth/google", { credential }).then((r) => r.data),
 };
+
+export const subscriptionApi = {
+  getPlans: () => api.get("/subscription-plans").then((r) => r.data),
+};
+
