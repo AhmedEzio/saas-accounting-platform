@@ -2,7 +2,7 @@ import Client from "../../models/Client.js";
 // GET /api/dashbaord/clients?type=vendor|client&search=...
 export async function getAllClientsAdmin({ type, search }) {
   const filter = {
-    // isActive: true,
+    isActive: true,
   };
 
   if (type) {

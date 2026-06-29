@@ -13,6 +13,8 @@ import { serachResults } from "../controllers/dashboard-controllers/accountants.
 import { getAllInvoices } from "../controllers/dashboard-controllers/invoices.controller.js";
 import { getInvoicesRules } from "../validations/invoice.validation.js";
 import { getAllClients } from "../controllers/dashboard-controllers/clients.controller.js";
+import { getAllPayments } from "../controllers/dashboard-controllers/payments.controller.js";
+import { searchAllPayments } from "../controllers/dashboard-controllers/payments.controller.js";
 
 const router = Router();
 
@@ -123,9 +125,21 @@ router.get("/invoices", getInvoicesRules, getAllInvoices);
 
 /**
  * Clients page routes
- * // GET /api/dashbaord/clients?type=vendor|client&search=...
+ * // GET /api/dashboard/clients?type=vendor|client&search=...
  */
 router.get("/clients", getAllClients);
 
+/**
+ * Payments page routes
+ * // GET /api/dashboard/payments
+ */
+router.get("/payments", getAllPayments);
+
+/**
+ * Payments free-text search (search by invoice number, client name/phone,
+ * recorded-by name/email, notes, amount, or id)
+ * // GET /api/dashboard/payments/search?search=...
+ */
+router.get("/payments/search", searchAllPayments);
 
 export default router;
