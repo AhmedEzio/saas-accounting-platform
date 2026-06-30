@@ -64,11 +64,11 @@ function ToggleStatusModal({ client, loading, onConfirm, onCancel }) {
   const isActive = client?.isActive !== false;
   return (
     <div
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[300] flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-300 flex items-center justify-center p-4"
       onClick={(e) => e.target === e.currentTarget && onCancel()}
     >
       <div
-        className="bg-white rounded-2xl p-8 w-full max-w-[400px] shadow-[0_24px_60px_rgba(0,0,0,.2)]"
+        className="bg-white rounded-2xl p-8 w-full max-w-100 shadow-[0_24px_60px_rgba(0,0,0,.2)]"
         style={{ animation: "modalIn .18s ease" }}
       >
         <div
@@ -242,19 +242,18 @@ export default function ClientDetailPage({ params }) {
 
 
   const fetchTotals = useCallback(async () => {
-  try {
-    const data = await apiFetch(`/clients/${id}/totals`);
+    try {
+      const data = await apiFetch(`/clients/${id}/totals`);
 
-    setTotalDebit(data?.data?.totalDebit ?? 0);
-    setTotalCredit(data?.data?.totalCredit ?? 0);
+      setTotalDebit(data?.data?.totalDebit ?? 0);
+      setTotalCredit(data?.data?.totalCredit ?? 0);
+    } catch (error) {
+      console.error("Failed to fetch totals:", error);
 
-  } catch (error) {
-    console.error("Failed to fetch totals:", error);
-
-    setTotalDebit(0);
-    setTotalCredit(0);
-  }
-}, [id]);
+      setTotalDebit(0);
+      setTotalCredit(0);
+    }
+  }, [id]);
 
   useEffect(() => {
     fetchClient();
