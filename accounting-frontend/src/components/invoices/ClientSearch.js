@@ -13,6 +13,13 @@ function initials(name) {
     .toUpperCase();
 }
 
+function extractClients(response) {
+  if (Array.isArray(response?.results?.data)) return response.results.data;
+  if (Array.isArray(response?.data)) return response.data;
+  if (Array.isArray(response)) return response;
+  return [];
+}
+
 export default function ClientSearch({
   clientType,
   error,
@@ -38,10 +45,7 @@ export default function ClientSearch({
           ...(search.trim() ? { search: search.trim() } : {}),
         });
 
-        if (active)
-          setClients(
-            Array.isArray(response?.results.data) ? response.results.data : [],
-          );
+        if (active) setClients(extractClients(response));
       } catch (err) {
         if (active) {
           setClients([]);

@@ -17,6 +17,9 @@ const getPaymentDirection = (invoiceType) => {
   return "in";
 };
 
+const RETURN_TYPES = ["sales_return", "purchase_return"];
+const ORIGINAL_RETURN_TYPES = ["sale", "purchase"];
+
 const getDueBalanceDelta = (invoiceType, amount) => {
   // Positive balance  => client/vendor owes the accountant.
   // Negative balance  => accountant owes the client/vendor.
@@ -29,6 +32,56 @@ const getDueBalanceDelta = (invoiceType, amount) => {
 const getSettlementBalanceDelta = (invoiceType, amount) => {
   // Settlement reverses the outstanding due effect.
   return round2(-getDueBalanceDelta(invoiceType, amount));
+};
+
+const getReturnLabel = (invoiceType) =>
+  invoiceType === "purchase_return" ? "Purchase return" : "Sales return";
+
+const getEffectivePaymentState = async ({ invoice, accountantId, session }) => {
+  if (!ORIGINAL_RETURN_TYPES.includes(invoice.invoiceType)) {
+    return {
+      effectiveReturnedAmount: 0,
+      effectiveTotal: round2(invoice.finalAmount),
+      effectiveDue: round2(invoice.dueAmount),
+      isFullyReturned: false,
+    };
+  }
+
+  const activeReturns = await Invoice.find({
+    accountantId,
+    relatedInvoiceId: invoice._id,
+    invoiceType: { $in: RETURN_TYPES },
+    isCancelled: false,
+  })
+    .select("finalAmount")
+    .session(session);
+
+  const effectiveReturnedAmount = round2(
+    Math.min(
+      invoice.finalAmount,
+      activeReturns.reduce(
+        (sum, returnInvoice) =>
+          round2(sum + Number(returnInvoice.finalAmount || 0)),
+        0,
+      ),
+    ),
+  );
+  const effectiveTotal = round2(
+    Math.max(Number(invoice.finalAmount || 0) - effectiveReturnedAmount, 0),
+  );
+  const effectivePaid = round2(
+    Math.min(Number(invoice.amountPaid || 0), effectiveTotal),
+  );
+  const effectiveDue = round2(Math.max(effectiveTotal - effectivePaid, 0));
+
+  return {
+    effectiveReturnedAmount,
+    effectiveTotal,
+    effectiveDue,
+    isFullyReturned:
+      effectiveReturnedAmount > 0 &&
+      effectiveReturnedAmount >= Number(invoice.finalAmount || 0),
+  };
 };
 
 const buildPaymentTxDoc = ({
@@ -104,35 +157,11 @@ const applyClientBalanceDelta = async ({
   return tx;
 };
 
-const applyOverpayment = async ({
-  accountantId,
-  clientId,
-  invoice,
-  amount,
-  createdBy,
-  session,
-}) => {
-  const delta = getDueBalanceDelta(invoice.invoiceType, amount);
-
-  await applyClientBalanceDelta({
-    accountantId,
-    clientId,
-    amount,
-    delta,
-    type: "overpayment",
-    sourceInvoiceId: invoice._id,
-    createdBy,
-    notes: `Overpayment from invoice ${invoice.invoiceNumber}`,
-    session,
-  });
-};
-
 export const recordInitialPayment = async ({
   invoice,
   session,
   createdBy,
   accountantId,
-  initialOverpayment = 0,
 }) => {
   if (invoice.amountPaid && invoice.amountPaid > 0) {
     const paymentDoc = buildPaymentTxDoc({
@@ -165,17 +194,6 @@ export const recordInitialPayment = async ({
       session,
     });
   }
-
-  if (invoice.clientId && initialOverpayment > 0) {
-    await applyOverpayment({
-      accountantId,
-      clientId: invoice.clientId,
-      invoice,
-      amount: initialOverpayment,
-      createdBy,
-      session,
-    });
-  }
 };
 
 export const createPayment = async (body, paidBy, accountantId = paidBy) => {
@@ -202,22 +220,44 @@ export const createPayment = async (body, paidBy, accountantId = paidBy) => {
       );
     }
 
-    if (invoice.dueAmount <= 0) {
+    if (RETURN_TYPES.includes(invoice.invoiceType)) {
+      throw Object.assign(
+        new Error("Cannot record payment on a return invoice"),
+        { statusCode: 422 },
+      );
+    }
+
+    const paymentState = await getEffectivePaymentState({
+      invoice,
+      accountantId,
+      session,
+    });
+
+    if (paymentState.isFullyReturned) {
+      throw Object.assign(
+        new Error("Cannot record payment on a fully returned invoice"),
+        { statusCode: 422 },
+      );
+    }
+
+    if (paymentState.effectiveDue <= 0) {
       throw Object.assign(new Error("Invoice is already fully paid"), {
         statusCode: 422,
       });
     }
 
-    const oldDueAmount = invoice.dueAmount;
+    if (parsedAmount > paymentState.effectiveDue) {
+      throw Object.assign(
+        new Error("Payment amount cannot exceed invoice due amount"),
+        { statusCode: 422 },
+      );
+    }
+
+    const oldDueAmount = paymentState.effectiveDue;
     const newAmountPaid = round2(invoice.amountPaid + parsedAmount);
-
-    const excess =
-      newAmountPaid > invoice.finalAmount
-        ? round2(newAmountPaid - invoice.finalAmount)
-        : 0;
-
-    const newDueAmount =
-      excess > 0 ? 0 : round2(invoice.finalAmount - newAmountPaid);
+    const newDueAmount = round2(
+      Math.max(paymentState.effectiveTotal - newAmountPaid, 0),
+    );
 
     invoice.amountPaid = newAmountPaid;
     invoice.dueAmount = newDueAmount;
@@ -262,17 +302,6 @@ export const createPayment = async (body, paidBy, accountantId = paidBy) => {
       });
     }
 
-    if (excess > 0 && invoice.clientId) {
-      await applyOverpayment({
-        accountantId,
-        clientId: invoice.clientId,
-        invoice,
-        amount: excess,
-        createdBy: paidBy,
-        session,
-      });
-    }
-
     await session.commitTransaction();
 
     return { invoice, paymentTransaction: paymentTx };
@@ -284,34 +313,36 @@ export const createPayment = async (body, paidBy, accountantId = paidBy) => {
   }
 };
 
-export const recordSalesReturnRefund = async ({
+export const recordReturnInvoiceSettlement = async ({
   returnInvoice,
   originalInvoice,
   session,
   createdBy,
   accountantId,
 }) => {
-  if (returnInvoice.invoiceType !== "sales_return") return;
+  if (!RETURN_TYPES.includes(returnInvoice.invoiceType)) return;
   if (!returnInvoice.clientId) return;
 
-  // A sales return reduces what the client owes. If the client already paid,
-  // this creates a temporary negative balance that will be cleared by the refund.
+  const label = getReturnLabel(returnInvoice.invoiceType);
+
+  // Return value reverses the original outstanding balance. Any paid portion
+  // is then settled by a refund/payment transaction below.
   await applyClientBalanceDelta({
     accountantId,
     clientId: returnInvoice.clientId,
     amount: returnInvoice.finalAmount,
-    delta: getDueBalanceDelta("sales_return", returnInvoice.finalAmount),
+    delta: getDueBalanceDelta(returnInvoice.invoiceType, returnInvoice.finalAmount),
     type: "refund",
     sourceInvoiceId: returnInvoice._id,
     createdBy,
-    notes: `Sales return value for invoice ${returnInvoice.invoiceNumber}`,
+    notes: `${label} value for invoice ${returnInvoice.invoiceNumber}`,
     session,
   });
 
   const previousReturns = await Invoice.find({
     accountantId,
     relatedInvoiceId: originalInvoice._id,
-    invoiceType: "sales_return",
+    invoiceType: returnInvoice.invoiceType,
     isCancelled: false,
     _id: { $ne: returnInvoice._id },
   }).session(session);
@@ -320,14 +351,30 @@ export const recordSalesReturnRefund = async ({
     return round2(sum + (inv.amountPaid || 0));
   }, 0);
 
-  const remainingRefundable = round2(
-    originalInvoice.amountPaid - previousRefundedAmount,
+  const previousReturnedAmount = previousReturns.reduce((sum, inv) => {
+    return round2(sum + (inv.finalAmount || 0));
+  }, 0);
+
+  const cumulativeReturnedAmount = Math.min(
+    originalInvoice.finalAmount,
+    round2(previousReturnedAmount + returnInvoice.finalAmount),
   );
 
-  const refundAmount = Math.min(
+  const cumulativeRefundableAmount =
+    originalInvoice.finalAmount > 0
+      ? round2(
+          Math.min(
+            originalInvoice.amountPaid,
+            (originalInvoice.amountPaid * cumulativeReturnedAmount) /
+              originalInvoice.finalAmount,
+          ),
+        )
+      : 0;
+
+  const refundAmount = round2(Math.min(
     returnInvoice.finalAmount,
-    Math.max(0, remainingRefundable),
-  );
+    Math.max(0, cumulativeRefundableAmount - previousRefundedAmount),
+  ));
 
   returnInvoice.amountPaid = refundAmount;
   returnInvoice.dueAmount = 0;
@@ -337,33 +384,32 @@ export const recordSalesReturnRefund = async ({
 
   if (refundAmount <= 0) return;
 
-  await PaymentTransaction.create(
+  const [refundTx] = await PaymentTransaction.create(
     [
-      {
+      buildPaymentTxDoc({
         accountantId,
         invoiceId: returnInvoice._id,
         clientId: returnInvoice.clientId,
         amount: refundAmount,
         paymentMethod: returnInvoice.paymentMethod,
         source: "refund",
-        direction: "out",
+        direction: getPaymentDirection(returnInvoice.invoiceType),
         paidBy: createdBy,
-        notes: `Cash refund for sales return invoice ${returnInvoice.invoiceNumber}`,
-      },
+        notes: `${label} cash settlement for invoice ${returnInvoice.invoiceNumber}`,
+      }),
     ],
     { session },
   );
 
-  // Cash refund clears the accountant's liability to the client.
   await applyClientBalanceDelta({
     accountantId,
     clientId: returnInvoice.clientId,
     amount: refundAmount,
-    delta: round2(refundAmount),
+    delta: getSettlementBalanceDelta(returnInvoice.invoiceType, refundAmount),
     type: "refund",
     sourceInvoiceId: returnInvoice._id,
     createdBy,
-    notes: `Cash refund paid for sales return ${returnInvoice.invoiceNumber}`,
+    notes: `${label} cash settlement ${refundTx._id}`,
     session,
   });
 };
@@ -579,9 +625,16 @@ export const getClientLastBalanceTransactions = async (
     }).sort({ createdAt: -1 }),
   ]);
 
+  const netBalance = round2(client.currentBalance || 0);
+  const totalDebit = netBalance > 0 ? netBalance : 0;
+  const totalCredit = netBalance < 0 ? round2(Math.abs(netBalance)) : 0;
+
   return {
     client,
     lastDebit,
     lastCredit,
+    totalDebit,
+    totalCredit,
+    netBalance,
   };
 };

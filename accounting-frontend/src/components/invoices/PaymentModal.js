@@ -21,7 +21,7 @@ export default function PaymentModal({ invoice, open, onClose, onSuccess, t }) {
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const dueAmount = Number(invoice?.dueAmount || 0);
+  const dueAmount = Number(invoice?.effectiveDue ?? invoice?.dueAmount ?? 0);
 
   useEffect(() => {
     if (!open || !invoice) return;

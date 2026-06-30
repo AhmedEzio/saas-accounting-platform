@@ -10,7 +10,6 @@ import LineItemsEditor, { createEmptyLineItem } from "./LineItemsEditor";
 import SummaryPanel from "./SummaryPanel";
 import useLang from "./useLang";
 
-const returnTypes = ["sales_return", "purchase_return"];
 const expenseTypes = [
   "rent",
   "salary",
@@ -26,7 +25,6 @@ const expenseTypes = [
 const initialForm = {
   invoiceType: "sale",
   client: null,
-  relatedInvoiceId: "",
   paymentMethod: "cash",
   items: [createEmptyLineItem()],
   expenseName: "",
@@ -44,9 +42,7 @@ function round2(value) {
 }
 
 function getClientType(invoiceType) {
-  return invoiceType === "purchase" || invoiceType === "purchase_return"
-    ? "vendor"
-    : "client";
+  return invoiceType === "purchase" ? "vendor" : "client";
 }
 
 function calculateTotals(form) {
@@ -72,10 +68,6 @@ function calculateTotals(form) {
   };
 }
 
-function isMongoId(value) {
-  return /^[a-f\d]{24}$/i.test(value);
-}
-
 export default function InvoiceForm() {
   const router = useRouter();
   const { dir, isRtl, lang, setLang, t } = useLang();
@@ -85,7 +77,6 @@ export default function InvoiceForm() {
   const [submitting, setSubmitting] = useState(false);
 
   const isExpense = form.invoiceType === "expense";
-  const isReturn = returnTypes.includes(form.invoiceType);
   const clientType = getClientType(form.invoiceType);
   const totals = useMemo(() => calculateTotals(form), [form]);
 
@@ -103,7 +94,6 @@ export default function InvoiceForm() {
       ...current,
       invoiceType,
       client: invoiceType === "expense" ? null : current.client,
-      relatedInvoiceId: returnTypes.includes(invoiceType) ? current.relatedInvoiceId : "",
       items: invoiceType === "expense" ? current.items : current.items.length ? current.items : [createEmptyLineItem()],
     }));
     setErrors({});
@@ -129,9 +119,6 @@ export default function InvoiceForm() {
       if (Number(form.baseAmount) <= 0) nextErrors.baseAmount = t("error.amountPositive");
     } else {
       if (!form.client?._id) nextErrors.clientId = t("error.required");
-      if (isReturn && !isMongoId(form.relatedInvoiceId.trim())) {
-        nextErrors.relatedInvoiceId = t("error.validObjectId");
-      }
 
       form.items.forEach((item, index) => {
         if (!item.description.trim()) {
@@ -173,7 +160,6 @@ export default function InvoiceForm() {
     return {
       ...common,
       clientId: form.client._id,
-      ...(isReturn ? { relatedInvoiceId: form.relatedInvoiceId.trim() } : {}),
       items: form.items.map((item) => ({
         description: item.description.trim(),
         quantity: Number(item.quantity),
@@ -262,28 +248,6 @@ export default function InvoiceForm() {
                       selectedClient={form.client}
                       t={t}
                     />
-                  </div>
-                ) : null}
-
-                {isReturn ? (
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-slate-600" htmlFor="relatedInvoiceId">
-                      {t("form.relatedInvoice")}
-                    </label>
-                    <input
-                      className={`mt-2 min-h-11 w-full rounded-lg border px-3 py-2 text-sm text-slate-950 placeholder:text-slate-400 focus:border-[#001540] focus:outline-none focus:ring-2 focus:ring-[#001540]/20 ${
-                        errors.relatedInvoiceId ? "border-rose-400" : "border-slate-300"
-                      }`}
-                      id="relatedInvoiceId"
-                      onChange={(event) => updateForm({ relatedInvoiceId: event.target.value })}
-                      placeholder={t("form.relatedInvoicePlaceholder")}
-                      value={form.relatedInvoiceId}
-                    />
-                    {errors.relatedInvoiceId ? (
-                      <p className="mt-1 text-xs text-rose-600">{errors.relatedInvoiceId}</p>
-                    ) : (
-                      <p className="mt-1 text-xs text-slate-500">{t("form.relatedInvoiceHint")}</p>
-                    )}
                   </div>
                 ) : null}
 

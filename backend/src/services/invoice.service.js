@@ -4,7 +4,7 @@ import Client from "../models/Client.js";
 import {
   recordInitialPayment,
   reverseCancelledInvoicePayments,
-  recordSalesReturnRefund,
+  recordReturnInvoiceSettlement,
 } from "./payment.service.js";
 
 const INVOICE_TYPE_PREFIX = {
@@ -16,8 +16,88 @@ const INVOICE_TYPE_PREFIX = {
 };
 
 const RETURN_TYPES = ["purchase_return", "sales_return"];
+const ORIGINAL_RETURN_TYPES = ["purchase", "sale"];
 
 const round2 = (n) => Math.round((Number(n) + Number.EPSILON) * 100) / 100;
+
+const getInvoiceId = (invoice) => String(invoice?._id || invoice?.id || "");
+
+const computeEffectiveFields = (invoice, returnedAmount = 0) => {
+  if (RETURN_TYPES.includes(invoice.invoiceType)) {
+    return {
+      effectiveReturnedAmount: 0,
+      effectiveTotal: round2(Number(invoice.finalAmount || 0)),
+      effectiveDue: 0,
+      isFullyReturned: false,
+      hasActiveReturns: false,
+    };
+  }
+
+  const effectiveReturnedAmount = RETURN_TYPES.includes(invoice.invoiceType)
+    ? 0
+    : round2(Math.min(Number(invoice.finalAmount || 0), returnedAmount));
+  const effectiveTotal = round2(
+    Math.max(Number(invoice.finalAmount || 0) - effectiveReturnedAmount, 0)
+  );
+  const effectivePaid = round2(
+    Math.min(Number(invoice.amountPaid || 0), effectiveTotal)
+  );
+  const effectiveDue = round2(Math.max(effectiveTotal - effectivePaid, 0));
+  const hasActiveReturns = effectiveReturnedAmount > 0;
+
+  return {
+    effectiveReturnedAmount,
+    effectiveTotal,
+    effectiveDue,
+    isFullyReturned:
+      hasActiveReturns &&
+      Number(invoice.finalAmount || 0) > 0 &&
+      effectiveReturnedAmount >= Number(invoice.finalAmount || 0),
+    hasActiveReturns,
+  };
+};
+
+const attachEffectiveFields = async (invoices, accountantId) => {
+  const list = Array.isArray(invoices) ? invoices : [invoices];
+  const originalIds = list
+    .filter((invoice) => ORIGINAL_RETURN_TYPES.includes(invoice.invoiceType))
+    .map(getInvoiceId)
+    .filter(Boolean);
+
+  if (!originalIds.length) {
+    return Array.isArray(invoices)
+      ? list.map((invoice) => ({ ...invoice, ...computeEffectiveFields(invoice) }))
+      : { ...invoices, ...computeEffectiveFields(invoices) };
+  }
+
+  const returns = await Invoice.find({
+    accountantId,
+    relatedInvoiceId: { $in: originalIds },
+    invoiceType: { $in: RETURN_TYPES },
+    isCancelled: false,
+  })
+    .select("relatedInvoiceId finalAmount")
+    .lean();
+
+  const returnedAmountByOriginalId = returns.reduce((map, invoice) => {
+    const originalId = String(invoice.relatedInvoiceId);
+    map.set(
+      originalId,
+      round2((map.get(originalId) || 0) + Number(invoice.finalAmount || 0))
+    );
+    return map;
+  }, new Map());
+
+  const withEffectiveFields = list.map((invoice) => ({
+    ...invoice,
+    ...computeEffectiveFields(
+      invoice,
+      returnedAmountByOriginalId.get(getInvoiceId(invoice)) || 0
+    ),
+  }));
+
+  return Array.isArray(invoices) ? withEffectiveFields : withEffectiveFields[0];
+};
 
 const computeAmounts = ({ baseAmount, taxPercentage = 0, amountPaid = 0 }) => {
   const base = round2(baseAmount);
@@ -92,6 +172,7 @@ const validateReturnInvoice = async ({
   accountantId,
   invoiceType,
   relatedInvoiceId,
+  clientId,
   items,
   session,
 }) => {
@@ -123,6 +204,13 @@ const validateReturnInvoice = async ({
   if (invoiceType === "sales_return" && original.invoiceType !== "sale") {
     throw Object.assign(
       new Error("Sales return must reference a sale invoice"),
+      { statusCode: 422 }
+    );
+  }
+
+  if (String(original.clientId) !== String(clientId)) {
+    throw Object.assign(
+      new Error("Return invoice client/vendor must match the original invoice"),
       { statusCode: 422 }
     );
   }
@@ -227,6 +315,7 @@ export const createInvoice = async (body, createdBy, accountantId = createdBy) =
         accountantId,
         invoiceType,
         relatedInvoiceId,
+        clientId,
         items: sanitizedItems,
         session,
       });
@@ -249,11 +338,10 @@ export const createInvoice = async (body, createdBy, accountantId = createdBy) =
       amountPaid,
     });
 
-    let initialOverpayment = 0;
-
     if (amounts.amountPaid > amounts.finalAmount) {
-      initialOverpayment = round2(amounts.amountPaid - amounts.finalAmount);
-      amounts.changeAmount = 0;
+      throw Object.assign(new Error("amountPaid cannot exceed invoice total"), {
+        statusCode: 422,
+      });
     }
 
     const invoiceNumber = await generateInvoiceNumber(invoiceType, session);
@@ -281,8 +369,8 @@ export const createInvoice = async (body, createdBy, accountantId = createdBy) =
       { session }
     );
 
-    if (invoiceType === "sales_return") {
-      await recordSalesReturnRefund({
+    if (RETURN_TYPES.includes(invoiceType)) {
+      await recordReturnInvoiceSettlement({
         returnInvoice: invoice,
         originalInvoice,
         session,
@@ -295,7 +383,6 @@ export const createInvoice = async (body, createdBy, accountantId = createdBy) =
         session,
         createdBy,
         accountantId,
-        initialOverpayment,
       });
     }
 
@@ -371,13 +458,17 @@ export const getInvoices = async (query, accountantId) => {
     .populate("clientId", "name phone type")
     .populate("createdBy", "name email")
     .lean({ virtuals: true });
+  const invoicesWithEffectiveFields = await attachEffectiveFields(
+    invoices,
+    accountantId
+  );
 
   return {
     total,
     page: Number(page),
     limit: Number(limit),
     pages: Math.ceil(total / Number(limit)),
-    invoices,
+    invoices: invoicesWithEffectiveFields,
   };
 };
 
@@ -397,7 +488,7 @@ export const getInvoiceById = async (id, accountantId) => {
     throw Object.assign(new Error("Invoice not found"), { statusCode: 404 });
   }
 
-  return invoice;
+  return attachEffectiveFields(invoice, accountantId);
 };
 
 export const cancelInvoice = async (

@@ -226,17 +226,32 @@ export default function ClientDetailPage({ params }) {
       setTxLoading(false);
     }
   }, [id]);
+  // const fetchTotals = useCallback(async () => {
+  //   try {
+  //     const data = await apiFetch(`/clients/${id}/totals`);
+  //     setTotalDebit(data.data.lastDebit.balanceAfter);
+  //     setTotalCredit(data.data.lastCredit.balanceAfter);
+  //     // setTotalDebit(0);
+  //     // setTotalCredit(0);
+  //     console.log("dataaa");
+  //     console.log(data);
+  //   } catch (err) {
+  //     console.error("fetchTotals error:", err);
+  //   }
+  // }, [id]);
+
+
   const fetchTotals = useCallback(async () => {
     try {
       const data = await apiFetch(`/clients/${id}/totals`);
-      setTotalDebit(data.data.lastDebit?.balanceAfter ?? 0);
-      setTotalCredit(data.data.lastCredit?.balanceAfter ?? 0);
-      // setTotalDebit(0);
-      // setTotalCredit(0);
-      console.log("dataaa");
-      console.log(data);
-    } catch (err) {
-      console.error("fetchTotals error:", err);
+
+      setTotalDebit(data?.data?.totalDebit ?? 0);
+      setTotalCredit(data?.data?.totalCredit ?? 0);
+    } catch (error) {
+      console.error("Failed to fetch totals:", error);
+
+      setTotalDebit(0);
+      setTotalCredit(0);
     }
   }, [id]);
 

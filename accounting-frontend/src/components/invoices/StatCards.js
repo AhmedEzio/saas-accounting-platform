@@ -5,6 +5,11 @@ const formatter = new Intl.NumberFormat("en-US", {
 });
 
 const numberFormatter = new Intl.NumberFormat("en-US");
+const operatingTypes = ["sale", "purchase", "expense"];
+
+function getEffectiveDue(invoice) {
+  return Number(invoice.effectiveDue ?? invoice.dueAmount ?? 0);
+}
 
 function StatCard({ label, value, helper, wide = false }) {
   return (
@@ -25,13 +30,32 @@ function StatCard({ label, value, helper, wide = false }) {
 }
 
 export default function StatCards({ invoices, total, t }) {
-  const paid = invoices.filter((invoice) => !invoice.isCancelled && invoice.dueAmount <= 0).length;
+  const operatingInvoices = invoices.filter(
+    (invoice) =>
+      !invoice.isCancelled &&
+      !invoice.isFullyReturned &&
+      operatingTypes.includes(invoice.invoiceType)
+  );
+  const paid = operatingInvoices.filter((invoice) => getEffectiveDue(invoice) <= 0).length;
   const unpaidOrPartial = invoices.filter(
-    (invoice) => !invoice.isCancelled && invoice.dueAmount > 0
+    (invoice) =>
+      !invoice.isCancelled &&
+      !invoice.isFullyReturned &&
+      operatingTypes.includes(invoice.invoiceType) &&
+      getEffectiveDue(invoice) > 0
   ).length;
-  const outstanding = invoices.reduce((sum, invoice) => {
-    if (invoice.isCancelled) return sum;
-    return sum + Number(invoice.dueAmount || 0);
+  const receivables = invoices.reduce((sum, invoice) => {
+    if (invoice.isCancelled || invoice.invoiceType !== "sale") return sum;
+    return sum + getEffectiveDue(invoice);
+  }, 0);
+  const payables = invoices.reduce((sum, invoice) => {
+    if (
+      invoice.isCancelled ||
+      !["purchase", "expense"].includes(invoice.invoiceType)
+    ) {
+      return sum;
+    }
+    return sum + getEffectiveDue(invoice);
   }, 0);
 
   return (
@@ -56,9 +80,13 @@ export default function StatCards({ invoices, total, t }) {
       />
       <StatCard
         helper={t("stats.currentPage")}
-        label={t("stats.outstanding")}
-        value={formatter.format(outstanding)}
-        wide
+        label={t("stats.receivables")}
+        value={formatter.format(receivables)}
+      />
+      <StatCard
+        helper={t("stats.currentPage")}
+        label={t("stats.payables")}
+        value={formatter.format(payables)}
       />
     </section>
   );

@@ -9,12 +9,29 @@ const moneyFormatter = new Intl.NumberFormat("en-US", {
   minimumFractionDigits: 2,
 });
 
+const returnTypes = ["sales_return", "purchase_return"];
+
 function getStatus(invoice) {
   if (invoice.isCancelled) return "cancelled";
-  if (invoice.paymentStatus) return invoice.paymentStatus;
-  if (Number(invoice.dueAmount || 0) <= 0) return "paid";
-  if (Number(invoice.amountPaid || 0) > 0) return "partial";
+  if (returnTypes.includes(invoice.invoiceType)) return "settled";
+  if (invoice.isFullyReturned) return "returned";
+
+  const hasEffectiveFields =
+    invoice.effectiveDue !== undefined || invoice.effectiveTotal !== undefined;
+
+  if (!hasEffectiveFields && invoice.paymentStatus) return invoice.paymentStatus;
+
+  const total = Number(invoice.effectiveTotal ?? invoice.finalAmount ?? 0);
+  const paid = Math.min(Number(invoice.amountPaid || 0), total);
+  const due = Number(invoice.effectiveDue ?? invoice.dueAmount ?? 0);
+
+  if (due <= 0) return "paid";
+  if (paid > 0) return "partial";
   return "unpaid";
+}
+
+function getDisplayDue(invoice) {
+  return Number(invoice.effectiveDue ?? invoice.dueAmount ?? 0);
 }
 
 function getClientName(invoice, t) {
@@ -81,6 +98,7 @@ export default function InvoiceTable({ invoices, loading, lang, t }) {
             : invoices.map((invoice) => {
                 const clientName = getClientName(invoice, t);
                 const status = getStatus(invoice);
+                const dueAmount = getDisplayDue(invoice);
 
                 return (
                   <tr
@@ -121,10 +139,10 @@ export default function InvoiceTable({ invoices, loading, lang, t }) {
                     </td>
                     <td
                       className={`px-4 py-2 font-mono ${
-                        Number(invoice.dueAmount || 0) > 0 ? "font-medium text-rose-700" : "text-slate-500"
+                        dueAmount > 0 ? "font-medium text-rose-700" : "text-slate-500"
                       } ${alignEnd}`}
                     >
-                      {moneyFormatter.format(Number(invoice.dueAmount || 0))}
+                      {moneyFormatter.format(dueAmount)}
                     </td>
                     <td className="px-4 py-2 text-slate-500">
                       {formatDate(invoice.createdAt, lang)}

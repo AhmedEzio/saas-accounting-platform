@@ -27,6 +27,8 @@ export const translations = {
   'status.unpaid':            { en: 'Unpaid',          ar: 'غير مدفوع' },
   'status.partial':           { en: 'Partial',         ar: 'مدفوع جزئياً' },
   'status.cancelled':         { en: 'Cancelled',       ar: 'ملغاة' },
+  'status.settled':           { en: 'Settled',         ar: 'مسوى' },
+  'status.returned':          { en: 'Returned',        ar: 'مرتجع' },
 
   // ── Payment methods ───────────────────────────────────────────────────────
   'method.cash':              { en: 'Cash',            ar: 'نقداً' },
@@ -105,8 +107,6 @@ export const translations = {
   'form.searchClient':        { en: 'Search for a client...', ar: 'ابحث عن عميل...' },
   'form.searchVendor':        { en: 'Search for a vendor...', ar: 'ابحث عن مورد...' },
   'form.noClients':           { en: 'No matching clients or vendors found.', ar: 'لا توجد نتائج مطابقة.' },
-  'form.relatedInvoicePlaceholder': { en: 'Paste the original invoice ID', ar: 'أدخل معرف الفاتورة الأصلية' },
-  'form.relatedInvoiceHint':  { en: 'Use the 24-character original invoice ID for returns.', ar: 'استخدم معرف الفاتورة الأصلية المكوّن من ٢٤ حرفاً للمرتجعات.' },
   'form.removeItem':          { en: 'Remove item',      ar: 'حذف البند' },
   'form.submitting':          { en: 'Creating invoice...', ar: 'جارٍ إنشاء الفاتورة...' },
 
@@ -116,7 +116,6 @@ export const translations = {
   'error.nonNegative':        { en: 'Value cannot be negative.', ar: 'لا يمكن أن تكون القيمة سالبة.' },
   'error.max500':             { en: 'Must not exceed 500 characters.', ar: 'يجب ألا يتجاوز ٥٠٠ حرف.' },
   'error.amountPositive':     { en: 'Amount must be greater than zero.', ar: 'يجب أن يكون المبلغ أكبر من صفر.' },
-  'error.validObjectId':      { en: 'Enter a valid 24-character invoice ID.', ar: 'أدخل معرف فاتورة صحيحاً مكوناً من ٢٤ حرفاً.' },
   'error.quantityMin':        { en: 'Quantity must be at least 1.', ar: 'يجب ألا تقل الكمية عن ١.' },
   'error.submitFailed':       { en: 'Could not create invoice. Try again.', ar: 'تعذر إنشاء الفاتورة. حاول مرة أخرى.' },
 
@@ -125,6 +124,8 @@ export const translations = {
   'stats.paidInvoices':       { en: 'Paid Invoices',    ar: 'الفواتير المدفوعة' },
   'stats.unpaidOverdue':      { en: 'Unpaid & Partial',  ar: 'غير مدفوع / جزئي' },
   'stats.outstanding':        { en: 'Outstanding',      ar: 'المستحق' },
+  'stats.receivables':        { en: 'Receivables',      ar: 'المستحق من العملاء' },
+  'stats.payables':           { en: 'Payables',         ar: 'المستحق للموردين والمصروفات' },
   'stats.currentPage':        { en: 'Current page',     ar: 'الصفحة الحالية' },
   'stats.allFiltered':        { en: 'All (filtered)',   ar: 'الكل (مفلتر)' },
 
