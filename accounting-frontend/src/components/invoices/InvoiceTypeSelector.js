@@ -1,4 +1,4 @@
-const invoiceTypes = ["sale", "purchase", "sales_return", "purchase_return", "expense"];
+const invoiceTypes = ["sale", "purchase", "expense"];
 
 export default function InvoiceTypeSelector({ value, onChange, t }) {
   return (

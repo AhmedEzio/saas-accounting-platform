@@ -40,6 +40,8 @@ const STATUS_META = {
   paid: { label: "Paid", bg: "bg-emerald-50", text: "text-emerald-700", dot: "bg-emerald-500" },
   partial: { label: "Partial", bg: "bg-amber-50", text: "text-amber-700", dot: "bg-amber-400" },
   unpaid: { label: "Unpaid", bg: "bg-red-50", text: "text-red-600", dot: "bg-red-500" },
+  returned: { label: "Returned / مرتجع", bg: "bg-cyan-50", text: "text-cyan-700", dot: "bg-cyan-500" },
+  settled: { label: "Settled / مسوى", bg: "bg-emerald-50", text: "text-emerald-700", dot: "bg-emerald-500" },
 };
 
 const METHOD_ICONS = {
@@ -51,9 +53,26 @@ const METHOD_ICONS = {
 
 function getPaymentStatus(inv) {
   if (inv.isCancelled) return "cancelled";
-  if (inv.dueAmount <= 0) return "paid";
-  if (inv.amountPaid > 0) return "partial";
+  if (["sales_return", "purchase_return"].includes(inv.invoiceType)) return "settled";
+  if (inv.isFullyReturned) return "returned";
+
+  const hasEffectiveFields =
+    inv.effectiveDue !== undefined || inv.effectiveTotal !== undefined;
+
+  if (!hasEffectiveFields && inv.dueAmount <= 0) return "paid";
+  if (!hasEffectiveFields && inv.amountPaid > 0) return "partial";
+
+  const total = Number(inv.effectiveTotal ?? inv.finalAmount ?? 0);
+  const paid = Math.min(Number(inv.amountPaid || 0), total);
+  const due = Number(inv.effectiveDue ?? inv.dueAmount ?? 0);
+
+  if (due <= 0) return "paid";
+  if (paid > 0) return "partial";
   return "unpaid";
+}
+
+function getDueAmount(inv) {
+  return Number(inv.effectiveDue ?? inv.dueAmount ?? 0);
 }
 
 /* ── CSV export ──────────────────────────────────────────────────────────── */
@@ -62,6 +81,7 @@ function downloadCSV(invoices) {
   const rows = invoices.map((inv) => {
     const status = getPaymentStatus(inv);
     const date = fmtDate(inv.createdAt);
+    const due = getDueAmount(inv);
     return [
       inv.invoiceNumber,
       TYPE_META[inv.invoiceType]?.label ?? inv.invoiceType,
@@ -70,7 +90,7 @@ function downloadCSV(invoices) {
       inv.taxAmount?.toFixed(2) ?? "0.00",
       inv.finalAmount?.toFixed(2) ?? "0.00",
       inv.amountPaid?.toFixed(2) ?? "0.00",
-      inv.dueAmount?.toFixed(2) ?? "0.00",
+      due.toFixed(2),
       status,
       inv.paymentMethod,
     ].join(",");
@@ -212,10 +232,11 @@ function InvoiceRow({ inv, onCancelClick }) {
   const typeMeta = TYPE_META[inv.invoiceType] ?? { label: inv.invoiceType, bg: "bg-gray-100", text: "text-gray-600" };
   const status = getPaymentStatus(inv);
   const cancelled = inv.isCancelled;
+  const dueAmount = getDueAmount(inv);
 
   const { int: finalInt, dec: finalDec } = fmtMoney(inv.finalAmount);
   const { int: paidInt, dec: paidDec } = fmtMoney(inv.amountPaid);
-  const { int: dueInt, dec: dueDec } = fmtMoney(inv.dueAmount);
+  const { int: dueInt, dec: dueDec } = fmtMoney(dueAmount);
   const statusMeta = STATUS_META[status] ?? STATUS_META.unpaid;
 
   const canCancel = !cancelled && !["purchase_return", "sales_return"].includes(inv.invoiceType);
@@ -279,8 +300,8 @@ function InvoiceRow({ inv, onCancelClick }) {
 
         {/* due */}
         <td className="px-3 py-3.5 whitespace-nowrap">
-          <span className={`text-sm font-semibold ${inv.dueAmount > 0 ? "text-red-500" : "text-gray-400"}`}>
-            ${dueInt}<span className={`font-normal ${inv.dueAmount > 0 ? "text-red-300" : "text-gray-300"}`}>{dueDec}</span>
+          <span className={`text-sm font-semibold ${dueAmount > 0 ? "text-red-500" : "text-gray-400"}`}>
+            ${dueInt}<span className={`font-normal ${dueAmount > 0 ? "text-red-300" : "text-gray-300"}`}>{dueDec}</span>
           </span>
         </td>
 

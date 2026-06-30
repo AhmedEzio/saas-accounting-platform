@@ -30,6 +30,10 @@ function extractPayments(response) {
   return Array.isArray(payload.payments) ? payload.payments : [];
 }
 
+function getEffectiveDue(invoice) {
+  return Number(invoice?.effectiveDue ?? invoice?.dueAmount ?? 0);
+}
+
 function DetailsSkeleton() {
   return (
     <div className="space-y-6">
@@ -144,12 +148,26 @@ export default function InvoiceDetailsPage() {
   const canCancel =
     invoice &&
     !invoice.isCancelled &&
-    !returnTypes.includes(invoice.invoiceType);
-  const canPay = invoice && !invoice.isCancelled && Number(invoice.dueAmount || 0) > 0;
+    !returnTypes.includes(invoice.invoiceType) &&
+    !invoice.hasActiveReturns;
+  const canPay =
+    invoice &&
+    !invoice.isCancelled &&
+    !returnTypes.includes(invoice.invoiceType) &&
+    !invoice.isFullyReturned &&
+    getEffectiveDue(invoice) > 0;
   const canReturn =
     invoice &&
     !invoice.isCancelled &&
+    !invoice.isFullyReturned &&
     (invoice.invoiceType === "sale" || invoice.invoiceType === "purchase");
+
+  const openActionModal = (modal) => {
+    if (modal === "payment" && !canPay) return;
+    if (modal === "return" && !canReturn) return;
+    if (modal === "cancel" && !canCancel) return;
+    setActiveModal(modal);
+  };
 
   return (
     <main className="min-h-dvh bg-[#faf8fe] px-4 py-6 text-slate-950 sm:px-6 lg:px-8" dir={dir}>
@@ -176,7 +194,7 @@ export default function InvoiceDetailsPage() {
                 {canPay ? (
                   <button
                     className="min-h-11 rounded-lg bg-[#001540] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0f2a5f] focus:outline-none focus:ring-2 focus:ring-[#001540]/30"
-                    onClick={() => setActiveModal("payment")}
+                    onClick={() => openActionModal("payment")}
                     type="button"
                   >
                     {t("action.addPayment")}
@@ -185,7 +203,7 @@ export default function InvoiceDetailsPage() {
                 {canReturn ? (
                   <button
                     className="min-h-11 rounded-lg border border-[#001540] bg-white px-4 text-sm font-semibold text-[#001540] transition hover:bg-[#dae2ff] focus:outline-none focus:ring-2 focus:ring-[#001540]/25"
-                    onClick={() => setActiveModal("return")}
+                    onClick={() => openActionModal("return")}
                     type="button"
                   >
                     {t("action.return")}
@@ -194,7 +212,7 @@ export default function InvoiceDetailsPage() {
                 {canCancel ? (
                   <button
                     className="min-h-11 rounded-lg border border-rose-200 bg-rose-50 px-4 text-sm font-semibold text-rose-700 transition hover:bg-rose-100 focus:outline-none focus:ring-2 focus:ring-rose-600/25"
-                    onClick={() => setActiveModal("cancel")}
+                    onClick={() => openActionModal("cancel")}
                     type="button"
                   >
                     {t("action.cancelInvoice")}
@@ -218,20 +236,20 @@ export default function InvoiceDetailsPage() {
               invoice={invoice}
               onClose={() => setActiveModal("")}
               onSuccess={refreshDetails}
-              open={activeModal === "cancel"}
+              open={activeModal === "cancel" && Boolean(canCancel)}
               t={t}
             />
             <PaymentModal
               invoice={invoice}
               onClose={() => setActiveModal("")}
               onSuccess={refreshDetails}
-              open={activeModal === "payment"}
+              open={activeModal === "payment" && Boolean(canPay)}
               t={t}
             />
             <ReturnModal
               invoice={invoice}
               onClose={() => setActiveModal("")}
-              open={activeModal === "return"}
+              open={activeModal === "return" && Boolean(canReturn)}
               t={t}
             />
           </>
