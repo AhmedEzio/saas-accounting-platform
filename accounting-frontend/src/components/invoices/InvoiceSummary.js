@@ -29,6 +29,7 @@ function InfoItem({ label, value }) {
 export default function InvoiceSummary({ invoice, lang, t }) {
   const isExpense = invoice.invoiceType === "expense";
   const party = invoice.clientId;
+  const dueAmount = invoice.effectiveDue ?? invoice.dueAmount;
 
   return (
     <div className="space-y-5">
@@ -79,7 +80,7 @@ export default function InvoiceSummary({ invoice, lang, t }) {
         <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <p className="text-xs font-medium uppercase text-slate-500">{t("col.dueAmount")}</p>
           <p className="mt-2 font-mono text-xl font-semibold text-rose-700">
-            {formatMoney(invoice.dueAmount)}
+            {formatMoney(dueAmount)}
           </p>
         </div>
       </section>

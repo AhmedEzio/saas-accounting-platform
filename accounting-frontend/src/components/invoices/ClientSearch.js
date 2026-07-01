@@ -13,6 +13,13 @@ function initials(name) {
     .toUpperCase();
 }
 
+function extractClients(response) {
+  if (Array.isArray(response?.results?.data)) return response.results.data;
+  if (Array.isArray(response?.data)) return response.data;
+  if (Array.isArray(response)) return response;
+  return [];
+}
+
 export default function ClientSearch({
   clientType,
   error,
@@ -38,7 +45,7 @@ export default function ClientSearch({
           ...(search.trim() ? { search: search.trim() } : {}),
         });
 
-        if (active) setClients(Array.isArray(response?.data) ? response.data : []);
+        if (active) setClients(extractClients(response));
       } catch (err) {
         if (active) {
           setClients([]);
@@ -58,13 +65,21 @@ export default function ClientSearch({
   const helper = useMemo(() => {
     if (loading) return t("state.loading");
     if (loadError) return loadError;
-    if (selectedClient) return selectedClient.email || selectedClient.phone || t("form.clientSelected");
-    return clientType === "vendor" ? t("form.searchVendor") : t("form.searchClient");
+    if (selectedClient)
+      return (
+        selectedClient.email || selectedClient.phone || t("form.clientSelected")
+      );
+    return clientType === "vendor"
+      ? t("form.searchVendor")
+      : t("form.searchClient");
   }, [clientType, loadError, loading, selectedClient, t]);
 
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-slate-600" htmlFor="client-search">
+      <label
+        className="block text-sm font-medium text-slate-600"
+        htmlFor="client-search"
+      >
         {label}
       </label>
       <input
@@ -74,11 +89,18 @@ export default function ClientSearch({
         }`}
         id="client-search"
         onChange={(event) => setSearch(event.target.value)}
-        placeholder={clientType === "vendor" ? t("form.searchVendor") : t("form.searchClient")}
+        placeholder={
+          clientType === "vendor"
+            ? t("form.searchVendor")
+            : t("form.searchClient")
+        }
         type="search"
         value={search}
       />
-      <p className={`text-xs ${error || loadError ? "text-rose-600" : "text-slate-500"}`} id="client-search-help">
+      <p
+        className={`text-xs ${error || loadError ? "text-rose-600" : "text-slate-500"}`}
+        id="client-search-help"
+      >
         {error || helper}
       </p>
 
@@ -106,12 +128,16 @@ export default function ClientSearch({
               </span>
             </span>
             {selectedClient?._id === client._id ? (
-              <span className="text-sm font-semibold text-[#001540]">{t("form.selected")}</span>
+              <span className="text-sm font-semibold text-[#001540]">
+                {t("form.selected")}
+              </span>
             ) : null}
           </button>
         ))}
         {!loading && clients.length === 0 ? (
-          <div className="px-3 py-4 text-sm text-slate-500">{t("form.noClients")}</div>
+          <div className="px-3 py-4 text-sm text-slate-500">
+            {t("form.noClients")}
+          </div>
         ) : null}
       </div>
     </div>

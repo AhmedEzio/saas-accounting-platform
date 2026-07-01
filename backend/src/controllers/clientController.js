@@ -1,13 +1,18 @@
 import Client from "../models/Client.js";
 
-// GET /api/clients?type=vendor|client&search=...
-export const getClients = async (req, res) => {
+export const getClients = async (req, res, next) => {
   try {
-    const { type, search } = req.query;
+    const {
+      type,
+      search,
+      sortBy = "createdAt",
+      sortOrder = "desc",
+      page = 1,
+      limit = 20,
+    } = req.query;
 
     const filter = {
       accountantId: req.user._id,
-      isActive: true,
     };
 
     if (type) {
@@ -17,7 +22,6 @@ export const getClients = async (req, res) => {
           message: "Invalid type. Use 'client' or 'vendor'",
         });
       }
-
       filter.type = type;
     }
 
@@ -29,14 +33,38 @@ export const getClients = async (req, res) => {
       ];
     }
 
-    const clients = await Client.find(filter).sort({ createdAt: -1 });
+    const validSortFields = ["createdAt", "currentBalance"];
+    const sortField = validSortFields.includes(sortBy) ? sortBy : "createdAt";
+    const direction = sortOrder === "asc" ? 1 : -1;
+
+    const sortOptions = {};
+    sortOptions[sortField] = direction;
+
+    const start = (Number(page) - 1) * Number(limit);
+    const end = Number(page) * Number(limit);
+
+    const total = await Client.countDocuments(filter);
+
+    const clients = await Client.find(filter)
+      .sort(sortOptions)
+      .skip(start)
+      .limit(Number(limit));
+
+    const results = {};
+    results.total = total;
+    results.data = clients;
+
+    if (Number(page) > 1) results.prevPage = Number(page) - 1;
+    if (end < total) results.nextPage = Number(page) + 1;
 
     return res.status(200).json({
       success: true,
       count: clients.length,
-      data: clients,
+      results,
     });
   } catch (error) {
+    if (next) return next(error);
+
     return res.status(500).json({
       success: false,
       message: "Server error",
@@ -51,7 +79,6 @@ export const getClientById = async (req, res) => {
     const client = await Client.findOne({
       _id: req.params.id,
       accountantId: req.user._id,
-      isActive: true,
     });
 
     if (!client) {
@@ -85,7 +112,19 @@ export const createClient = async (req, res) => {
         message: "Name and type are required",
       });
     }
+    ////
+    const clientt = await Client.findOne({
+      email,
+      accountantId: req.user._id,
+    });
 
+    if (clientt) {
+      return res.status(400).json({
+        success: false,
+        message: "Client/Vendor already exists",
+      });
+    }
+    ////
     if (!["client", "vendor"].includes(type)) {
       return res.status(400).json({
         success: false,
@@ -133,10 +172,9 @@ export const updateClient = async (req, res) => {
       {
         _id: req.params.id,
         accountantId: req.user._id,
-        isActive: true,
       },
       { name, type, phone, email, address, notes },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!client) {
@@ -160,6 +198,39 @@ export const updateClient = async (req, res) => {
   }
 };
 
+// PUT /api/clients/:id
+export const reactivateClient = async (req, res) => {
+  try {
+    const client = await Client.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        accountantId: req.user._id,
+        isActive: false,
+      },
+      { isActive: true },
+      { new: true },
+    );
+
+    if (!client) {
+      return res.status(404).json({
+        success: false,
+        message: "Client/Vendor not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Client/Vendor deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
 // DELETE /api/clients/:id
 export const deleteClient = async (req, res) => {
   try {
@@ -170,7 +241,7 @@ export const deleteClient = async (req, res) => {
         isActive: true,
       },
       { isActive: false },
-      { new: true }
+      { new: true },
     );
 
     if (!client) {
