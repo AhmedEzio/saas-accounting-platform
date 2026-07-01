@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { authApi } from "@/services/api";
+import { resolveProfileErrorMessage, t } from "@/locales/profile";
+
+const LANG_STORAGE_KEY = "invoice_lang";
 
 const EyeBtn = ({ open, onToggle }) => (
   <button
@@ -40,6 +43,7 @@ const EyeBtn = ({ open, onToggle }) => (
 export default function ProfilePage() {
   const router = useRouter();
   const { user, token, loading, clearAuth, updateUser } = useAuth();
+  const [lang, setLang] = useState("en");
 
   const [form, setForm] = useState(() => ({
     name: user?.name || "",
@@ -60,24 +64,51 @@ export default function ProfilePage() {
     }
   }, [loading, token, router]);
 
+  useEffect(() => {
+    const stored = localStorage.getItem(LANG_STORAGE_KEY);
+    if (stored === "ar" || stored === "en") {
+      setLang(stored);
+      return;
+    }
+
+    if (document.documentElement.lang === "ar") {
+      setLang("ar");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      setForm({
+        name: user.name || "",
+        email: user.email || "",
+      });
+    }
+  }, [user]);
+
   const handleSave = async (e) => {
     e.preventDefault();
-    if (!form.name || !form.email) {
-      setError("Name and email are required.");
+    if (!form.name?.trim()) {
+      setError(t("profile.nameRequired", lang));
+      return;
+    }
+    if (!form.email?.trim()) {
+      setError(t("profile.invalidEmail", lang));
       return;
     }
     setSaving(true);
     setError("");
     setSuccess("");
     try {
-      const updated = await authApi.updateProfile(user.id, {
+      const updated = await authApi.updateProfile({
         name: form.name,
         email: form.email,
       });
       updateUser(updated);
-      setSuccess("Profile updated successfully.");
+      setSuccess(t("profile.updated", lang));
     } catch (err) {
-      setError(err?.response?.data?.message || "Update failed. Try again.");
+      setError(
+        resolveProfileErrorMessage(err?.response?.data?.message, lang),
+      );
     } finally {
       setSaving(false);
     }
@@ -106,10 +137,11 @@ export default function ProfilePage() {
 
   if (loading) return null;
   if (!user) return null;
-  if (!user) return null;
+
+  const dir = lang === "ar" ? "rtl" : "ltr";
 
   return (
-    <div className="min-h-screen bg-[#f0f2f8] px-4 py-10">
+    <div className="min-h-screen bg-[#f0f2f8] px-4 py-10" dir={dir}>
       <div className="max-w-2xl mx-auto space-y-5">
         {/* ── Header card ── */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">

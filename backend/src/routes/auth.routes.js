@@ -3,6 +3,7 @@ import {
   register,
   login,
   getMe,
+  updateProfile,
   googleAuth,
   forgotPassword,
   resetPassword,
@@ -51,5 +52,12 @@ router.patch("/reset-password/:token", resetPassword);
  * @access  Private
  */
 router.get("/me", protect, getMe);
+
+/**
+ * @route   PATCH /api/auth/profile
+ * @desc    Update current user profile (name, email only)
+ * @access  Private
+ */
+router.patch("/profile", protect, updateProfile);
 
 export default router;
