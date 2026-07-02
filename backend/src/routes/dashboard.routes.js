@@ -3,11 +3,18 @@ import {
   getDashboardData,
   getKpis,
   getChart,
+  getOverview,
   getFinancials,
   getActivity,
   getSubscription,
   getAIUsage,
-} from "../controllers/dashboard.controller.js";
+} from "../controllers/dashboard-controllers/dashboard.controller.js";
+import { serachResults } from "../controllers/dashboard-controllers/accountants.controller.js";
+import { getAllInvoices } from "../controllers/dashboard-controllers/invoices.controller.js";
+import { getInvoicesRules } from "../validations/invoice.validation.js";
+import { getAllClients } from "../controllers/dashboard-controllers/clients.controller.js";
+import { getAllPayments } from "../controllers/dashboard-controllers/payments.controller.js";
+import { searchAllPayments } from "../controllers/dashboard-controllers/payments.controller.js";
 
 const router = Router();
 
@@ -18,6 +25,7 @@ const router = Router();
  * Returns:
  * - KPIs (subscribed users / subscriptions for the date)
  * - Daily Subscriptions Chart
+ * - Platform Overview (accountants, admins, invoices, clients, plans, payments)
  * - Financial Summary
  * - Recent Activity
  * - Subscription Summary
@@ -44,6 +52,20 @@ router.get("/kpis", getKpis);
  * whenever the dashboard's calendar selection changes.
  */
 router.get("/chart", getChart);
+
+/**
+ * GET /api/dashboard/overview?date=YYYY-MM-DD
+ *
+ * Returns platform-wide snapshot totals as of the given date
+ * (running totals — everything created on or before that day):
+ * - Accountants
+ * - Admins
+ * - Total Invoices
+ * - Total Clients
+ * - Available Subscription Plans
+ * - Total Payments
+ */
+router.get("/overview", getOverview);
 
 /**
  * GET /api/dashboard/financials
@@ -88,5 +110,36 @@ router.get("/subscription", getSubscription);
  * - Token usage
  */
 router.get("/ai-usage", getAIUsage);
+
+/**
+ * Acountants page routes
+ * GET /api/dashboard/accountant?search=abc
+ */
+router.get("/accountant", serachResults);
+
+/**
+ * Invoices page routes
+ * GET /api/dashboard/invoices
+ */
+router.get("/invoices", getInvoicesRules, getAllInvoices);
+
+/**
+ * Clients page routes
+ * // GET /api/dashboard/clients?type=vendor|client&search=...
+ */
+router.get("/clients", getAllClients);
+
+/**
+ * Payments page routes
+ * // GET /api/dashboard/payments
+ */
+router.get("/payments", getAllPayments);
+
+/**
+ * Payments free-text search (search by invoice number, client name/phone,
+ * recorded-by name/email, notes, amount, or id)
+ * // GET /api/dashboard/payments/search?search=...
+ */
+router.get("/payments/search", searchAllPayments);
 
 export default router;

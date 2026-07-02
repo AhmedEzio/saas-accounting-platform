@@ -1,4 +1,4 @@
-import * as DashboardService from "../services/dashboard.service.js";
+import * as DashboardService from "../../services/dashboard-services/dashboard.service.js";
 
 /** Parses a `?date=YYYY-MM-DD` query param, falling back to "now" if missing/invalid. */
 function parseDateParam(value) {
@@ -25,6 +25,7 @@ export async function getDashboardData(req, res, next) {
     const [
       kpisResult,
       chartResult,
+      overviewResult,
       financialsResult,
       activityResult,
       subscriptionResult,
@@ -32,6 +33,7 @@ export async function getDashboardData(req, res, next) {
     ] = await Promise.allSettled([
       DashboardService.getSubscriptionKpis(date),
       DashboardService.getSubscriptionsChart(date, days),
+      DashboardService.getPlatformOverview(date),
       DashboardService.getFinancialSummary(accountantId),
       DashboardService.getRecentActivity(accountantId, activityLimit),
       DashboardService.getSubscriptionSummary(accountantId),
@@ -46,6 +48,7 @@ export async function getDashboardData(req, res, next) {
       data: {
         kpis: unwrap(kpisResult, null),
         chart: unwrap(chartResult, null),
+        overview: unwrap(overviewResult, null),
         financials: unwrap(financialsResult, null),
         activities: unwrap(activityResult, []),
         subscription: unwrap(subscriptionResult, null),
@@ -59,6 +62,10 @@ export async function getDashboardData(req, res, next) {
         chart:
           chartResult.status === "rejected"
             ? chartResult.reason?.message
+            : null,
+        overview:
+          overviewResult.status === "rejected"
+            ? overviewResult.reason?.message
             : null,
         financials:
           financialsResult.status === "rejected"
@@ -99,6 +106,16 @@ export async function getChart(req, res, next) {
     const days = parseInt(req.query.days ?? "30", 10) || 30;
     const data = await DashboardService.getSubscriptionsChart(date, days);
 
+    return res.status(200).json({ success: true, data });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getOverview(req, res, next) {
+  try {
+    const date = parseDateParam(req.query.date);
+    const data = await DashboardService.getPlatformOverview(date);
     return res.status(200).json({ success: true, data });
   } catch (error) {
     next(error);
