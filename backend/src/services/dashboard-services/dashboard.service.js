@@ -1,8 +1,10 @@
-import Invoice from "../models/Invoice.js";
-import PaymentTransaction from "../models/PaymentTransaction.js";
-import Client from "../models/Client.js";
-import UserSubscription from "../models/UserSubscription.js";
-import AIUsageLog from "../models/AIUsageLog.js";
+import Invoice from "../../models/Invoice.js";
+import PaymentTransaction from "../../models/PaymentTransaction.js";
+import Client from "../../models/Client.js";
+import UserSubscription from "../../models/UserSubscription.js";
+import AIUsageLog from "../../models/AIUsageLog.js";
+import User from "../../models/User.js";
+import SubscriptionPlan from "../../models/SubscriptionPlan.js";
 
 function daysAgoStart(days) {
   const d = new Date();
@@ -83,6 +85,46 @@ export async function getSubscriptionsChart(date = new Date(), days = 30) {
   }
 
   return { labels, subscriptionsData };
+}
+
+/**
+ * getPlatformOverview
+ * ─────────────────────
+ * Snapshot totals "as of" the selected date — i.e. everything created
+ * on or before that calendar day (running totals, not single-day counts).
+ * Powers the 6 secondary dashboard cards: Accountants, Admins,
+ * Total Invoices, Total Clients, Available Subscription Plans, Total Payments.
+ */
+export async function getPlatformOverview(date = new Date()) {
+  const { end } = getDayBounds(date);
+
+  const [
+    accountants,
+    admins,
+    totalInvoices,
+    totalClients,
+    availablePlans,
+    totalPayments,
+  ] = await Promise.all([
+    User.countDocuments({ role: "accountant", createdAt: { $lt: end } }),
+    User.countDocuments({ role: "admin", createdAt: { $lt: end } }),
+    Invoice.countDocuments({ createdAt: { $lt: end } }),
+    Client.countDocuments({ createdAt: { $lt: end } }),
+    SubscriptionPlan.countDocuments({
+      isActive: true,
+      createdAt: { $lt: end },
+    }),
+    PaymentTransaction.countDocuments({ createdAt: { $lt: end } }),
+  ]);
+
+  return {
+    accountants,
+    admins,
+    totalInvoices,
+    totalClients,
+    availablePlans,
+    totalPayments,
+  };
 }
 
 export async function getFinancialSummary(accountantId) {

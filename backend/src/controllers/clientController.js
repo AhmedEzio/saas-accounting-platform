@@ -167,6 +167,7 @@ export const updateClient = async (req, res) => {
         message: "Invalid type. Use 'client' or 'vendor'",
       });
     }
+    console.log({ name, type, phone, email, address, notes, }, req.params.id, req.user._id, "backend");
 
     const client = await Client.findOneAndUpdate(
       {
@@ -176,6 +177,8 @@ export const updateClient = async (req, res) => {
       { name, type, phone, email, address, notes },
       { new: true, runValidators: true },
     );
+
+    console.log(client, "backend");
 
     if (!client) {
       return res.status(404).json({
