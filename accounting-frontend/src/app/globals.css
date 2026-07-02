@@ -22,3 +22,11 @@ body {
   font-family: var(--font-sans);
 }
 
+html[dir="rtl"] body {
+  font-family: var(--font-tajawal), var(--font-sans);
+}
+
+html[dir="rtl"] .font-display {
+  font-family: var(--font-tajawal), var(--font-display);
+}
+
