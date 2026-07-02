@@ -19,4 +19,4 @@ export default cloudinary;
 const storage = multer.memoryStorage();
 
 const upload = multer({ storage, limits: { fileSize: 6291456 } });
-export const uploadInvoice = upload.single("invoice");
+export const uploadInvoice = upload.single("file");
