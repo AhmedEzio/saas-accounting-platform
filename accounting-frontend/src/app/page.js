@@ -5,25 +5,21 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import { subscriptionApi } from "@/services/api";
+import useLandingLang from "@/hooks/useLandingLang";
 
 // --- SVG Icons ---
 
-const PillarLogo = () => (
-  <svg
-    className="w-6 h-6 text-primary"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <line x1="3" y1="22" x2="21" y2="22"></line>
-    <line x1="6" y1="18" x2="18" y2="18"></line>
-    <line x1="6" y1="6" x2="18" y2="6"></line>
-    <line x1="3" y1="2" x2="21" y2="2"></line>
-    <path d="M7 6v12M11 6v12M13 6v12M17 6v12"></path>
-  </svg>
+const FinoraLogo = () => (
+  <div className="flex items-center gap-2.5">
+    <div className="w-9 h-9 rounded-lg bg-[#0b2154] flex flex-col items-center justify-center relative shrink-0">
+      <span className="text-white font-extrabold text-base leading-none mt-0.5 select-none">F</span>
+      <div className="w-3.5 h-0.5 bg-[#00a975] rounded-full mt-0.5"></div>
+    </div>
+    <div className="flex flex-col text-start leading-none select-none">
+      <span className="font-display font-bold text-[15px] text-[#001540]">Finora</span>
+      <span className="text-[9px] text-gray-500 font-semibold mt-0.5 uppercase tracking-wide">Accounting AI</span>
+    </div>
+  </div>
 );
 
 const SparklesIcon = ({ className = "w-5 h-5" }) => (
@@ -125,6 +121,8 @@ const CheckIcon = ({ className = "w-5 h-5 text-secondary" }) => (
 export default function HomePage() {
   const { user } = useAuth();
   const [dbPlans, setDbPlans] = useState([]);
+  const { lang, dir, isRtl, setLang, toggleLang, t } = useLandingLang();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Fetch plans from backend
   useEffect(() => {
@@ -167,7 +165,8 @@ export default function HomePage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col bg-[#faf8fe] text-[#1a1b1f] selection:bg-secondary/20"
+      className="min-h-screen flex flex-col bg-[#faf8fe] text-[#1a1b1f] selection:bg-secondary/20 font-sans transition-all duration-300"
+      dir={dir}
       style={{
         backgroundColor: "#faf8fe",
         backgroundImage:
@@ -183,10 +182,9 @@ export default function HomePage() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2.5 font-display font-bold text-xl text-primary"
+            className="flex items-center select-none"
           >
-            <PillarLogo />
-            <span>Finora</span>
+            <FinoraLogo />
           </Link>
 
           {/* Nav Links */}
@@ -195,39 +193,48 @@ export default function HomePage() {
               onClick={() => scrollToSection("features")}
               className="text-sm font-medium text-gray-600 hover:text-primary transition-colors cursor-pointer"
             >
-              Features
+              {t("nav.features")}
             </button>
 
             <button
               onClick={() => scrollToSection("platform")}
               className="text-sm font-medium text-gray-600 hover:text-primary transition-colors cursor-pointer"
             >
-              Platform
+              {t("nav.platform")}
             </button>
 
             <button
               onClick={() => scrollToSection("pricing")}
               className="text-sm font-medium text-gray-600 hover:text-primary transition-colors cursor-pointer"
             >
-              Pricing
+              {t("nav.pricing")}
             </button>
 
             <button
               onClick={() => scrollToSection("ai-assistant")}
               className="text-sm font-medium text-gray-600 hover:text-primary transition-colors cursor-pointer"
             >
-              AI Assistant
+              {t("nav.aiAssistant")}
             </button>
           </nav>
 
           {/* CTA / Auth Buttons */}
           <div className="flex items-center gap-5">
+            {/* Language Toggle Button */}
+            <button
+              onClick={toggleLang}
+              className="hidden sm:flex w-10 h-10 items-center justify-center rounded-full border border-gray-200 bg-white text-xs font-bold text-gray-600 hover:text-primary hover:border-primary/30 hover:bg-gray-50 transition-all duration-200 shadow-sm cursor-pointer select-none shrink-0"
+              title={lang === "ar" ? "Switch to English" : "تغيير إلى العربية"}
+            >
+              {lang === "ar" ? "EN" : "AR"}
+            </button>
+
             {user ? (
               <Link
                 href="/overview"
                 className="px-4.5 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-hover shadow-sm transition-all duration-200"
               >
-                Go to Dashboard
+                {t("nav.goToDashboard")}
               </Link>
             ) : (
               <>
@@ -235,20 +242,161 @@ export default function HomePage() {
                   href="/login"
                   className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
                 >
-                  Login
+                  {t("nav.login")}
                 </Link>
 
                 <Link
                   href="/register"
                   className="px-4.5 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-hover shadow-sm transition-all duration-200"
                 >
-                  Start Free Trial
+                  {t("nav.startTrial")}
+                </Link>
+              </>
+            )}
+
+            {/* Hamburger Button for Mobile */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2 text-gray-600 hover:text-primary transition-colors focus:outline-none cursor-pointer"
+              aria-label="Toggle Menu"
+            >
+              {isMobileMenuOpen ? (
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Menu Drawer Overlay */}
+      <div
+        className={`fixed inset-0 z-50 md:hidden transition-opacity duration-300 ${
+          isMobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        {/* Backdrop */}
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
+        
+        {/* Content Drawer */}
+        <div
+          className={`absolute top-0 bottom-0 ${
+            isRtl ? "left-0" : "right-0"
+          } w-72 max-w-[80vw] bg-[#faf8fe] shadow-2xl p-6 flex flex-col gap-6 transform transition-transform duration-300 ${
+            isMobileMenuOpen ? "translate-x-0" : isRtl ? "-translate-x-full" : "translate-x-full"
+          }`}
+        >
+          {/* Drawer Header */}
+          <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+            <Link
+              href="/"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex items-center select-none"
+            >
+              <FinoraLogo />
+            </Link>
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="p-1 text-gray-500 hover:text-primary transition-colors cursor-pointer"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Drawer Links */}
+          <nav className="flex flex-col gap-5 text-start">
+            <button
+              onClick={() => {
+                scrollToSection("features");
+                setIsMobileMenuOpen(false);
+              }}
+              className="text-start font-medium text-gray-700 hover:text-primary transition-colors text-base cursor-pointer"
+            >
+              {t("nav.features")}
+            </button>
+            <button
+              onClick={() => {
+                scrollToSection("platform");
+                setIsMobileMenuOpen(false);
+              }}
+              className="text-start font-medium text-gray-700 hover:text-primary transition-colors text-base cursor-pointer"
+            >
+              {t("nav.platform")}
+            </button>
+            <button
+              onClick={() => {
+                scrollToSection("pricing");
+                setIsMobileMenuOpen(false);
+              }}
+              className="text-start font-medium text-gray-700 hover:text-primary transition-colors text-base cursor-pointer"
+            >
+              {t("nav.pricing")}
+            </button>
+            <button
+              onClick={() => {
+                scrollToSection("ai-assistant");
+                setIsMobileMenuOpen(false);
+              }}
+              className="text-start font-medium text-gray-700 hover:text-primary transition-colors text-base cursor-pointer"
+            >
+              {t("nav.aiAssistant")}
+            </button>
+          </nav>
+
+          <div className="border-t border-gray-100 my-2" />
+
+          {/* Language and Auth */}
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-semibold text-gray-700">{lang === "ar" ? "اللغة" : "Language"}</span>
+              <button
+                onClick={() => {
+                  toggleLang();
+                  setIsMobileMenuOpen(false);
+                }}
+                className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-200 bg-white text-xs font-bold text-gray-600 hover:text-primary hover:bg-gray-50 transition-all duration-200 shadow-sm cursor-pointer select-none"
+              >
+                {lang === "ar" ? "EN" : "AR"}
+              </button>
+            </div>
+
+            {user ? (
+              <Link
+                href="/overview"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="w-full text-center px-4 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary-hover shadow-sm transition-all duration-200"
+              >
+                {t("nav.goToDashboard")}
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-full text-center py-2.5 border border-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  {t("nav.login")}
+                </Link>
+
+                <Link
+                  href="/register"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-full text-center px-4 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary-hover shadow-sm transition-all duration-200"
+                >
+                  {t("nav.startTrial")}
                 </Link>
               </>
             )}
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Main Content */}
       <main className="flex-1">
@@ -258,38 +406,36 @@ export default function HomePage() {
             {/* AI Badge */}
             <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-accent-green-bg text-accent-green text-xs font-semibold mb-8 border border-accent-green/10 shadow-sm animate-fade-in">
               <SparklesIcon className="w-3.5 h-3.5" />
-              <span>AI-Powered Accounting Intelligence</span>
+              <span>{t("hero.badge")}</span>
             </div>
 
             {/* Title */}
             <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-primary leading-[1.12] max-w-3xl mb-6">
-              Accounting Intelligence for the <br />
+              {t("hero.title1")} <br />
               <span className="bg-gradient-to-r from-[#061442] via-[#12317f] to-[#3b82f6] bg-clip-text text-transparent">
-                Modern Accountant
+                {t("hero.title2")}
               </span>
             </h1>
 
             {/* Subtitle */}
             <p className="text-base sm:text-lg text-gray-600 max-w-2xl mb-10 leading-relaxed font-normal">
-              Manage clients, automate invoices, track payments, and store
-              documents in one powerful, AI-driven platform built for
-              freelancers and SMBs.
+              {t("hero.subtitle")}
             </p>
 
             {/* Action Buttons */}
-            <div className="flex flex-row items-center justify-center gap-4 mb-16 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 w-full sm:w-auto px-4">
               <Link
                 href={user ? "/overview" : "/register"}
                 className="w-full sm:w-auto text-center px-6 py-3 bg-primary text-white font-semibold rounded-lg shadow-md hover:bg-primary-hover hover:-translate-y-0.5 transition-all duration-200"
               >
-                Start Free Trial
+                {t("nav.startTrial")}
               </Link>
 
               <button
                 onClick={() => scrollToSection("pricing")}
                 className="w-full sm:w-auto text-center px-6 py-3 bg-white text-primary border border-gray-200 font-semibold rounded-lg shadow-sm hover:bg-gray-50 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
               >
-                View Pricing
+                {t("nav.viewPricing")}
               </button>
             </div>
 
@@ -320,12 +466,11 @@ export default function HomePage() {
             {/* Section Heading */}
             <div className="text-center max-w-3xl mx-auto mb-20">
               <h2 className="font-display text-3xl sm:text-4xl font-bold text-primary tracking-tight mb-4">
-                Everything you need to scale
+                {t("features.title")}
               </h2>
 
               <p className="text-gray-600 text-base sm:text-lg">
-                A unified suite designed to streamline your financial
-                operations, from client acquisition to final reconciliation.
+                {t("features.subtitle")}
               </p>
             </div>
 
@@ -341,35 +486,33 @@ export default function HomePage() {
                     <SparklesIcon className="w-5 h-5 text-accent-green" />
                   </div>
 
-                  <h3 className="font-display text-xl font-bold text-primary mb-3">
-                    AI Accounting Assistant
+                  <h3 className="font-display text-xl font-bold text-primary mb-3 text-start">
+                    {t("feature1.title")}
                   </h3>
 
-                  <p className="text-gray-600 text-sm leading-relaxed max-w-xl">
-                    Automate data entry, categorize expenses instantly, and
-                    receive intelligent financial insights before you even ask.
+                  <p className="text-gray-600 text-sm leading-relaxed max-w-xl text-start">
+                    {t("feature1.desc")}
                   </p>
                 </div>
 
                 {/* Micro-UI: AI Insight Box */}
-                <div className="mt-8 bg-white border border-gray-100 rounded-xl p-4.5 shadow-sm max-w-md flex items-start gap-3.5">
+                <div className="mt-8 bg-white border border-gray-100 rounded-xl p-4.5 shadow-sm max-w-md w-full flex items-start gap-3.5 text-start">
                   <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
                     <CheckIcon className="w-4 h-4 text-emerald-600" />
                   </div>
 
                   <div>
                     <h4 className="text-xs font-bold text-gray-900 mb-0.5">
-                      Finora AI Insight
+                      {t("feature1.insightTitle")}
                     </h4>
 
                     <p className="text-xs text-gray-500 leading-normal">
-                      Identified recurring subscriptions that can be optimized to
-                      save $1,200 annually.{" "}
+                      {t("feature1.insightDesc")}
                       <Link
                         href={user ? "/overview" : "/register"}
                         className="text-secondary hover:underline font-semibold"
                       >
-                        Review suggestions
+                        {t("feature1.insightAction")}
                       </Link>
                     </p>
                   </div>
@@ -377,74 +520,69 @@ export default function HomePage() {
               </div>
 
               {/* Feature 2 - Client Management */}
-              <div className="rounded-2xl bg-white p-8 border border-gray-200/80 shadow-sm flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+              <div className="rounded-2xl bg-white p-8 border border-gray-200/80 shadow-sm flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 text-start">
                 <div className="w-10 h-10 rounded-lg bg-[#f4f3f8] flex items-center justify-center mb-6">
                   <UsersIcon />
                 </div>
 
                 <div>
                   <h3 className="font-display text-lg font-bold text-primary mb-3">
-                    Client Management
+                    {t("feature2.title")}
                   </h3>
 
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    A dedicated CRM for your accounting practice. Track
-                    communications, share contracts, and manage client
-                    lifecycles.
+                    {t("feature2.desc")}
                   </p>
                 </div>
               </div>
 
               {/* Feature 3 - Invoice Management */}
-              <div className="rounded-2xl bg-white p-8 border border-gray-200/80 shadow-sm flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+              <div className="rounded-2xl bg-white p-8 border border-gray-200/80 shadow-sm flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 text-start">
                 <div className="w-10 h-10 rounded-lg bg-[#f4f3f8] flex items-center justify-center mb-6">
                   <InvoiceIcon />
                 </div>
 
                 <div>
                   <h3 className="font-display text-lg font-bold text-primary mb-3">
-                    Invoice Management
+                    {t("feature3.title")}
                   </h3>
 
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    Create professional, customizable invoices. Set up automated
-                    reminders and handle tax fees seamlessly.
+                    {t("feature3.desc")}
                   </p>
                 </div>
               </div>
 
               {/* Feature 4 - Payment Tracking */}
-              <div className="rounded-2xl bg-white p-8 border border-gray-200/80 shadow-sm flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+              <div className="rounded-2xl bg-white p-8 border border-gray-200/80 shadow-sm flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 text-start">
                 <div className="w-10 h-10 rounded-lg bg-[#f4f3f8] flex items-center justify-center mb-6">
                   <PaymentIcon />
                 </div>
 
                 <div>
                   <h3 className="font-display text-lg font-bold text-primary mb-3">
-                    Payment Tracking
+                    {t("feature4.title")}
                   </h3>
 
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    Real-time reconciliation with bank feeds. Track incoming
-                    payments and manage accounts receivable effortlessly.
+                    {t("feature4.desc")}
                   </p>
                 </div>
               </div>
 
               {/* Feature 5 - Global Vault */}
-              <div className="rounded-2xl bg-white p-8 border border-gray-200/80 shadow-sm flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+              <div className="rounded-2xl bg-white p-8 border border-gray-200/80 shadow-sm flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 text-start">
                 <div className="w-10 h-10 rounded-lg bg-[#f4f3f8] flex items-center justify-center mb-6">
                   <VaultIcon />
                 </div>
 
                 <div>
                   <h3 className="font-display text-lg font-bold text-primary mb-3">
-                    Global Vault
+                    {t("feature5.title")}
                   </h3>
 
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    Secure digital document storage with built-in multi-language
-                    OCR AI and multi-currency support for global operations.
+                    {t("feature5.desc")}
                   </p>
                 </div>
               </div>
@@ -461,25 +599,25 @@ export default function HomePage() {
             {/* Section Heading */}
             <div className="text-center max-w-3xl mx-auto mb-20">
               <h2 className="font-display text-3xl sm:text-4xl font-bold text-primary tracking-tight mb-4">
-                Transparent Pricing for Growth
+                {t("pricing.title")}
               </h2>
 
               <p className="text-gray-600 text-base sm:text-lg">
-                Choose the plan that fits your accounting needs. No hidden fees.
+                {t("pricing.subtitle")}
               </p>
             </div>
 
             {/* Pricing Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-5xl mx-auto">
               {/* Plan 1: Starter */}
-              <div className="rounded-2xl bg-white p-8 border border-gray-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition-all duration-300 relative">
+              <div className="rounded-2xl bg-white p-8 border border-gray-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition-all duration-300 relative text-start">
                 <div>
                   <h3 className="font-display text-xl font-bold text-primary mb-1">
-                    Starter
+                    {t("plan.starter.title")}
                   </h3>
 
                   <p className="text-xs text-gray-500 mb-6">
-                    For freelancers and solo practitioners.
+                    {t("plan.starter.desc")}
                   </p>
 
                   <div className="flex items-baseline gap-1 mb-8">
@@ -488,24 +626,24 @@ export default function HomePage() {
                     </span>
 
                     <span className="text-gray-500 text-sm font-medium">
-                      /mo
+                      {lang === "ar" ? " / شهر" : "/mo"}
                     </span>
                   </div>
 
                   <ul className="space-y-4 mb-8">
                     <li className="flex items-center gap-3 text-sm text-gray-600">
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>Up to 50 Clients</span>
+                      <span>{t("plan.starter.feature1")}</span>
                     </li>
 
                     <li className="flex items-center gap-3 text-sm text-gray-600">
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>Basic Invoicing</span>
+                      <span>{t("plan.starter.feature2")}</span>
                     </li>
 
                     <li className="flex items-center gap-3 text-sm text-gray-600">
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>5GB Document Storage</span>
+                      <span>{t("plan.starter.feature3")}</span>
                     </li>
                   </ul>
                 </div>
@@ -514,24 +652,24 @@ export default function HomePage() {
                   href={getPlanRegisterLink("Starter")}
                   className="w-full text-center py-2.5 bg-white text-primary border border-gray-300 font-semibold rounded-lg hover:bg-gray-50 transition duration-200 text-sm"
                 >
-                  Start Starter Trial
+                  {t("plan.starter.action")}
                 </Link>
               </div>
 
               {/* Plan 2: Professional */}
-              <div className="rounded-2xl bg-primary text-white p-8 border border-primary/10 shadow-xl flex flex-col justify-between hover:-translate-y-1 transition-all duration-300 relative md:-mt-4 md:mb-4">
+              <div className="rounded-2xl bg-primary text-white p-8 border border-primary/10 shadow-xl flex flex-col justify-between hover:-translate-y-1 transition-all duration-300 relative md:-mt-4 md:mb-4 text-start">
                 {/* Popular Badge */}
-                <div className="absolute top-4 right-4 bg-[#00a975] text-white text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full">
-                  POPULAR
+                <div className="absolute top-4 right-4 rtl:right-auto rtl:left-4 bg-[#00a975] text-white text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full">
+                  {t("plan.professional.popular")}
                 </div>
 
                 <div>
                   <h3 className="font-display text-xl font-bold mb-1">
-                    Professional
+                    {t("plan.professional.title")}
                   </h3>
 
                   <p className="text-xs text-blue-100/70 mb-6">
-                    For growing accounting firms and SMBs.
+                    {t("plan.professional.desc")}
                   </p>
 
                   <div className="flex items-baseline gap-1 mb-8">
@@ -540,29 +678,29 @@ export default function HomePage() {
                     </span>
 
                     <span className="text-blue-100/70 text-sm font-medium">
-                      /mo
+                      {lang === "ar" ? " / شهر" : "/mo"}
                     </span>
                   </div>
 
                   <ul className="space-y-4 mb-8">
                     <li className="flex items-center gap-3 text-sm text-blue-50">
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>Unlimited Clients</span>
+                      <span>{t("plan.professional.feature1")}</span>
                     </li>
 
                     <li className="flex items-center gap-3 text-sm text-blue-50">
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>Advanced Invoicing & Recon</span>
+                      <span>{t("plan.professional.feature2")}</span>
                     </li>
 
                     <li className="flex items-center gap-3 text-sm text-blue-50">
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>Basic AI Assistant (500 credits)</span>
+                      <span>{t("plan.professional.feature3")}</span>
                     </li>
 
                     <li className="flex items-center gap-3 text-sm text-blue-50">
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>Multi-Currency Support</span>
+                      <span>{t("plan.professional.feature4")}</span>
                     </li>
                   </ul>
                 </div>
@@ -571,19 +709,19 @@ export default function HomePage() {
                   href={getPlanRegisterLink("Professional")}
                   className="w-full text-center py-2.5 bg-white text-primary font-semibold rounded-lg hover:bg-gray-100 transition duration-200 text-sm"
                 >
-                  Start Professional Trial
+                  {t("plan.professional.action")}
                 </Link>
               </div>
 
               {/* Plan 3: Business */}
-              <div className="rounded-2xl bg-white p-8 border border-gray-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition-all duration-300 relative">
+              <div className="rounded-2xl bg-white p-8 border border-gray-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition-all duration-300 relative text-start">
                 <div>
                   <h3 className="font-display text-xl font-bold text-primary mb-1">
-                    Business
+                    {t("plan.business.title")}
                   </h3>
 
                   <p className="text-xs text-gray-500 mb-6">
-                    For large enterprises needing full automation.
+                    {t("plan.business.desc")}
                   </p>
 
                   <div className="flex items-baseline gap-1 mb-8">
@@ -592,29 +730,29 @@ export default function HomePage() {
                     </span>
 
                     <span className="text-gray-500 text-sm font-medium">
-                      /mo
+                      {lang === "ar" ? " / شهر" : "/mo"}
                     </span>
                   </div>
 
                   <ul className="space-y-4 mb-8">
                     <li className="flex items-center gap-3 text-sm text-gray-600">
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>Everything in Pro</span>
+                      <span>{t("plan.business.feature1")}</span>
                     </li>
 
                     <li className="flex items-center gap-3 text-sm text-gray-600">
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>Unlimited AI Assistant</span>
+                      <span>{t("plan.business.feature2")}</span>
                     </li>
 
                     <li className="flex items-center gap-3 text-sm text-gray-600">
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>Custom API Access</span>
+                      <span>{t("plan.business.feature3")}</span>
                     </li>
 
                     <li className="flex items-center gap-3 text-sm text-gray-600">
                       <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>Dedicated Success Manager</span>
+                      <span>{t("plan.business.feature4")}</span>
                     </li>
                   </ul>
                 </div>
@@ -623,7 +761,7 @@ export default function HomePage() {
                   href={getPlanRegisterLink("Business")}
                   className="w-full text-center py-2.5 bg-white text-primary border border-gray-300 font-semibold rounded-lg hover:bg-gray-50 transition duration-200 text-sm"
                 >
-                  Contact Sales
+                  {t("plan.business.action")}
                 </Link>
               </div>
             </div>
@@ -631,19 +769,147 @@ export default function HomePage() {
         </section>
       </main>
 
-      {/* Footer Section */}
-      <footer className="w-full border-t border-gray-100 bg-[#faf8fe] py-12">
-        <div className="mx-auto max-w-7xl px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          {/* Logo */}
-          <div className="flex items-center gap-2.5 font-display font-bold text-lg text-primary">
-            <PillarLogo />
-            <span>Finora</span>
+      <footer className="w-full border-t border-gray-200/80 bg-gradient-to-b from-[#faf8fe] via-[#c7d2fe] to-[#a5b4fc] py-16 relative">
+        
+        <div className="mx-auto max-w-7xl px-6 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 pb-12 border-b border-slate-300/40">
+            {/* Branding Column */}
+            <div className="md:col-span-4 flex flex-col gap-4 text-start">
+              <Link href="/" className="flex items-center select-none w-fit">
+                <FinoraLogo />
+              </Link>
+              <p className="text-sm text-slate-700 leading-relaxed max-w-sm">
+                {t("footer.desc")}
+              </p>
+            </div>
+            
+            {/* Links Grid */}
+            <div className="md:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-8">
+              {/* Product */}
+              <div className="flex flex-col gap-4 text-start">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-primary">
+                  {t("footer.product")}
+                </h4>
+                <ul className="flex flex-col gap-2.5">
+                  <li>
+                    <button
+                      onClick={() => scrollToSection("features")}
+                      className="text-sm text-slate-700 hover:text-primary transition-colors cursor-pointer text-start font-medium"
+                    >
+                      {t("nav.features")}
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => scrollToSection("pricing")}
+                      className="text-sm text-slate-700 hover:text-primary transition-colors cursor-pointer text-start font-medium"
+                    >
+                      {t("nav.pricing")}
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => scrollToSection("ai-assistant")}
+                      className="text-sm text-slate-700 hover:text-primary transition-colors cursor-pointer text-start font-medium"
+                    >
+                      {t("nav.aiAssistant")}
+                    </button>
+                  </li>
+                </ul>
+              </div>
+ 
+              {/* Company */}
+              <div className="flex flex-col gap-4 text-start">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-primary">
+                  {t("footer.company")}
+                </h4>
+                <ul className="flex flex-col gap-2.5">
+                  <li>
+                    <button
+                      onClick={() => scrollToSection("platform")}
+                      className="text-sm text-slate-700 hover:text-primary transition-colors cursor-pointer text-start font-medium"
+                    >
+                      {t("footer.about")}
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => scrollToSection("pricing")}
+                      className="text-sm text-slate-700 hover:text-primary transition-colors cursor-pointer text-start font-medium"
+                    >
+                      {t("footer.careers")}
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => scrollToSection("features")}
+                      className="text-sm text-slate-700 hover:text-primary transition-colors cursor-pointer text-start font-medium"
+                    >
+                      {t("footer.security")}
+                    </button>
+                  </li>
+                </ul>
+              </div>
+ 
+              {/* Legal */}
+              <div className="flex flex-col gap-4 text-start">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-primary">
+                  {t("footer.legal")}
+                </h4>
+                <ul className="flex flex-col gap-2.5 text-start font-medium">
+                  <li>
+                    <Link
+                      href="/privacy"
+                      className="text-sm text-slate-700 hover:text-primary transition-colors"
+                    >
+                      {t("footer.privacy")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/terms"
+                      className="text-sm text-slate-700 hover:text-primary transition-colors"
+                    >
+                      {t("footer.terms")}
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
-
-          {/* Copyright */}
-          <p className="text-xs text-gray-500">
-            &copy; 2026 Finora Inc. All rights reserved.
-          </p>
+          
+          {/* Bottom Footer */}
+          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            {/* Copyright */}
+            <p className="text-xs text-slate-600 font-medium">
+              {t("footer.copyright")}
+            </p>
+            
+            {/* Language Selector */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setLang("en")}
+                className={`text-xs font-semibold px-2.5 py-1 rounded transition-all duration-200 cursor-pointer ${
+                  lang === "en"
+                    ? "bg-primary text-white shadow-sm"
+                    : "text-slate-700 hover:text-primary"
+                }`}
+              >
+                {t("lang.en")}
+              </button>
+              <span className="text-slate-400 text-xs">|</span>
+              <button
+                onClick={() => setLang("ar")}
+                className={`text-xs font-semibold px-2.5 py-1 rounded transition-all duration-200 cursor-pointer ${
+                  lang === "ar"
+                    ? "bg-primary text-white shadow-sm"
+                    : "text-slate-700 hover:text-primary"
+                }`}
+              >
+                {t("lang.ar")}
+              </button>
+            </div>
+          </div>
         </div>
       </footer>
     </div>

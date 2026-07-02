@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { t as translate } from "@/locales/invoices";
+import { t as translate } from "@/locales/landing";
 
 const STORAGE_KEY = "invoice_lang";
 
-export default function useLang() {
+export default function useLandingLang() {
   const [lang, setLangState] = useState("en");
 
   useEffect(() => {
@@ -17,11 +17,17 @@ export default function useLang() {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored === "ar" || stored === "en") {
         setLangState(stored);
+        // Sync document element attributes
+        document.documentElement.lang = stored;
+        document.documentElement.dir = stored === "ar" ? "rtl" : "ltr";
         return;
       }
 
       const pageLang = document.documentElement.lang;
-      if (pageLang === "ar") setLangState("ar");
+      if (pageLang === "ar") {
+        setLangState("ar");
+        document.documentElement.dir = "rtl";
+      }
     });
 
     return () => {
@@ -33,6 +39,10 @@ export default function useLang() {
     const normalized = nextLang === "ar" ? "ar" : "en";
     localStorage.setItem(STORAGE_KEY, normalized);
     setLangState(normalized);
+    
+    // Update document attributes dynamically
+    document.documentElement.lang = normalized;
+    document.documentElement.dir = normalized === "ar" ? "rtl" : "ltr";
   };
 
   return {
