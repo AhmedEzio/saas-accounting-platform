@@ -281,51 +281,6 @@ export const addAllVectors = async (req, res, next) => {
 //   }
 // };
 
-export async function addInvoice(invoice) {
-  const vectorStore = await getVectorStore(invoice.accountantId._id);
-  const invoiceId = invoice._id.toString();
-  await vectorStore.addDocuments([
-    new Document({
-      pageContent: `
-      Invoice Number: ${invoice.invoiceNumber}
-      Invoice Type: ${invoice.invoiceType}
-
-      Client Name: ${invoice.clientId?.name}
-      Client Phone: ${invoice.clientId?.phone}
-
-      Base Amount: ${invoice.baseAmount}
-      Final Amount: ${invoice.finalAmount}
-      Amount Paid: ${invoice.amountPaid}
-      Due Amount: ${invoice.dueAmount}
-
-      Payment Method: ${invoice.paymentMethod}
-
-      Items:
-      ${invoice.items
-        .map(
-          (item) =>
-            `- ${item.description}
-            Qty: ${item.quantity}
-            Unit Price: ${item.unitPrice}
-            Total: ${item.totalPrice}`,
-        )
-        .join("\n")}
-      `,
-      metadata: {
-        type: "invoice",
-        invoiceId,
-        invoiceNumber: invoice.invoiceNumber,
-      },
-    }),
-  ]);
-
-  return invoiceId;
-}
-const contextSchema = z.object({
-  userId: z.string(),
-  sessionId: z.string(),
-  imageUrl: z.string().optional(),
-});
 export const chat = async (req, res, next) => {
   try {
     const { sessionId } = req.params;
@@ -346,12 +301,6 @@ export const chat = async (req, res, next) => {
       imageUrl = result.secure_url;
     }
     const result = await runAgent(question, userId, sessionId, imageUrl);
-    // const lastMessage = result.messages[result.messages.length - 1];
-    // const answer =
-    //   typeof lastMessage.content === "string"
-    //     ? lastMessage.content
-    //     : JSON.stringify(lastMessage.content);
-
     await chatMessage.create({
       sessionId,
       content: question,
@@ -360,7 +309,6 @@ export const chat = async (req, res, next) => {
     });
     await chatMessage.create({ sessionId, content: result, from: "ai" });
     return res.status(200).json({ result });
-    // return res.status(200).json({ imageUrl });
   } catch (err) {
     next(err);
   }
@@ -368,7 +316,6 @@ export const chat = async (req, res, next) => {
 
 import { createWorker } from "tesseract.js";
 
-// import { getLLM } from "../services/ai/customLLM.js";
 import { createInvoice } from "../services/invoice.service.js";
 export const addInvoiceController = async (req, res) => {
   try {
@@ -382,7 +329,6 @@ export const addInvoiceController = async (req, res) => {
     }
     console.log(imageUrl);
 
-    // OCR
     const worker = await createWorker("eng");
     const ocrResult = await worker.recognize(imageUrl);
     const text = ocrResult.data.text;
@@ -391,7 +337,6 @@ export const addInvoiceController = async (req, res) => {
 
     await worker.terminate();
 
-    // Find client
     const client = await Client.findOne({
       email: clientEmail,
       accountantId: userId,

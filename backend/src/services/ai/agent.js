@@ -3,11 +3,23 @@ import { HumanMessage } from "@langchain/core/messages";
 import { ITIChatModel } from "./customLLM.js";
 import { SYSTEM_PROMPT } from "./systemPrompt.js";
 import { addInvoiceTool, searchInvoicesTool } from "./tools/invoiceTools.js";
-import { createClientTool } from "./tools/clientTools.js";
+import {
+  createClientTool,
+  getClientsTool,
+  searchClientTool,
+} from "./tools/clientTools.js";
+import { createPaymentTool, getPaymentsTool } from "./tools/paymentTools.js";
 import { z } from "zod";
 
-
-const tools = [searchInvoicesTool, createClientTool, addInvoiceTool];
+const tools = [
+  searchInvoicesTool,
+  addInvoiceTool,
+  createClientTool,
+  getClientsTool,
+  searchClientTool,
+  createPaymentTool,
+  getPaymentsTool,
+];
 const model = new ITIChatModel({});
 
 const contextSchema = z.object({
