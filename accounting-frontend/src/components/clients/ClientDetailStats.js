@@ -69,9 +69,17 @@ export default function ClientDetailStats({
   totalTransactions,
   totalDebit,
   totalCredit,
+  clientType,
 }) {
+  const isClient = clientType === "client";
+  const isVendor = clientType === "vendor";
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+    <div
+      className={`grid grid-cols-1 sm:grid-cols-2 ${
+        clientType ? "lg:grid-cols-3" : "lg:grid-cols-4"
+      } gap-4 mb-5`}
+    >
       <StatCard
         label="Current Balance"
         value={currentBalance}
@@ -93,26 +101,30 @@ export default function ClientDetailStats({
           </svg>
         }
       />
-      <StatCard
-        label="Total Debit"
-        value={totalDebit}
-        accent="red"
-        icon={
-          <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-            <path d="M12 19V5M5 12l7-7 7 7" />
-          </svg>
-        }
-      />
-      <StatCard
-        label="Total Credit"
-        value={totalCredit}
-        accent="green"
-        icon={
-          <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-            <path d="M12 5v14M19 12l-7 7-7-7" />
-          </svg>
-        }
-      />
+      {(!clientType || isClient) && (
+        <StatCard
+          label="Total Debit"
+          value={totalDebit}
+          accent="red"
+          icon={
+            <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+              <path d="M12 19V5M5 12l7-7 7 7" />
+            </svg>
+          }
+        />
+      )}
+      {(!clientType || isVendor) && (
+        <StatCard
+          label="Total Credit"
+          value={totalCredit}
+          accent="green"
+          icon={
+            <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+              <path d="M12 5v14M19 12l-7 7-7-7" />
+            </svg>
+          }
+        />
+      )}
     </div>
   );
 }

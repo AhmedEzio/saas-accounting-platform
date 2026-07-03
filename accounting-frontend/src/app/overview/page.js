@@ -25,8 +25,7 @@ import { exportOverviewExcel } from "@/components/overview/exportOverviewExcel";
 export default function OverviewPage() {
   const router = useRouter();
   const { user, token, loading: authLoading } = useAuth();
-  const [lang, setLang] = useState("en");
-  const { dir, isRtl, t } = useOverviewLang(lang);
+  const { lang, setLang, dir, isRtl, t } = useOverviewLang();
   const [rawData, setRawData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");

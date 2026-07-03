@@ -15,8 +15,7 @@ export default function ChatPage() {
   const { user, token, loading: authLoading } = useAuth();
   
   // Translation & Localization
-  const [lang, setLang] = useState("en");
-  const { dir, isRtl, t } = useOverviewLang(lang);
+  const { lang, setLang, dir, isRtl, t } = useOverviewLang();
 
   // Layout & UI State
   const [mobileNavOpen, setMobileNavOpen] = useState(false);

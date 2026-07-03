@@ -13,6 +13,7 @@ import ReturnModal from "@/components/invoices/ReturnModal";
 import SkeletonRow from "@/components/invoices/SkeletonRow";
 import useLang from "@/components/invoices/useLang";
 import { invoicesApi, paymentsApi } from "@/services/invoices";
+import AppShell from "@/components/AppShell";
 
 const returnTypes = ["sales_return", "purchase_return"];
 
@@ -170,8 +171,8 @@ export default function InvoiceDetailsPage() {
   };
 
   return (
-    <main className="min-h-dvh bg-[#faf8fe] px-4 py-6 text-slate-950 sm:px-6 lg:px-8" dir={dir}>
-      <div className="mx-auto flex max-w-[1440px] flex-col gap-6">
+    <AppShell activeKey="invoices">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6" dir={dir}>
         {loading ? <DetailsSkeleton /> : null}
 
         {!loading && error ? (
@@ -193,7 +194,7 @@ export default function InvoiceDetailsPage() {
               >
                 {canPay ? (
                   <button
-                    className="min-h-11 rounded-lg bg-[#001540] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0f2a5f] focus:outline-none focus:ring-2 focus:ring-[#001540]/30"
+                    className="min-h-11 rounded-lg bg-[#1b2b6b] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#162358] focus:outline-none focus:ring-2 focus:ring-[#1b2b6b]/30"
                     onClick={() => openActionModal("payment")}
                     type="button"
                   >
@@ -202,7 +203,7 @@ export default function InvoiceDetailsPage() {
                 ) : null}
                 {canReturn ? (
                   <button
-                    className="min-h-11 rounded-lg border border-[#001540] bg-white px-4 text-sm font-semibold text-[#001540] transition hover:bg-[#dae2ff] focus:outline-none focus:ring-2 focus:ring-[#001540]/25"
+                    className="min-h-11 rounded-lg border border-[#1b2b6b] bg-white px-4 text-sm font-semibold text-[#1b2b6b] transition hover:bg-[#e8ebf7] focus:outline-none focus:ring-2 focus:ring-[#1b2b6b]/25"
                     onClick={() => openActionModal("return")}
                     type="button"
                   >
@@ -255,6 +256,6 @@ export default function InvoiceDetailsPage() {
           </>
         ) : null}
       </div>
-    </main>
+    </AppShell>
   );
 }

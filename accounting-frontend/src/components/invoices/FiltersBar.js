@@ -94,15 +94,6 @@ export default function FiltersBar({
         >
           {t("action.clearFilters")}
         </button>
-
-        <button
-          aria-label={lang === "ar" ? "Switch to English" : "Switch to Arabic"}
-          className="min-h-11 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#001540]/20"
-          onClick={() => onChange({ lang: lang === "ar" ? "en" : "ar" })}
-          type="button"
-        >
-          {lang === "ar" ? "EN" : "AR"}
-        </button>
       </div>
     </section>
   );

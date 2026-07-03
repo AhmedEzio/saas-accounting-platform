@@ -9,14 +9,14 @@ const COLORS = [
 
 const EMPTY = { name: "", email: "", phone: "", type: "client", notes: "" };
 
-export default function AddClientModal({ onClose, onAdd }) {
+export default function AddClientModal({ onClose, onAdd, t }) {
   const [form, setForm] = useState(EMPTY);
   const [error, setError] = useState("");
 
   function handleSubmit(e) {
     e.preventDefault();
     if (!form.name || !form.email || !form.phone) {
-      setError("All fields are required.");
+      setError(t("modal.required"));
       return;
     }
     const entry = {
@@ -52,7 +52,7 @@ export default function AddClientModal({ onClose, onAdd }) {
       >
         {/* header */}
         <div className="flex items-start justify-between mb-1">
-          <h2 className="text-[18px] font-extrabold text-gray-900">Add New Client</h2>
+          <h2 className="text-[18px] font-extrabold text-gray-900">{t("modal.addTitle")}</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors p-1 -mt-1 -mr-1"
@@ -63,7 +63,7 @@ export default function AddClientModal({ onClose, onAdd }) {
           </button>
         </div>
         <p className="text-[13px] text-gray-500 mb-6">
-          Fill in the details to add a new client or vendor.
+          {t("modal.addSubtitle")}
         </p>
 
         {/* error */}
@@ -77,14 +77,12 @@ export default function AddClientModal({ onClose, onAdd }) {
           {/* Name */}
           <div>
             <label htmlFor="nc-name" className="block text-[13px] font-semibold text-gray-700 mb-1.5">
-              Full Name / Company
+              {t("modal.name")}
             </label>
             <input
-              id="nc-name"
-              type="text"
-              placeholder="e.g. Acme Corp"
-              value={form.name}
-              onChange={set("name")}
+              id="nc-name" type="text"
+              placeholder={t("modal.namePlaceholder")}
+              value={form.name} onChange={set("name")}
               className="w-full px-3.5 py-2.5 border-[1.5px] border-gray-200 rounded-[10px] text-sm text-gray-900 bg-gray-50 outline-none transition-colors focus:border-[#1b2b6b] focus:bg-white"
             />
           </div>
@@ -92,14 +90,12 @@ export default function AddClientModal({ onClose, onAdd }) {
           {/* Email */}
           <div>
             <label htmlFor="nc-email" className="block text-[13px] font-semibold text-gray-700 mb-1.5">
-              Email Address
+              {t("modal.email")}
             </label>
             <input
-              id="nc-email"
-              type="email"
-              placeholder="contact@example.com"
-              value={form.email}
-              onChange={set("email")}
+              id="nc-email" type="email"
+              placeholder={t("modal.emailPlaceholder")}
+              value={form.email} onChange={set("email")}
               className="w-full px-3.5 py-2.5 border-[1.5px] border-gray-200 rounded-[10px] text-sm text-gray-900 bg-gray-50 outline-none transition-colors focus:border-[#1b2b6b] focus:bg-white"
             />
           </div>
@@ -107,14 +103,12 @@ export default function AddClientModal({ onClose, onAdd }) {
           {/* Phone */}
           <div>
             <label htmlFor="nc-phone" className="block text-[13px] font-semibold text-gray-700 mb-1.5">
-              Phone Number
+              {t("modal.phone")}
             </label>
             <input
-              id="nc-phone"
-              type="text"
-              placeholder="+1 (555) 000-0000"
-              value={form.phone}
-              onChange={set("phone")}
+              id="nc-phone" type="text"
+              placeholder={t("modal.phonePlaceholder")}
+              value={form.phone} onChange={set("phone")}
               className="w-full px-3.5 py-2.5 border-[1.5px] border-gray-200 rounded-[10px] text-sm text-gray-900 bg-gray-50 outline-none transition-colors focus:border-[#1b2b6b] focus:bg-white"
             />
           </div>
@@ -122,50 +116,33 @@ export default function AddClientModal({ onClose, onAdd }) {
           {/* Type */}
           <div>
             <label htmlFor="nc-type" className="block text-[13px] font-semibold text-gray-700 mb-1.5">
-              Type
+              {t("modal.type")}
             </label>
-            <select
-              id="nc-type"
-              value={form.type}
-              onChange={set("type")}
-              className="w-full px-3.5 py-2.5 border-[1.5px] border-gray-200 rounded-[10px] text-sm text-gray-900 bg-gray-50 outline-none transition-colors focus:border-[#1b2b6b] focus:bg-white"
-            >
-              <option value="client">Client</option>
-              <option value="vendor">Vendor</option>
+            <select id="nc-type" value={form.type} onChange={set("type")}
+              className="w-full px-3.5 py-2.5 border-[1.5px] border-gray-200 rounded-[10px] text-sm text-gray-900 bg-gray-50 outline-none transition-colors focus:border-[#1b2b6b] focus:bg-white">
+              <option value="client">{t("type.client")}</option>
+              <option value="vendor">{t("type.vendor")}</option>
             </select>
           </div>
           <div>
-            <label
-              htmlFor="nc-notes"
-              className="block text-[13px] font-semibold text-gray-700 mb-1.5"
-            >
-              Notes
+            <label htmlFor="nc-notes" className="block text-[13px] font-semibold text-gray-700 mb-1.5">
+              {t("modal.notes")}
             </label>
-
-            <textarea
-              id="nc-notes"
-              value={form.notes}
-              onChange={set("notes")}
-              placeholder="Write any notes about this client..."
+            <textarea id="nc-notes" value={form.notes} onChange={set("notes")}
+              placeholder={t("modal.notesPlaceholder")}
               rows={4}
               className="w-full px-3.5 py-2.5 border-[1.5px] border-gray-200 rounded-[10px] text-sm text-gray-900 bg-gray-50 outline-none transition-colors focus:border-[#1b2b6b] focus:bg-white resize-none"
             />
           </div>
           {/* actions */}
           <div className="flex gap-2.5 justify-end pt-2">
-            <button
-              type="button"
-              onClick={() => { onClose(); setError(""); }}
-              className="px-5 py-2.5 border-[1.5px] border-gray-200 rounded-[10px] bg-white text-[14px] font-semibold text-gray-700 cursor-pointer hover:bg-gray-50 transition-colors"
-            >
-              Cancel
+            <button type="button" onClick={() => { onClose(); setError(""); }}
+              className="px-5 py-2.5 border-[1.5px] border-gray-200 rounded-[10px] bg-white text-[14px] font-semibold text-gray-700 cursor-pointer hover:bg-gray-50 transition-colors">
+              {t("action.cancel")}
             </button>
-            <button
-              type="submit"
-              id="save-client-btn"
-              className="px-5 py-2.5 border-none rounded-[10px] bg-[#1b2b6b] text-white text-[14px] font-bold cursor-pointer hover:bg-[#2d3ebd] transition-colors"
-            >
-              Add Client
+            <button type="submit" id="save-client-btn"
+              className="px-5 py-2.5 border-none rounded-[10px] bg-[#1b2b6b] text-white text-[14px] font-bold cursor-pointer hover:bg-[#2d3ebd] transition-colors">
+              {t("modal.addTitle")}
             </button>
           </div>
         </form>
