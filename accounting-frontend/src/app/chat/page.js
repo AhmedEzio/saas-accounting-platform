@@ -241,12 +241,37 @@ export default function ChatPage() {
       }
 
       const response = await aiApi.sendMessage(activeSessionId, formData);
-      
+
+      // Log response shape to diagnose field name in dev
+      console.log("[Chat] AI raw response:", JSON.stringify(response));
+
+      // Extract content — backend may wrap it differently depending on version.
+      // Try every known field path in order of specificity.
+      const extractContent = (res) => {
+        if (!res) return "";
+        // Try nested data envelope first (common wrapper pattern)
+        const nested = res?.data ?? res?.result ?? res;
+        const candidates = [
+          nested?.answer,
+          nested?.content,
+          nested?.message,
+          nested?.text,
+          nested?.reply,
+          nested?.response,
+          typeof nested === "string" ? nested : null,
+        ];
+        for (const c of candidates) {
+          if (c && typeof c === "string" && c.trim()) return c;
+        }
+        // Last resort: stringify so at least something shows
+        return JSON.stringify(res);
+      };
+
       // Append the AI answer
       const aiMessage = {
         _id: "ai-" + Date.now(),
         sessionId: activeSessionId,
-        content: response?.answer || response?.content || response?.message || (typeof response === "string" ? response : JSON.stringify(response)),
+        content: extractContent(response),
         from: "ai",
         createdAt: new Date().toISOString(),
       };
