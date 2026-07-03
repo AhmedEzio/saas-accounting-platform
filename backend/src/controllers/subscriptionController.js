@@ -26,8 +26,15 @@ export const getPlans = catchError(async (req, res) => {
 });
 
 export const createPlan = catchError(async (req, res) => {
-  const { name, description, price, aiCreditLimit, stripePriceId, isActive } =
-    req.body;
+  const {
+    name,
+    description,
+    price,
+    aiCreditLimit,
+    features,
+    stripePriceId,
+    isActive,
+  } = req.body;
 
   if (!name || price === undefined || aiCreditLimit === undefined) {
     throw new AppError("name, price, and aiCreditLimit are required.", 400);
@@ -38,6 +45,7 @@ export const createPlan = catchError(async (req, res) => {
     description,
     price,
     aiCreditLimit,
+    features,
     stripePriceId: stripePriceId || null,
     isActive: isActive !== undefined ? isActive : true,
   });

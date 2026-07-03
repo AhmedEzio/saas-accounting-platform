@@ -28,6 +28,45 @@ const subscriptionPlanSchema = new mongoose.Schema(
       min: [0, "Credit limit cannot be negative"],
     },
 
+    features: {
+      aiChat: {
+        type: Boolean,
+        default: false,
+      },
+      clientTools: {
+        type: Boolean,
+        default: false,
+      },
+      invoiceTools: {
+        type: Boolean,
+        default: false,
+      },
+      paymentTools: {
+        type: Boolean,
+        default: false,
+      },
+      fileExtraction: {
+        type: Boolean,
+        default: false,
+      },
+      financialReports: {
+        type: Boolean,
+        default: false,
+      },
+      invoiceAnalysis: {
+        type: Boolean,
+        default: false,
+      },
+      ragSearch: {
+        type: Boolean,
+        default: false,
+      },
+      technicalSupport: {
+        type: Boolean,
+        default: false,
+      },
+    },
+
    
     stripePriceId: {
       type: String,
