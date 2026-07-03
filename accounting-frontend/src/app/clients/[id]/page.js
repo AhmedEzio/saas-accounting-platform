@@ -340,6 +340,7 @@ export default function ClientDetailPage({ params }) {
           totalTransactions={transactions.total}
           totalDebit={totalDebit}
           totalCredit={totalCredit}
+          clientType={client?.type}
         />
 
         {/* ── Tabs + table ── */}

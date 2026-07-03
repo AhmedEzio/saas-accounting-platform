@@ -103,12 +103,9 @@ export const getClientById = async (req, res) => {
 };
 
 // POST /api/clients
-export const createClient = async (req, res) => {
+export const createClient = async (req, res, next) => {
   try {
-    const client = await clientService.createClientService(
-      req.user._id,
-      req.body,
-    );
+    const client = await createClientService(req.user._id, req.body);
 
     res.status(201).json({
       success: true,
@@ -131,7 +128,12 @@ export const updateClient = async (req, res) => {
         message: "Invalid type. Use 'client' or 'vendor'",
       });
     }
-    console.log({ name, type, phone, email, address, notes, }, req.params.id, req.user._id, "backend");
+    console.log(
+      { name, type, phone, email, address, notes },
+      req.params.id,
+      req.user._id,
+      "backend",
+    );
 
     const client = await Client.findOneAndUpdate(
       {
