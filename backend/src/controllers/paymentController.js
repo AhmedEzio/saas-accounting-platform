@@ -1,6 +1,4 @@
 import * as paymentService from "../services/payment.service.js";
-import PaymentTransaction from "../models/PaymentTransaction.js";
-import { addPaymentTransactionToVector } from "../services/ai/vectorIndexing.js";
 
 // POST /api/payments
 export const createPayment = async (req, res, next) => {
@@ -10,15 +8,7 @@ export const createPayment = async (req, res, next) => {
       req.user._id,
       req.user._id,
     );
-    try {
-      const ts = await PaymentTransaction.findById(paymentTransaction._id)
-        .populate("clientId", "name")
-        .populate("invoiceId", "invoiceNumber");
-      ts.accountantId = req.user._id;
-      await addPaymentTransactionToVector(ts);
-    } catch (err) {
-      console.log(err);
-    }
+
     return res.status(201).json({
       success: true,
       message: "Payment recorded successfully",

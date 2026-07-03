@@ -2,6 +2,7 @@ import Invoice from "../models/Invoice.js";
 import Client from "../models/Client.js";
 import PaymentTransaction from "../models/PaymentTransaction.js";
 import ClientBalanceTransaction from "../models/ClientBalanceTransaction.js";
+import { safeSyncPaymentAndInvoice } from "./ai/vectorIndexing.js";
 
 const round2 = (n) => Math.round((Number(n) + Number.EPSILON) * 100) / 100;
 
@@ -303,7 +304,11 @@ export const createPayment = async (body, paidBy, accountantId = paidBy) => {
     }
 
     await session.commitTransaction();
-
+    await safeSyncPaymentAndInvoice(
+      paymentTx._id,
+      invoice._id,
+      accountantId,
+    );
     return { invoice, paymentTransaction: paymentTx };
   } catch (err) {
     await session.abortTransaction();

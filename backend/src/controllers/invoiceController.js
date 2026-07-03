@@ -1,9 +1,5 @@
 import * as invoiceService from "../services/invoice.service.js";
-import {
-  addInvoiceToVector,
-  addPaymentTransactionToVector,
-} from "../services/ai/vectorIndexing.js";
-import Invoice from "../models/Invoice.js";
+
 // POST /api/invoices
 export const createInvoice = async (req, res, next) => {
   try {
@@ -12,10 +8,6 @@ export const createInvoice = async (req, res, next) => {
       req.user._id,
       req.user._id,
     );
-    const invoiceForIndexing = await Invoice.findById(invoice._id)
-      .populate("clientId", "name phone")
-      .populate("accountantId", "name email");
-    await addInvoiceToVector(invoiceForIndexing);
 
     return res.status(201).json({
       success: true,
