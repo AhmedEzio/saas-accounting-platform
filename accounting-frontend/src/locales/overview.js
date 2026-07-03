@@ -10,6 +10,8 @@ export const translations = {
   "nav.payments": { en: "Payments", ar: "المدفوعات" },
   "nav.subscription": { en: "Subscription", ar: "الاشتراك" },
   "nav.chat": { en: "AI Chat", ar: "دردشة الذكاء الاصطناعي" },
+  "sidebar.expand": { en: "Expand sidebar", ar: "توسيع الشريط الجانبي" },
+  "sidebar.collapse": { en: "Collapse sidebar", ar: "طي الشريط الجانبي" },
   "chat.title": { en: "Finora AI Assistant", ar: "مساعد Finora الذكي" },
   "chat.newChat": { en: "New Chat", ar: "محادثة جديدة" },
   "chat.typing": { en: "Finora is typing...", ar: "Finora يكتب..." },

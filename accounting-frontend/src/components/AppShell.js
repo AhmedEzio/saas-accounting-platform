@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
+import { t } from "@/locales/overview";
 
 /* ─── Nav items ─────────────────────────────────────────────────────────────── */
 const navItems = [
@@ -206,11 +207,15 @@ export default function AppShell({ children, activeKey, lang: propLang, setLang:
     <button
       type="button"
       onClick={() => setCollapsed((c) => !c)}
-      title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-      className={`absolute -right-3 top-20 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-gray-200 bg-white shadow-sm text-gray-500 transition hover:border-[#1b2b6b] hover:text-[#1b2b6b] hidden lg:flex`}
+      title={collapsed ? t("sidebar.expand", lang) : t("sidebar.collapse", lang)}
+      className={`absolute ${isRtl ? "-left-3" : "-right-3"} top-20 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-gray-200 bg-white shadow-sm text-gray-500 transition hover:border-[#1b2b6b] hover:text-[#1b2b6b] hidden lg:flex`}
     >
       <svg
-        className={`h-3 w-3 transition-transform duration-300 ${collapsed ? "rotate-180" : ""}`}
+        className={`h-3 w-3 transition-transform duration-300 ${
+          isRtl
+            ? (collapsed ? "" : "rotate-180")
+            : (collapsed ? "rotate-180" : "")
+        }`}
         fill="none"
         stroke="currentColor"
         strokeWidth="2.5"
