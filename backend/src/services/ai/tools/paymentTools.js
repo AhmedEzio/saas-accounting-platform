@@ -2,6 +2,7 @@ import { z } from "zod";
 import { tool } from "langchain";
 import { createPayment, getPayments } from "../../payment.service.js";
 import Client from "../../../models/Client.js";
+import Invoice from "../../../models/Invoice.js";
 
 export const createPaymentTool = tool(
   async ({ invoiceNumber, amount, paymentMethod, notes }, config) => {
@@ -33,12 +34,12 @@ export const createPaymentTool = tool(
 
       return JSON.stringify({
         success: true,
-        message: `Payment of ${amount} recorded successfully for invoice ${result.invoice.invoiceNumber}. Due amount remaining: ${result.invoice.dueAmount}`,
+        message: `Payment of ${amount} recorded successfully for invoice ${updatedInvoice.invoiceNumber}. Due amount remaining: ${updatedInvoice.dueAmount}`,
         data: {
-          invoiceNumber: result.invoice.invoiceNumber,
-          amountPaid: result.invoice.amountPaid,
-          dueAmount: result.invoice.dueAmount,
-          paymentTransaction: result.paymentTransaction,
+          invoiceNumber: updatedInvoice.invoiceNumber,
+          amountPaid: updatedInvoice.amountPaid,
+          dueAmount: updatedInvoice.dueAmount,
+          paymentTransaction: paymentTransaction,
         },
       });
     } catch (err) {
@@ -66,7 +67,7 @@ export const createPaymentTool = tool(
 );
 
 export const getPaymentsTool = tool(
-  async ({ invoiceId, clientId, source}, config) => {
+  async ({ invoiceId, clientId, source }, config) => {
     try {
       const { userId } = config.context;
 
