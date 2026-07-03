@@ -324,7 +324,7 @@ export default function ChatPage() {
       >
         {/* Core Chat Layout Container */}
         <div className="mx-auto max-w-7xl">
-          <div className="flex h-[calc(100vh-10rem)] min-h-[500px] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300">
+          <div className="flex h-[calc(100vh-7rem)] min-h-[500px] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300">
             
             {/* Sidebar: Chat History */}
             <aside className="hidden w-72 flex-col border-r border-gray-100 bg-gray-50/40 sm:flex shrink-0">
