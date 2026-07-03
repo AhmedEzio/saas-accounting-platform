@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { authApi } from "@/services/api";
 import { resolveProfileErrorMessage, t } from "@/locales/profile";
+import AppShell from "@/components/AppShell";
+import { useLanguage } from "@/context/LanguageContext";
 
 const LANG_STORAGE_KEY = "invoice_lang";
 
@@ -43,7 +45,7 @@ const EyeBtn = ({ open, onToggle }) => (
 export default function ProfilePage() {
   const router = useRouter();
   const { user, token, loading, clearAuth, updateUser } = useAuth();
-  const [lang, setLang] = useState("en");
+  const { lang, setLang, dir } = useLanguage();
 
   const [form, setForm] = useState(() => ({
     name: user?.name || "",
@@ -64,17 +66,7 @@ export default function ProfilePage() {
     }
   }, [loading, token, router]);
 
-  useEffect(() => {
-    const stored = localStorage.getItem(LANG_STORAGE_KEY);
-    if (stored === "ar" || stored === "en") {
-      setLang(stored);
-      return;
-    }
 
-    if (document.documentElement.lang === "ar") {
-      setLang("ar");
-    }
-  }, []);
 
   useEffect(() => {
     if (user) {
@@ -138,10 +130,8 @@ export default function ProfilePage() {
   if (loading) return null;
   if (!user) return null;
 
-  const dir = lang === "ar" ? "rtl" : "ltr";
-
   return (
-    <div className="min-h-screen bg-[#f0f2f8] px-4 py-10" dir={dir}>
+    <AppShell activeKey="profile" lang={lang} setLang={setLang}>
       <div className="max-w-2xl mx-auto space-y-5">
         {/* ── Header card ── */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
@@ -525,6 +515,6 @@ export default function ProfilePage() {
           </div>
         )}
       </div>
-    </div>
+    </AppShell>
   );
 }
