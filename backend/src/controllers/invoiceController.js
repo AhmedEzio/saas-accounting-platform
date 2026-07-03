@@ -1,5 +1,9 @@
 import * as invoiceService from "../services/invoice.service.js";
-import {addInvoiceToVector,addPaymentTransactionToVector} from "../services/ai/vectorIndexing.js";
+import {
+  addInvoiceToVector,
+  addPaymentTransactionToVector,
+} from "../services/ai/vectorIndexing.js";
+import Invoice from "../models/Invoice.js";
 // POST /api/invoices
 export const createInvoice = async (req, res, next) => {
   try {
