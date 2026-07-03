@@ -300,7 +300,7 @@ export default function AppShell({ children, activeKey, lang: propLang, setLang:
               className="min-h-9 rounded-full border border-gray-200 bg-white px-4 text-xs font-bold text-gray-600 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] focus:ring-offset-2"
               aria-label="Switch language"
             >
-              {lang === "ar" ? "EN" : "عربي"}
+              {lang === "ar" ? "EN" : "AR"}
             </button>
           )}
 
