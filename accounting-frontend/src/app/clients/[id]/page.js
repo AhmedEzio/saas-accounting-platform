@@ -7,6 +7,7 @@ import ClientDetailHeader from "@/components/clients/ClientDetailHeader";
 import ClientDetailStats from "@/components/clients/ClientDetailStats";
 import ClientDetailTabs from "@/components/clients/ClientDetailTabs";
 import EditClientModal from "@/components/clients/EditClientModal";
+import AppShell from "@/components/AppShell";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
 
@@ -295,83 +296,83 @@ export default function ClientDetailPage({ params }) {
   /* ── Render ───────────────────────────────────────────────────────────── */
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f0f2f8]">
+      <AppShell activeKey="clients">
         <Spinner />
-      </div>
+      </AppShell>
     );
   }
 
   if (error || !client) {
     return (
-      <div className="min-h-screen bg-[#f0f2f8] flex items-center justify-center">
-        <div className="bg-white rounded-2xl p-10 shadow-sm text-center max-w-sm">
-          <p className="text-red-500 font-semibold mb-2">
-            Failed to load client
-          </p>
-          <p className="text-sm text-gray-500 mb-5">
-            {error ?? "Client not found."}
-          </p>
-          <button
-            onClick={() => router.push("/clients")}
-            className="px-5 py-2.5 bg-[#1b2b6b] text-white text-sm font-bold rounded-xl cursor-pointer hover:bg-[#2d3ebd] transition-colors"
-          >
-            ← Back to Clients
-          </button>
+      <AppShell activeKey="clients">
+        <div className="flex items-center justify-center py-24">
+          <div className="bg-white rounded-2xl p-10 shadow-sm text-center max-w-sm">
+            <p className="text-red-500 font-semibold mb-2">Failed to load client</p>
+            <p className="text-sm text-gray-500 mb-5">{error ?? "Client not found."}</p>
+            <button
+              onClick={() => router.push("/clients")}
+              className="px-5 py-2.5 bg-[#1b2b6b] text-white text-sm font-bold rounded-xl cursor-pointer hover:bg-[#2d3ebd] transition-colors"
+            >
+              ← Back to Clients
+            </button>
+          </div>
         </div>
-      </div>
+      </AppShell>
     );
   }
 
   const currentBalance = client.currentBalance ?? client.balance ?? 0;
 
   return (
-    <div className="min-h-screen bg-[#f0f2f8] px-4 pt-5 pb-12 sm:px-6 sm:pt-7 lg:px-9 lg:pt-9 lg:pb-16 font-[Inter,system-ui,sans-serif]">
-      {/* ── Header ── */}
-      <ClientDetailHeader
-        client={client}
-        onBack={() => router.push("/clients")}
-        onEdit={() => setShowEdit(true)}
-        onDelete={() => setShowDelete(true)}
-      />
-
-      {/* ── Stat cards ── */}
-      <ClientDetailStats
-        currentBalance={currentBalance}
-        totalTransactions={transactions.total}
-        totalDebit={totalDebit}
-        totalCredit={totalCredit}
-      />
-
-      {/* ── Tabs + table ── */}
-      {txLoading ? (
-        <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,.06)] overflow-hidden">
-          <Spinner />
-        </div>
-      ) : (
-        <ClientDetailTabs clientId={id} />
-      )}
-
-      {/* ── Edit modal ── */}
-      {showEdit && (
-        <EditClientModal
+    <AppShell activeKey="clients">
+      <div className="mx-auto max-w-7xl">
+        {/* ── Header ── */}
+        <ClientDetailHeader
           client={client}
-          onClose={() => setShowEdit(false)}
-          onSave={async (cid, data) => {
-            await handleEdit(cid, data);
-            setShowEdit(false);
-          }}
+          onBack={() => router.push("/clients")}
+          onEdit={() => setShowEdit(true)}
+          onDelete={() => setShowDelete(true)}
         />
-      )}
 
-      {/* ── Toggle status modal ── */}
-      {showDelete && (
-        <ToggleStatusModal
-          client={client}
-          loading={deleting}
-          onConfirm={handleToggleStatus}
-          onCancel={() => setShowDelete(false)}
+        {/* ── Stat cards ── */}
+        <ClientDetailStats
+          currentBalance={currentBalance}
+          totalTransactions={transactions.total}
+          totalDebit={totalDebit}
+          totalCredit={totalCredit}
         />
-      )}
-    </div>
+
+        {/* ── Tabs + table ── */}
+        {txLoading ? (
+          <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,.06)] overflow-hidden">
+            <Spinner />
+          </div>
+        ) : (
+          <ClientDetailTabs clientId={id} />
+        )}
+
+        {/* ── Edit modal ── */}
+        {showEdit && (
+          <EditClientModal
+            client={client}
+            onClose={() => setShowEdit(false)}
+            onSave={async (cid, data) => {
+              await handleEdit(cid, data);
+              setShowEdit(false);
+            }}
+          />
+        )}
+
+        {/* ── Toggle status modal ── */}
+        {showDelete && (
+          <ToggleStatusModal
+            client={client}
+            loading={deleting}
+            onConfirm={handleToggleStatus}
+            onCancel={() => setShowDelete(false)}
+          />
+        )}
+      </div>
+    </AppShell>
   );
 }

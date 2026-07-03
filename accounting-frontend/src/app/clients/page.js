@@ -7,6 +7,8 @@ import ClientStatCards from "@/components/clients/ClientStatCards";
 import ClientTableToolbar from "@/components/clients/ClientTableToolbar";
 import ClientsTable from "@/components/clients/ClientsTable";
 import AddClientModal from "@/components/clients/AddClientModal";
+import AppShell from "@/components/AppShell";
+import useClientsLang from "@/components/clients/useClientsLang";
 
 const PAGE_SIZE = 5;
 
@@ -32,6 +34,7 @@ async function apiFetch(path, options = {}) {
 
 /* ─── page ────────────────────────────────────────────────────────────────── */
 export default function ClientsPage() {
+  const { lang, setLang, t, isRtl, dir } = useClientsLang();
   const [clients, setClients] = useState([]);
   const [total, setTotal] = useState(0);
   const [stats, setStats] = useState({ clients: 0, vendors: 0, balance: 0 });
@@ -169,112 +172,110 @@ export default function ClientsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f0f2f8] px-4 pt-5 pb-12 sm:px-6 sm:pt-7 lg:px-9 lg:pt-9 lg:pb-16 font-[Inter,system-ui,sans-serif]">
-      {/* ── Page Header ── */}
-      <div className="flex items-center justify-between gap-4 mb-6 sm:mb-7">
-        <div>
-          <h1 className="text-xl sm:text-[26px] font-extrabold text-gray-900 mb-0.5 sm:mb-1">
-            Clients
-          </h1>
-          <p className="text-sm text-gray-500">
-            Manage clients and vendors in one place.
-          </p>
-        </div>
+    <AppShell activeKey="clients" lang={lang} setLang={setLang}>
+      <div className="mx-auto max-w-7xl" dir={dir}>
+        {/* ── Page Header ── */}
+        <div className={`flex items-center justify-between gap-4 mb-6 sm:mb-7 ${isRtl ? "flex-row-reverse" : ""}`}>
+          <div>
+            <h1 className="text-xl sm:text-[26px] font-extrabold text-gray-900 mb-0.5 sm:mb-1">
+              {t("page.title")}
+            </h1>
+            <p className="text-sm text-gray-500">{t("page.subtitle")}</p>
+          </div>
 
-        <button
-          id="add-client-btn"
-          onClick={() => setShowModal(true)}
-          className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl bg-[#1b2b6b] hover:bg-[#2d3ebd] text-white text-sm font-bold border-none cursor-pointer transition-colors whitespace-nowrap shrink-0"
-        >
-          <svg
-            width="16"
-            height="16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            viewBox="0 0 24 24"
+          <button
+            id="add-client-btn"
+            onClick={() => setShowModal(true)}
+            className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl bg-[#1b2b6b] hover:bg-[#2d3ebd] text-white text-sm font-bold border-none cursor-pointer transition-colors whitespace-nowrap shrink-0"
           >
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <line x1="19" y1="8" x2="19" y2="14" />
-            <line x1="22" y1="11" x2="16" y2="11" />
-          </svg>
-          <span className="hidden sm:inline">Add Client</span>
-          <span className="inline sm:hidden">Add</span>
-        </button>
-      </div>
-
-      {/* ── Stat Cards ── */}
-      <ClientStatCards
-        totalClients={stats.clients}
-        totalVendors={stats.vendors}
-        totalBalance={stats.balance}
-      />
-
-      {/* ── Error banner ── */}
-      {error && (
-        <div className="mb-4 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-center justify-between">
-          <span>⚠️ {error}</span>
-          <button onClick={fetchClients} className="underline font-medium ml-4">
-            Retry
+            <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <line x1="19" y1="8" x2="19" y2="14" />
+              <line x1="22" y1="11" x2="16" y2="11" />
+            </svg>
+            <span className="hidden sm:inline">{t("action.addClient")}</span>
+            <span className="inline sm:hidden">{t("action.add")}</span>
           </button>
         </div>
-      )}
 
-      {/* ── Table Card ── */}
-      <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,.06)] overflow-hidden">
-        <ClientTableToolbar
-          search={search}
-          onSearch={handleSearch}
-          tab={tab}
-          onTabChange={handleTabChange}
-          sort={sort}
-          onSortChange={handleSort}
+        {/* ── Stat Cards ── */}
+        <ClientStatCards
+          totalClients={stats.clients}
+          totalVendors={stats.vendors}
+          totalBalance={stats.balance}
+          t={t}
         />
 
-        {loading ? (
-          <div className="flex items-center justify-center py-20 text-gray-400 text-sm gap-3">
-            <svg
-              className="animate-spin h-5 w-5 text-[#1b2b6b]"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8v8z"
-              />
-            </svg>
-            Loading clients…
+        {/* ── Error banner ── */}
+        {error && (
+          <div className="mb-4 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-center justify-between">
+            <span>⚠️ {error}</span>
+            <button onClick={fetchClients} className="underline font-medium ml-4">
+              {t("error.retry")}
+            </button>
           </div>
-        ) : (
-          <ClientsTable
-            rows={clients}
-            selected={selected}
-            onDelete={(id) => handleDelete(id)}
-            onReactivate={(id) => handleReactivate(id)}
-            onEdit={handleEdit}
-            page={page}
-            totalFiltered={total}
-            totalPages={totalPages}
-            onPrevPage={() => setPage((p) => p - 1)}
-            onNextPage={() => setPage((p) => p + 1)}
+        )}
+
+        {/* ── Table Card ── */}
+        <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,.06)] overflow-hidden">
+          <ClientTableToolbar
+            search={search}
+            onSearch={handleSearch}
+            tab={tab}
+            onTabChange={handleTabChange}
+            sort={sort}
+            onSortChange={handleSort}
+            t={t}
+            isRtl={isRtl}
           />
+
+          {loading ? (
+            <div className="flex items-center justify-center py-20 text-gray-400 text-sm gap-3">
+              <svg
+                className="animate-spin h-5 w-5 text-[#1b2b6b]"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8z"
+                />
+              </svg>
+              Loading clients…
+            </div>
+          ) : (
+            <ClientsTable
+              rows={clients}
+              selected={selected}
+              onDelete={(id) => handleDelete(id)}
+              onReactivate={(id) => handleReactivate(id)}
+              onEdit={handleEdit}
+              page={page}
+              totalFiltered={total}
+              totalPages={totalPages}
+              onPrevPage={() => setPage((p) => p - 1)}
+              onNextPage={() => setPage((p) => p + 1)}
+              t={t}
+              isRtl={isRtl}
+            />
+          )}
+        </div>
+
+        {/* ── Modal ── */}
+        {showModal && (
+          <AddClientModal onClose={() => setShowModal(false)} onAdd={handleAdd} t={t} />
         )}
       </div>
-
-      {/* ── Modal ── */}
-      {showModal && (
-        <AddClientModal onClose={() => setShowModal(false)} onAdd={handleAdd} />
-      )}
-    </div>
+    </AppShell>
   );
 }

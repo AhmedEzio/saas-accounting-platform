@@ -11,6 +11,7 @@ import Pagination from "@/components/invoices/Pagination";
 import StatCards from "@/components/invoices/StatCards";
 import useLang from "@/components/invoices/useLang";
 import { invoicesApi } from "@/services/invoices";
+import AppShell from "@/components/AppShell";
 
 const initialFilters = {
   invoiceType: "",
@@ -140,8 +141,8 @@ export default function InvoicesPage() {
   const displayPage = filters.search.trim() ? 1 : meta.page;
 
   return (
-    <main className="min-h-dvh bg-[#faf8fe] px-4 py-6 text-slate-950 sm:px-6 lg:px-8" dir={dir}>
-      <div className="mx-auto flex max-w-[1440px] flex-col gap-6">
+    <AppShell activeKey="invoices" lang={lang} setLang={(l) => updateFilters({ lang: l })}>
+      <div className="mx-auto flex max-w-7xl flex-col gap-6" dir={dir}>
         <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-3xl font-semibold text-slate-950">{t("page.invoices")}</h1>
@@ -151,7 +152,7 @@ export default function InvoicesPage() {
           </div>
           <div className="flex w-full items-center gap-3 sm:w-auto">
             <Link
-              className="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-[#001540] px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-[#0f2a5f] focus:outline-none focus:ring-2 focus:ring-[#001540]/30 sm:w-auto"
+              className="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-[#1b2b6b] px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-[#162358] focus:outline-none focus:ring-2 focus:ring-[#1b2b6b]/30 sm:w-auto"
               href="/invoices/new"
             >
               {t("action.newInvoice")}
@@ -218,6 +219,6 @@ export default function InvoicesPage() {
           ) : null}
         </section>
       </div>
-    </main>
+    </AppShell>
   );
 }
