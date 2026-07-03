@@ -1,4 +1,5 @@
 import Client from "../models/Client.js";
+import { createClientService } from "../services/client.service.js";
 
 export const getClients = async (req, res, next) => {
   try {
@@ -104,55 +105,18 @@ export const getClientById = async (req, res) => {
 // POST /api/clients
 export const createClient = async (req, res) => {
   try {
-    const { name, type, phone, email, address, notes } = req.body;
+    const client = await clientService.createClientService(
+      req.user._id,
+      req.body,
+    );
 
-    if (!name || !type) {
-      return res.status(400).json({
-        success: false,
-        message: "Name and type are required",
-      });
-    }
-    ////
-    const clientt = await Client.findOne({
-      email,
-      accountantId: req.user._id,
-    });
-
-    if (clientt) {
-      return res.status(400).json({
-        success: false,
-        message: "Client/Vendor already exists",
-      });
-    }
-    ////
-    if (!["client", "vendor"].includes(type)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid type. Use 'client' or 'vendor'",
-      });
-    }
-
-    const client = await Client.create({
-      accountantId: req.user._id,
-      name,
-      type,
-      phone,
-      email,
-      address,
-      notes,
-    });
-
-    return res.status(201).json({
+    res.status(201).json({
       success: true,
-      message: "Client/Vendor created successfully",
+      message: "Client created successfully",
       data: client,
     });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: error.message,
-    });
+  } catch (err) {
+    next(err);
   }
 };
 

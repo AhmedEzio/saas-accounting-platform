@@ -129,7 +129,7 @@ const generateInvoiceNumber = async (invoiceType, session) => {
     .findOneAndUpdate(
       { _id: key },
       { $inc: { seq: 1 } },
-      { upsert: true, returnDocument: "after", session }
+      { upsert: true, returnDocument: "after", session },
     );
 
   const sequence = String(counter.seq).padStart(6, "0");
@@ -190,21 +190,24 @@ const validateReturnInvoice = async ({
   if (original.isCancelled) {
     throw Object.assign(
       new Error("Cannot create return for a cancelled invoice"),
-      { statusCode: 422 }
+      { statusCode: 422 },
     );
   }
 
-  if (invoiceType === "purchase_return" && original.invoiceType !== "purchase") {
+  if (
+    invoiceType === "purchase_return" &&
+    original.invoiceType !== "purchase"
+  ) {
     throw Object.assign(
       new Error("Purchase return must reference a purchase invoice"),
-      { statusCode: 422 }
+      { statusCode: 422 },
     );
   }
 
   if (invoiceType === "sales_return" && original.invoiceType !== "sale") {
     throw Object.assign(
       new Error("Sales return must reference a sale invoice"),
-      { statusCode: 422 }
+      { statusCode: 422 },
     );
   }
 
@@ -228,14 +231,14 @@ const validateReturnInvoice = async ({
     const originalItem = original.items.find(
       (i) =>
         i.description === item.description &&
-        round2(i.unitPrice) === round2(item.unitPrice)
+        round2(i.unitPrice) === round2(item.unitPrice),
     );
 
     const alreadyReturnedQty = previousReturns.reduce((sum, ret) => {
       const returnedItem = ret.items.find(
         (i) =>
           i.description === item.description &&
-          round2(i.unitPrice) === round2(item.unitPrice)
+          round2(i.unitPrice) === round2(item.unitPrice),
       );
 
       return sum + (returnedItem?.quantity || 0);
@@ -244,18 +247,18 @@ const validateReturnInvoice = async ({
     if (!originalItem) {
       throw Object.assign(
         new Error(
-          `Item "${item.description}" does not exist in original invoice`
+          `Item "${item.description}" does not exist in original invoice`,
         ),
-        { statusCode: 422 }
+        { statusCode: 422 },
       );
     }
 
     if (alreadyReturnedQty + item.quantity > originalItem.quantity) {
       throw Object.assign(
         new Error(
-          `Return quantity exceeds remaining quantity for item "${item.description}". Original: ${originalItem.quantity}, Already Returned: ${alreadyReturnedQty}, Requested: ${item.quantity}`
+          `Return quantity exceeds remaining quantity for item "${item.description}". Original: ${originalItem.quantity}, Already Returned: ${alreadyReturnedQty}, Requested: ${item.quantity}`,
         ),
-        { statusCode: 422 }
+        { statusCode: 422 },
       );
     }
   }
@@ -263,7 +266,11 @@ const validateReturnInvoice = async ({
   return original;
 };
 
-export const createInvoice = async (body, createdBy, accountantId = createdBy) => {
+export const createInvoice = async (
+  body,
+  createdBy,
+  accountantId = createdBy,
+) => {
   const session = await Invoice.startSession();
   session.startTransaction();
 
@@ -287,12 +294,13 @@ export const createInvoice = async (body, createdBy, accountantId = createdBy) =
       taxPercentage = 0,
       amountPaid = 0,
       baseAmount: expenseBaseAmount = null,
+      imageUrl = "",
     } = body;
 
     if (invoiceType !== "expense" && !clientId) {
       throw Object.assign(
         new Error("clientId is required for non-expense invoices"),
-        { statusCode: 422 }
+        { statusCode: 422 },
       );
     }
 
@@ -328,7 +336,7 @@ export const createInvoice = async (body, createdBy, accountantId = createdBy) =
     } else {
       baseAmount = sanitizedItems.reduce(
         (sum, item) => round2(sum + item.totalPrice),
-        0
+        0,
       );
     }
 
@@ -364,9 +372,10 @@ export const createInvoice = async (body, createdBy, accountantId = createdBy) =
           documentId,
           createdBy,
           notes,
+          imageUrl,
         },
       ],
-      { session }
+      { session },
     );
 
     if (RETURN_TYPES.includes(invoiceType)) {
@@ -495,7 +504,7 @@ export const cancelInvoice = async (
   invoiceId,
   cancelledBy,
   reason = null,
-  accountantId = cancelledBy
+  accountantId = cancelledBy,
 ) => {
   const session = await Invoice.startSession();
   session.startTransaction();
@@ -530,8 +539,10 @@ export const cancelInvoice = async (
 
     if (activeReturn) {
       throw Object.assign(
-        new Error("Cannot cancel invoice because it has active return invoices"),
-        { statusCode: 422 }
+        new Error(
+          "Cannot cancel invoice because it has active return invoices",
+        ),
+        { statusCode: 422 },
       );
     }
 

@@ -8,6 +8,7 @@ const navItems = [
   { key: "clients", href: "/clients" },
   { key: "payments", href: "/payments" },
   { key: "subscription", href: "/subscription" },
+  { key: "chat", href: "/chat" },
 ];
 
 export default function OverviewShell({
@@ -28,6 +29,7 @@ export default function OverviewShell({
   exporting,
   exportingExcel,
   printing,
+  activeKey = "overview",
 }) {
   const initials = user?.name
     ? user.name
@@ -70,7 +72,7 @@ export default function OverviewShell({
 
       <nav className="flex-1 space-y-1 overflow-y-auto px-3">
         {navItems.map((item) => {
-          const active = item.key === "overview";
+          const active = item.key === activeKey;
           return (
             <button
               key={item.key}
@@ -83,7 +85,17 @@ export default function OverviewShell({
               } ${isRtl ? "text-right" : "text-left"}`}
             >
               <span className={active ? "text-[#1b2b6b]" : "text-gray-400"} aria-hidden="true">
-                {item.key === "overview" ? OverviewIcons.trend : OverviewIcons.invoice}
+                {item.key === "overview"
+                  ? OverviewIcons.trend
+                  : item.key === "invoices"
+                  ? OverviewIcons.invoice
+                  : item.key === "clients"
+                  ? OverviewIcons.users
+                  : item.key === "payments"
+                  ? OverviewIcons.cash
+                  : item.key === "chat"
+                  ? OverviewIcons.chat
+                  : OverviewIcons.invoice}
               </span>
               {t(`nav.${item.key}`)}
             </button>
