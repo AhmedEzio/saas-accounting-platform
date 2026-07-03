@@ -20,7 +20,7 @@ const sendAuthResponse = (
   statusCode,
   success,
   message,
-  additionalData = {}
+  additionalData = {},
 ) => {
   const response = {
     success,
@@ -45,7 +45,7 @@ export const register = async (req, res, next) => {
         res,
         400,
         false,
-        "Name, email, and password are required"
+        "Name, email, and password are required",
       );
     }
 
@@ -84,7 +84,7 @@ export const register = async (req, res, next) => {
         res,
         400,
         false,
-        "Email already registered. Please use a different email or try logging in."
+        "Email already registered. Please use a different email or try logging in.",
       );
     }
 
@@ -101,14 +101,14 @@ export const login = async (req, res, next) => {
         res,
         400,
         false,
-        "Email and password are required"
+        "Email and password are required",
       );
     }
 
     const normalizedEmail = email.trim().toLowerCase();
 
     const user = await User.findOne({ email: normalizedEmail }).select(
-      "+passwordHash"
+      "+passwordHash",
     );
 
     if (!user) {
@@ -163,6 +163,90 @@ export const getMe = async (req, res, next) => {
   }
 };
 
+export const updateProfile = async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return sendAuthResponse(res, 401, false, "User not found");
+    }
+
+    const { name, email, role, password, passwordHash } = req.body;
+
+    if (role !== undefined || password !== undefined || passwordHash !== undefined) {
+      return sendAuthResponse(
+        res,
+        400,
+        false,
+        "Role and password cannot be updated via this endpoint",
+      );
+    }
+
+    if (name === undefined && email === undefined) {
+      return sendAuthResponse(
+        res,
+        400,
+        false,
+        "At least one field (name or email) is required to update",
+      );
+    }
+
+    const updateData = {};
+
+    if (name !== undefined) {
+      const trimmedName = String(name).trim();
+
+      if (!trimmedName) {
+        return sendAuthResponse(res, 400, false, "Name is required");
+      }
+
+      updateData.name = trimmedName;
+    }
+
+    if (email !== undefined) {
+      const trimmedEmail = String(email).trim().toLowerCase();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
+        return sendAuthResponse(res, 400, false, "Invalid email address");
+      }
+
+      updateData.email = trimmedEmail;
+    }
+
+    const user = await User.findByIdAndUpdate(req.user._id, updateData, {
+      new: true,
+      runValidators: true,
+    }).select("-passwordHash");
+
+    if (!user) {
+      return sendAuthResponse(res, 404, false, "User not found");
+    }
+
+    return sendAuthResponse(res, 200, true, "Profile updated successfully", {
+      data: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt,
+      },
+    });
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      const messages = Object.values(error.errors)
+        .map((err) => err.message)
+        .join(", ");
+
+      return sendAuthResponse(res, 400, false, `Validation error: ${messages}`);
+    }
+
+    if (error.code === 11000) {
+      return sendAuthResponse(res, 400, false, "Email is already in use");
+    }
+
+    next(error);
+  }
+};
+
 export const googleAuth = async (req, res, next) => {
   try {
     const { credential } = req.body;
@@ -182,7 +266,12 @@ export const googleAuth = async (req, res, next) => {
     const name = payload.name || payload.email?.split("@")[0];
 
     if (!email) {
-      return sendAuthResponse(res, 400, false, "Google account email is required");
+      return sendAuthResponse(
+        res,
+        400,
+        false,
+        "Google account email is required",
+      );
     }
 
     let user = await User.findOne({ email });
@@ -198,15 +287,21 @@ export const googleAuth = async (req, res, next) => {
 
     const token = signToken(user._id);
 
-    return sendAuthResponse(res, 200, true, "Google authentication successful", {
-      token,
-      data: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
+    return sendAuthResponse(
+      res,
+      200,
+      true,
+      "Google authentication successful",
+      {
+        token,
+        data: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
       },
-    });
+    );
   } catch (error) {
     next(error);
   }
@@ -256,7 +351,7 @@ export const forgotPassword = async (req, res, next) => {
         res,
         500,
         false,
-        "Password reset email could not be sent. Please try again later."
+        "Password reset email could not be sent. Please try again later.",
       );
     }
   } catch (error) {
@@ -278,7 +373,7 @@ export const resetPassword = async (req, res, next) => {
         res,
         400,
         false,
-        "Password and password confirmation are required"
+        "Password and password confirmation are required",
       );
     }
 
@@ -291,7 +386,7 @@ export const resetPassword = async (req, res, next) => {
         res,
         400,
         false,
-        "Password must be at least 6 characters"
+        "Password must be at least 6 characters",
       );
     }
 
@@ -303,7 +398,12 @@ export const resetPassword = async (req, res, next) => {
     }).select("+passwordResetToken +passwordResetExpires +passwordHash");
 
     if (!user) {
-      return sendAuthResponse(res, 400, false, "Reset token is invalid or expired");
+      return sendAuthResponse(
+        res,
+        400,
+        false,
+        "Reset token is invalid or expired",
+      );
     }
 
     user.passwordHash = password;

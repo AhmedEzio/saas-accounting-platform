@@ -51,9 +51,14 @@ export const authApi = {
 
   getMe: () => api.get("/auth/me").then((r) => r.data.data),
 
-  updateProfile: (id, payload) =>
-    api.put(`/users/${id}`, payload).then((r) => r.data.data),
+  updateProfile: (payload) =>
+    api.patch("/auth/profile", payload).then((r) => r.data.data),
 
   googleLogin: (credential) =>
   api.post("/auth/google", { credential }).then((r) => r.data),
 };
+
+export const subscriptionApi = {
+  getPlans: () => api.get("/subscription-plans").then((r) => r.data),
+};
+
