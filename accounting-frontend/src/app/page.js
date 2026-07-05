@@ -141,20 +141,8 @@ export default function HomePage() {
       });
   }, []);
 
-  // Match backend plans to static tiers or fall back to defaults
-  const getPlanPrice = (tierName, defaultPrice) => {
-    const matched = dbPlans.find((p) =>
-      p.name.toLowerCase().includes(tierName.toLowerCase())
-    );
-    return matched ? `$${matched.price}` : `$${defaultPrice}`;
-  };
+  const activePlans = dbPlans.filter((plan) => plan.isActive === true);
 
-  const getPlanRegisterLink = (tierName) => {
-    const matched = dbPlans.find((p) =>
-      p.name.toLowerCase().includes(tierName.toLowerCase())
-    );
-    return matched ? `/register?planId=${matched._id}` : "/register";
-  };
 
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
@@ -609,161 +597,115 @@ export default function HomePage() {
 
             {/* Pricing Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-5xl mx-auto">
-              {/* Plan 1: Starter */}
-              <div className="rounded-2xl bg-white p-8 border border-gray-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition-all duration-300 relative text-start">
-                <div>
-                  <h3 className="font-display text-xl font-bold text-primary mb-1">
-                    {t("plan.starter.title")}
-                  </h3>
-
-                  <p className="text-xs text-gray-500 mb-6">
-                    {t("plan.starter.desc")}
+              {activePlans.length === 0 ? (
+                <div className="col-span-1 md:col-span-3 text-center py-12 px-6 bg-white rounded-2xl border border-gray-200/80 shadow-sm max-w-md mx-auto">
+                  <p className="text-gray-600 font-medium">
+                    {lang === "ar"
+                      ? "لا توجد خطط اشتراك متاحة حالياً. يرجى المحاولة لاحقاً."
+                      : "No subscription plans are available at the moment. Please try again later."}
                   </p>
-
-                  <div className="flex items-baseline gap-1 mb-8">
-                    <span className="text-4xl font-extrabold text-primary tracking-tight">
-                      {getPlanPrice("Starter", "29")}
-                    </span>
-
-                    <span className="text-gray-500 text-sm font-medium">
-                      {lang === "ar" ? " / شهر" : "/mo"}
-                    </span>
-                  </div>
-
-                  <ul className="space-y-4 mb-8">
-                    <li className="flex items-center gap-3 text-sm text-gray-600">
-                      <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>{t("plan.starter.feature1")}</span>
-                    </li>
-
-                    <li className="flex items-center gap-3 text-sm text-gray-600">
-                      <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>{t("plan.starter.feature2")}</span>
-                    </li>
-
-                    <li className="flex items-center gap-3 text-sm text-gray-600">
-                      <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>{t("plan.starter.feature3")}</span>
-                    </li>
-                  </ul>
                 </div>
+              ) : (
+                activePlans.map((plan, index) => {
+                  const isFeatured =
+                    plan.name.toLowerCase().includes("professional") ||
+                    (activePlans.length > 1 &&
+                      index === Math.floor(activePlans.length / 2));
+                  
+                  const buttonText = plan.name.toLowerCase().includes("starter")
+                    ? t("plan.starter.action")
+                    : plan.name.toLowerCase().includes("professional") ||
+                      plan.name.toLowerCase().includes("pro")
+                    ? t("plan.professional.action")
+                    : plan.name.toLowerCase().includes("business")
+                    ? t("plan.business.action")
+                    : t("nav.startTrial");
 
-                <Link
-                  href={getPlanRegisterLink("Starter")}
-                  className="w-full text-center py-2.5 bg-white text-primary border border-gray-300 font-semibold rounded-lg hover:bg-gray-50 transition duration-200 text-sm"
-                >
-                  {t("plan.starter.action")}
-                </Link>
-              </div>
+                  const planFeatures = plan.features
+                    ? Object.values(plan.features)
+                    : [];
 
-              {/* Plan 2: Professional */}
-              <div className="rounded-2xl bg-primary text-white p-8 border border-primary/10 shadow-xl flex flex-col justify-between hover:-translate-y-1 transition-all duration-300 relative md:-mt-4 md:mb-4 text-start">
-                {/* Popular Badge */}
-                <div className="absolute top-4 right-4 rtl:right-auto rtl:left-4 bg-[#00a975] text-white text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full">
-                  {t("plan.professional.popular")}
-                </div>
+                  return (
+                    <div
+                      key={plan._id}
+                      className={
+                        isFeatured
+                          ? "rounded-2xl bg-primary text-white p-8 border border-primary/10 shadow-xl flex flex-col justify-between hover:-translate-y-1 transition-all duration-300 relative md:-mt-4 md:mb-4 text-start"
+                          : "rounded-2xl bg-white p-8 border border-gray-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition-all duration-300 relative text-start"
+                      }
+                    >
+                      {isFeatured && (
+                        <div className="absolute top-4 right-4 rtl:right-auto rtl:left-4 bg-[#00a975] text-white text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full">
+                          {t("plan.professional.popular")}
+                        </div>
+                      )}
 
-                <div>
-                  <h3 className="font-display text-xl font-bold mb-1">
-                    {t("plan.professional.title")}
-                  </h3>
+                      <div>
+                        <h3
+                          className={`font-display text-xl font-bold mb-1 ${
+                            isFeatured ? "" : "text-primary"
+                          }`}
+                        >
+                          {plan.name}
+                        </h3>
 
-                  <p className="text-xs text-blue-100/70 mb-6">
-                    {t("plan.professional.desc")}
-                  </p>
+                        <p
+                          className={`text-xs mb-6 ${
+                            isFeatured ? "text-blue-100/70" : "text-gray-500"
+                          }`}
+                        >
+                          {plan.description}
+                        </p>
 
-                  <div className="flex items-baseline gap-1 mb-8">
-                    <span className="text-4xl font-extrabold tracking-tight">
-                      {getPlanPrice("Professional", "79")}
-                    </span>
+                        <div className="flex items-baseline gap-1 mb-8">
+                          <span
+                            className={`text-4xl font-extrabold tracking-tight ${
+                              isFeatured ? "" : "text-primary"
+                            }`}
+                          >
+                            {`$${plan.price}`}
+                          </span>
 
-                    <span className="text-blue-100/70 text-sm font-medium">
-                      {lang === "ar" ? " / شهر" : "/mo"}
-                    </span>
-                  </div>
+                          <span
+                            className={`text-sm font-medium ${
+                              isFeatured ? "text-blue-100/70" : "text-gray-500"
+                            }`}
+                          >
+                            {lang === "ar" ? " / شهر" : "/mo"}
+                          </span>
+                        </div>
 
-                  <ul className="space-y-4 mb-8">
-                    <li className="flex items-center gap-3 text-sm text-blue-50">
-                      <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>{t("plan.professional.feature1")}</span>
-                    </li>
+                        {planFeatures.length > 0 && (
+                          <ul className="space-y-4 mb-8">
+                            {planFeatures.map((feature, fIndex) => (
+                              <li
+                                key={fIndex}
+                                className={`flex items-center gap-3 text-sm ${
+                                  isFeatured ? "text-blue-50" : "text-gray-600"
+                                }`}
+                              >
+                                <CheckIcon className="w-4 h-4 text-[#00a975]" />
+                                <span>{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
 
-                    <li className="flex items-center gap-3 text-sm text-blue-50">
-                      <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>{t("plan.professional.feature2")}</span>
-                    </li>
-
-                    <li className="flex items-center gap-3 text-sm text-blue-50">
-                      <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>{t("plan.professional.feature3")}</span>
-                    </li>
-
-                    <li className="flex items-center gap-3 text-sm text-blue-50">
-                      <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>{t("plan.professional.feature4")}</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <Link
-                  href={getPlanRegisterLink("Professional")}
-                  className="w-full text-center py-2.5 bg-white text-primary font-semibold rounded-lg hover:bg-gray-100 transition duration-200 text-sm"
-                >
-                  {t("plan.professional.action")}
-                </Link>
-              </div>
-
-              {/* Plan 3: Business */}
-              <div className="rounded-2xl bg-white p-8 border border-gray-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition-all duration-300 relative text-start">
-                <div>
-                  <h3 className="font-display text-xl font-bold text-primary mb-1">
-                    {t("plan.business.title")}
-                  </h3>
-
-                  <p className="text-xs text-gray-500 mb-6">
-                    {t("plan.business.desc")}
-                  </p>
-
-                  <div className="flex items-baseline gap-1 mb-8">
-                    <span className="text-4xl font-extrabold text-primary tracking-tight">
-                      {getPlanPrice("Business", "199")}
-                    </span>
-
-                    <span className="text-gray-500 text-sm font-medium">
-                      {lang === "ar" ? " / شهر" : "/mo"}
-                    </span>
-                  </div>
-
-                  <ul className="space-y-4 mb-8">
-                    <li className="flex items-center gap-3 text-sm text-gray-600">
-                      <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>{t("plan.business.feature1")}</span>
-                    </li>
-
-                    <li className="flex items-center gap-3 text-sm text-gray-600">
-                      <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>{t("plan.business.feature2")}</span>
-                    </li>
-
-                    <li className="flex items-center gap-3 text-sm text-gray-600">
-                      <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>{t("plan.business.feature3")}</span>
-                    </li>
-
-                    <li className="flex items-center gap-3 text-sm text-gray-600">
-                      <CheckIcon className="w-4 h-4 text-[#00a975]" />
-                      <span>{t("plan.business.feature4")}</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <Link
-                  href={getPlanRegisterLink("Business")}
-                  className="w-full text-center py-2.5 bg-white text-primary border border-gray-300 font-semibold rounded-lg hover:bg-gray-50 transition duration-200 text-sm"
-                >
-                  {t("plan.business.action")}
-                </Link>
-              </div>
+                      <Link
+                        href={`/register?planId=${plan._id}`}
+                        className={
+                          isFeatured
+                            ? "w-full text-center py-2.5 bg-white text-primary font-semibold rounded-lg hover:bg-gray-100 transition duration-200 text-sm"
+                            : "w-full text-center py-2.5 bg-white text-primary border border-gray-300 font-semibold rounded-lg hover:bg-gray-50 transition duration-200 text-sm"
+                        }
+                      >
+                        {buttonText}
+                      </Link>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
         </section>
