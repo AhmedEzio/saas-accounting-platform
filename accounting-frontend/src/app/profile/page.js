@@ -10,37 +10,40 @@ import { useLanguage } from "@/context/LanguageContext";
 
 const LANG_STORAGE_KEY = "invoice_lang";
 
-const EyeBtn = ({ open, onToggle }) => (
-  <button
-    type="button"
-    onClick={onToggle}
-    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-  >
-    {open ? (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        viewBox="0 0 24 24"
-      >
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-        <circle cx="12" cy="12" r="3" />
-      </svg>
-    ) : (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        viewBox="0 0 24 24"
-      >
-        <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
-        <line x1="1" y1="1" x2="23" y2="23" />
-      </svg>
-    )}
-  </button>
-);
+const EyeBtn = ({ open, onToggle }) => {
+  const { lang } = useLanguage();
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className={`absolute ${lang === "ar" ? "left-3.5" : "right-3.5"} top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600`}
+    >
+      {open ? (
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          viewBox="0 0 24 24"
+        >
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
+      ) : (
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          viewBox="0 0 24 24"
+        >
+          <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
+          <line x1="1" y1="1" x2="23" y2="23" />
+        </svg>
+      )}
+    </button>
+  );
+};
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -121,7 +124,7 @@ export default function ProfilePage() {
     : "?";
 
   const joinDate = user?.createdAt
-    ? new Date(user.createdAt).toLocaleDateString("en-US", {
+    ? new Date(user.createdAt).toLocaleDateString(lang === "ar" ? "ar" : "en-US", {
         month: "long",
         year: "numeric",
       })
@@ -158,10 +161,10 @@ export default function ProfilePage() {
               {/* logout */}
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl border border-red-200 text-red-500 text-sm font-medium hover:bg-red-50 transition"
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl border border-red-200 text-red-500 text-sm font-medium hover:bg-red-50 transition ${lang === "ar" ? "flex-row-reverse" : ""}`}
               >
                 <svg
-                  className="w-4 h-4"
+                  className={`w-4 h-4 ${lang === "ar" ? "rotate-180" : ""}`}
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
@@ -169,13 +172,13 @@ export default function ProfilePage() {
                 >
                   <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
-                Sign Out
+                {t("profile.signOut", lang)}
               </button>
             </div>
             <h1 className="text-xl font-bold text-[#111827]">{user.name}</h1>
             <p className="text-sm text-gray-500">{user.email}</p>
             <div className="flex items-center gap-3 mt-3">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#eef0fb] text-[#2d3ebd]">
+              <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#eef0fb] text-[#2d3ebd] ${lang === "ar" ? "flex-row-reverse" : ""}`}>
                 <svg
                   className="w-3.5 h-3.5"
                   fill="none"
@@ -185,10 +188,10 @@ export default function ProfilePage() {
                 >
                   <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
-                {user.role === "admin" ? "Admin" : "Accountant"}
+                {user.role === "admin" ? t("profile.role.admin", lang) : t("profile.role.accountant", lang)}
               </span>
               <span className="text-xs text-gray-400">
-                Member since {joinDate}
+                {t("profile.memberSince", lang)} {joinDate}
               </span>
             </div>
           </div>
@@ -197,23 +200,23 @@ export default function ProfilePage() {
         {/* ── Tabs ── */}
         <div className="flex gap-1 bg-white rounded-xl shadow-sm p-1.5">
           {[
-            { key: "info", label: "Personal Info" },
-            { key: "security", label: "Security" },
-          ].map((t) => (
+            { key: "info", label: t("profile.tab.info", lang) },
+            { key: "security", label: t("profile.tab.security", lang) },
+          ].map((tb) => (
             <button
-              key={t.key}
+              key={tb.key}
               onClick={() => {
-                setTab(t.key);
+                setTab(tb.key);
                 setError("");
                 setSuccess("");
               }}
               className={`flex-1 py-2.5 rounded-lg text-sm font-semibold transition ${
-                tab === t.key
+                tab === tb.key
                   ? "bg-[#1b2b6b] text-white shadow-sm"
                   : "text-gray-500 hover:bg-gray-50"
               }`}
             >
-              {t.label}
+              {tb.label}
             </button>
           ))}
         </div>
@@ -222,11 +225,11 @@ export default function ProfilePage() {
         {tab === "info" && (
           <div className="bg-white rounded-2xl shadow-sm px-8 py-8">
             <h2 className="text-base font-bold text-[#111827] mb-6">
-              Personal Information
+              {t("profile.info.title", lang)}
             </h2>
 
             {success && (
-              <div className="mb-5 px-4 py-3 rounded-lg bg-green-50 border border-green-200 text-sm text-green-700 flex items-center gap-2">
+              <div className={`mb-5 px-4 py-3 rounded-lg bg-green-50 border border-green-200 text-sm text-green-700 flex items-center gap-2 ${lang === "ar" ? "flex-row-reverse" : ""}`}>
                 <svg
                   className="w-4 h-4 shrink-0"
                   fill="none"
@@ -240,7 +243,7 @@ export default function ProfilePage() {
               </div>
             )}
             {error && (
-              <div className="mb-5 px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-600">
+              <div className={`mb-5 px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-600 ${lang === "ar" ? "text-right" : ""}`}>
                 {error}
               </div>
             )}
@@ -249,10 +252,10 @@ export default function ProfilePage() {
               {/* Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Full Name
+                  {t("profile.info.fullName", lang)}
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+                  <span className={`absolute ${lang === "ar" ? "right-3.5" : "left-3.5"} top-1/2 -translate-y-1/2 text-gray-400`}>
                     <svg
                       className="w-4.5 h-4.5"
                       fill="none"
@@ -272,7 +275,7 @@ export default function ProfilePage() {
                       setError("");
                       setSuccess("");
                     }}
-                    className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1b2b6b]/25 focus:border-[#1b2b6b] transition"
+                    className={`w-full ${lang === "ar" ? "pr-10 pl-4 text-right" : "pl-10 pr-4"} py-3 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1b2b6b]/25 focus:border-[#1b2b6b] transition`}
                   />
                 </div>
               </div>
@@ -280,10 +283,10 @@ export default function ProfilePage() {
               {/* Email */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Work Email
+                  {t("profile.info.workEmail", lang)}
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+                  <span className={`absolute ${lang === "ar" ? "right-3.5" : "left-3.5"} top-1/2 -translate-y-1/2 text-gray-400`}>
                     <svg
                       className="w-4.5 h-4.5"
                       fill="none"
@@ -303,7 +306,7 @@ export default function ProfilePage() {
                       setError("");
                       setSuccess("");
                     }}
-                    className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1b2b6b]/25 focus:border-[#1b2b6b] transition"
+                    className={`w-full ${lang === "ar" ? "pr-10 pl-4 text-right" : "pl-10 pr-4"} py-3 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1b2b6b]/25 focus:border-[#1b2b6b] transition`}
                   />
                 </div>
               </div>
@@ -311,24 +314,24 @@ export default function ProfilePage() {
               {/* Role (readonly) */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Role
+                  {t("profile.info.role", lang)}
                 </label>
                 <input
                   type="text"
-                  value={user.role === "admin" ? "Admin" : "Accountant"}
+                  value={user.role === "admin" ? t("profile.role.admin", lang) : t("profile.role.accountant", lang)}
                   readOnly
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-100 text-sm text-gray-500 cursor-not-allowed"
+                  className={`w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-100 text-sm text-gray-500 cursor-not-allowed ${lang === "ar" ? "text-right" : ""}`}
                 />
                 <p className="mt-1 text-xs text-gray-400">
-                  Role can only be changed by an admin.
+                  {t("profile.info.roleHint", lang)}
                 </p>
               </div>
 
-              <div className="flex justify-end pt-1">
+              <div className={`flex ${lang === "ar" ? "justify-start" : "justify-end"} pt-1`}>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex items-center gap-2 px-8 py-3 rounded-xl bg-[#2d3ebd] hover:bg-[#2233aa] text-white font-bold text-sm transition disabled:opacity-60"
+                  className={`flex items-center gap-2 px-8 py-3 rounded-xl bg-[#2d3ebd] hover:bg-[#2233aa] text-white font-bold text-sm transition disabled:opacity-60 ${lang === "ar" ? "flex-row-reverse" : ""}`}
                 >
                   {saving ? (
                     <svg
@@ -361,7 +364,7 @@ export default function ProfilePage() {
                       <path d="M5 13l4 4L19 7" />
                     </svg>
                   )}
-                  Save Changes
+                  {t("profile.info.save", lang)}
                 </button>
               </div>
             </form>
@@ -373,20 +376,20 @@ export default function ProfilePage() {
           <div className="bg-white rounded-2xl shadow-sm px-8 py-8 space-y-8">
             <div>
               <h2 className="text-base font-bold text-[#111827] mb-1">
-                Change Password
+                {t("profile.security.title", lang)}
               </h2>
               <p className="text-sm text-gray-400 mb-6">
-                Your password must be at least 8 characters.
+                {t("profile.security.subtitle", lang)}
               </p>
 
               <div className="space-y-5">
                 {/* Current */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Current Password
+                    {t("profile.security.current", lang)}
                   </label>
                   <div className="relative">
-                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+                    <span className={`absolute ${lang === "ar" ? "right-3.5" : "left-3.5"} top-1/2 -translate-y-1/2 text-gray-400`}>
                       <svg
                         className="w-4.5 h-4.5"
                         fill="none"
@@ -404,8 +407,8 @@ export default function ProfilePage() {
                       onChange={(e) =>
                         setPwForm((p) => ({ ...p, current: e.target.value }))
                       }
-                      placeholder="Enter current password"
-                      className="w-full pl-10 pr-11 py-3 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#1b2b6b]/25 focus:border-[#1b2b6b] transition"
+                      placeholder={t("profile.security.currentPlaceholder", lang)}
+                      className={`w-full ${lang === "ar" ? "pr-10 pl-11 text-right" : "pl-10 pr-11"} py-3 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#1b2b6b]/25 focus:border-[#1b2b6b] transition`}
                     />
                     <EyeBtn
                       open={showCur}
@@ -417,10 +420,10 @@ export default function ProfilePage() {
                 {/* New */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                    New Password
+                    {t("profile.security.new", lang)}
                   </label>
                   <div className="relative">
-                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+                    <span className={`absolute ${lang === "ar" ? "right-3.5" : "left-3.5"} top-1/2 -translate-y-1/2 text-gray-400`}>
                       <svg
                         className="w-4.5 h-4.5"
                         fill="none"
@@ -438,8 +441,8 @@ export default function ProfilePage() {
                       onChange={(e) =>
                         setPwForm((p) => ({ ...p, next: e.target.value }))
                       }
-                      placeholder="Enter new password"
-                      className="w-full pl-10 pr-11 py-3 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#1b2b6b]/25 focus:border-[#1b2b6b] transition"
+                      placeholder={t("profile.security.newPlaceholder", lang)}
+                      className={`w-full ${lang === "ar" ? "pr-10 pl-11 text-right" : "pl-10 pr-11"} py-3 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#1b2b6b]/25 focus:border-[#1b2b6b] transition`}
                     />
                     <EyeBtn
                       open={showNxt}
@@ -451,7 +454,7 @@ export default function ProfilePage() {
                 {/* Confirm */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Confirm New Password
+                    {t("profile.security.confirm", lang)}
                   </label>
                   <input
                     type="password"
@@ -459,17 +462,17 @@ export default function ProfilePage() {
                     onChange={(e) =>
                       setPwForm((p) => ({ ...p, confirm: e.target.value }))
                     }
-                    placeholder="Repeat new password"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#1b2b6b]/25 focus:border-[#1b2b6b] transition"
+                    placeholder={t("profile.security.confirmPlaceholder", lang)}
+                    className={`w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#1b2b6b]/25 focus:border-[#1b2b6b] transition ${lang === "ar" ? "text-right" : ""}`}
                   />
                 </div>
 
-                <div className="flex justify-end">
+                <div className={`flex ${lang === "ar" ? "justify-start" : "justify-end"}`}>
                   <button
                     type="button"
-                    className="flex items-center gap-2 px-8 py-3 rounded-xl bg-[#2d3ebd] hover:bg-[#2233aa] text-white font-bold text-sm transition"
+                    className={`flex items-center gap-2 px-8 py-3 rounded-xl bg-[#2d3ebd] hover:bg-[#2233aa] text-white font-bold text-sm transition ${lang === "ar" ? "flex-row-reverse" : ""}`}
                     onClick={() =>
-                      alert("Password change endpoint coming soon.")
+                      alert(t("profile.security.alert", lang))
                     }
                   >
                     <svg
@@ -481,7 +484,7 @@ export default function ProfilePage() {
                     >
                       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                     </svg>
-                    Update Password
+                    {t("profile.security.update", lang)}
                   </button>
                 </div>
               </div>
@@ -490,18 +493,17 @@ export default function ProfilePage() {
             {/* Danger zone */}
             <div className="border-t border-gray-100 pt-7">
               <h3 className="text-sm font-bold text-red-500 mb-1">
-                Danger Zone
+                {t("profile.danger.title", lang)}
               </h3>
               <p className="text-sm text-gray-400 mb-4">
-                Once you sign out, you will need your credentials to access the
-                platform again.
+                {t("profile.danger.subtitle", lang)}
               </p>
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-red-200 text-red-500 text-sm font-medium hover:bg-red-50 transition"
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl border border-red-200 text-red-500 text-sm font-medium hover:bg-red-50 transition ${lang === "ar" ? "flex-row-reverse" : ""}`}
               >
                 <svg
-                  className="w-4 h-4"
+                  className={`w-4 h-4 ${lang === "ar" ? "rotate-180" : ""}`}
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
@@ -509,7 +511,7 @@ export default function ProfilePage() {
                 >
                   <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
-                Sign Out
+                {t("profile.signOut", lang)}
               </button>
             </div>
           </div>

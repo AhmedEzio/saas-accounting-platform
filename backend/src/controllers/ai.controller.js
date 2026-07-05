@@ -28,6 +28,10 @@ import { z } from "zod";
 import axios from "axios";
 import { getLLMm } from "../services/ai/vector.js";
 import { runAgent } from "../services/ai/agent.js";
+import {
+  upsertInvoiceToVector,
+  upsertPaymentTransactionToVector,
+} from "../services/ai/vectorIndexing.js";
 
 export const createChatSession = async (req, res, next) => {
   try {
@@ -125,49 +129,13 @@ export const deleteSession = async (req, res) => {
 };
 export const addAllVectors = async (req, res, next) => {
   try {
-    const index = getPineconeIndex();
-    const embeddings = getEmbeddings();
-
     const invoices = await Invoice.find()
       .populate("clientId", "name phone")
       .populate("accountantId", "name email");
 
     let sz = 0;
     for (const invoice of invoices) {
-      const doc = new Document({
-        pageContent: `
-      Invoice Number: ${invoice.invoiceNumber}
-      Invoice Type: ${invoice.invoiceType}
-
-      Client Name: ${invoice.clientId?.name || "N/A"}
-      Client Phone: ${invoice.clientId?.phone || "N/A"}
-
-      Base Amount: ${invoice.baseAmount}
-      Final Amount: ${invoice.finalAmount}
-      Amount Paid: ${invoice.amountPaid}
-      Due Amount: ${invoice.dueAmount}
-
-      Payment Method: ${invoice.paymentMethod}
-
-      Items:
-      ${invoice.items
-        .map(
-          (item) =>
-            `- ${item.description}
-            Qty: ${item.quantity}
-            Unit Price: ${item.unitPrice}
-            Total: ${item.totalPrice}`,
-        )
-        .join("\n")}
-      `,
-        metadata: {
-          type: "invoice",
-          invoiceId: invoice._id.toString(),
-          invoiceNumber: invoice.invoiceNumber,
-        },
-      });
-      const vectorStore = await getVectorStore(invoice.accountantId._id);
-      await vectorStore.addDocuments([doc]);
+      await upsertInvoiceToVector(invoice);
       sz += 1;
     }
 
@@ -177,37 +145,14 @@ export const addAllVectors = async (req, res, next) => {
       .populate("invoiceId", "invoiceNumber");
 
     for (const pt of paymentTransactions) {
-      const doc = new Document({
-        pageContent: `
-      Transaction Type: Payment
-      Direction: ${pt.direction === "in" ? "Incoming" : "Outgoing"}
-      Amount: ${pt.amount}
-      Payment Method: ${pt.paymentMethod}
-      Source: ${pt.source}
-      
-      Client Name: ${pt.clientId?.name || "N/A"}
-      Invoice Number: ${pt.invoiceId?.invoiceNumber || "N/A"}
-      
-      Recorded By: ${pt.paidBy?.name || "N/A"}
-      Notes: ${pt.notes || "None"}
-      `,
-        metadata: {
-          type: "payment_transaction",
-          transactionId: pt._id.toString(),
-          invoiceId: pt.invoiceId?._id?.toString() || "",
-          clientId: pt.clientId?._id?.toString() || "",
-        },
-      });
-      const accountantId = pt.accountantId._id ;
-      const vectorStore = await getVectorStore(accountantId);
-      await vectorStore.addDocuments([doc]);
+      await upsertPaymentTransactionToVector(pt);
       sz += 1;
     }
 
     return res.status(200).json({
       totalDocumentsAdded: sz,
       message:
-        "Invoices and Payment Transactions successfully added into Pinecone.",
+        "Invoices and Payment Transactions successfully upserted into Pinecone.",
     });
   } catch (err) {
     next(err);

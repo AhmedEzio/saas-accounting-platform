@@ -6,6 +6,7 @@ import {
   reverseCancelledInvoicePayments,
   recordReturnInvoiceSettlement,
 } from "./payment.service.js";
+import { safeSyncInvoiceWithPayments } from "./ai/vectorIndexing.js";
 
 const INVOICE_TYPE_PREFIX = {
   purchase: "PUR",
@@ -396,6 +397,7 @@ export const createInvoice = async (
     }
 
     await session.commitTransaction();
+    await safeSyncInvoiceWithPayments(invoice._id, accountantId);
     return invoice;
   } catch (err) {
     await session.abortTransaction();
@@ -561,7 +563,7 @@ export const cancelInvoice = async (
     await invoice.save({ session });
 
     await session.commitTransaction();
-
+    await safeSyncInvoiceWithPayments(invoice._id, accountantId);
     return invoice;
   } catch (err) {
     await session.abortTransaction();
