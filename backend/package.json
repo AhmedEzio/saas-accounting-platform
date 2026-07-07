@@ -9,7 +9,8 @@
   },
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "stripe": "stripe listen --forward-to localhost:8000/api/stripe/webhook",
+    "dev": "concurrently \"nodemon src/server.js\" \"stripe listen --forward-to localhost:8000/api/stripe/webhook\""
   },
   "dependencies": {
     "@langchain/core": "^1.2.1",
@@ -41,6 +42,7 @@
     "xss": "^1.0.15"
   },
   "devDependencies": {
+    "concurrently": "^10.0.3",
     "nodemon": "^3.0.1"
   },
   "keywords": [],

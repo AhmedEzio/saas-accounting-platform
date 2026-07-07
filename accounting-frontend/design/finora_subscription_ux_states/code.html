@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FinAuto AI | Subscription Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#e3e2e7",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "primary": "#001540",
+                        "surface-dim": "#dbd9de",
+                        "secondary": "#3755c3",
+                        "outline": "#757780",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed": "#001946",
+                        "inverse-on-surface": "#f2f0f5",
+                        "secondary-container": "#708cfd",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#b1c5ff",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "on-background": "#1a1b1f",
+                        "secondary-fixed-dim": "#b8c4ff",
+                        "tertiary-container": "#003421",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "tertiary": "#001d11",
+                        "on-secondary-fixed": "#001453",
+                        "primary-fixed-dim": "#b1c5ff",
+                        "on-secondary-fixed-variant": "#173bab",
+                        "surface": "#faf8fe",
+                        "outline-variant": "#c5c6d1",
+                        "primary-container": "#0f2a5f",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#dde1ff",
+                        "on-tertiary-fixed": "#002113",
+                        "primary-fixed": "#dae2ff",
+                        "tertiary-fixed": "#6ffbbe",
+                        "background": "#faf8fe",
+                        "on-surface-variant": "#44464f",
+                        "surface-container": "#efedf2",
+                        "surface-bright": "#faf8fe",
+                        "on-primary-fixed-variant": "#2e457b",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#f4f3f8",
+                        "surface-tint": "#465d94",
+                        "surface-container-highest": "#e3e2e7",
+                        "surface-container-high": "#e9e7ed",
+                        "inverse-surface": "#2f3034",
+                        "on-primary-container": "#7d93ce",
+                        "on-secondary-container": "#00217a",
+                        "on-tertiary-container": "#00a975",
+                        "on-surface": "#1a1b1f",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "lg": "24px",
+                        "2xl": "48px",
+                        "md": "16px",
+                        "gutter": "24px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "sidebar-width": "280px",
+                        "container-max": "1440px",
+                        "3xl": "64px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "title-lg": ["18px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .skeleton {
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+        }
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        .ai-glow {
+            box-shadow: 0 0 15px -3px rgba(20, 184, 166, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+<!-- Side Navigation Bar -->
+<aside class="fixed left-0 top-0 h-full w-[280px] bg-primary dark:bg-primary-container shadow-sm flex flex-col p-md gap-sm z-50">
+<div class="mb-xl px-sm">
+<div class="font-headline-md text-headline-md font-bold text-on-primary">FinAuto AI</div>
+<div class="font-body-md text-body-md text-on-primary-container">Modern Accounting</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-md px-md py-sm text-on-primary-container hover:text-on-primary hover:bg-primary-fixed-dim/10 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Overview</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-primary-container hover:text-on-primary hover:bg-primary-fixed-dim/10 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">group</span>
+<span>Clients</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-primary-container hover:text-on-primary hover:bg-primary-fixed-dim/10 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span>Invoices</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-primary-container hover:text-on-primary hover:bg-primary-fixed-dim/10 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span>Payments</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-primary-container hover:text-on-primary hover:bg-primary-fixed-dim/10 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">description</span>
+<span>Documents</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm bg-secondary text-on-secondary rounded-lg active:scale-[0.98] transition-all" href="#">
+<span class="material-symbols-outlined">card_membership</span>
+<span>Subscription</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-primary-container hover:text-on-primary hover:bg-primary-fixed-dim/10 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span>AI Assistant</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-primary-container hover:text-on-primary hover:bg-primary-fixed-dim/10 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-lg border-t border-primary-fixed-dim/20">
+<button class="w-full bg-secondary-container text-on-secondary-container py-md rounded-xl font-title-lg flex items-center justify-center gap-sm active:scale-95 transition-transform">
+<span class="material-symbols-outlined">add</span>
+                New Invoice
+            </button>
+</div>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 right-0 w-[calc(100%-280px)] h-16 bg-surface dark:bg-background border-b border-outline-variant flex justify-between items-center px-lg z-40">
+<div class="flex items-center gap-md flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-body-md" placeholder="Search data, clients, or files..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<button class="flex items-center gap-xs text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">language</span>
+<span class="font-label-md">EN/AR</span>
+</button>
+<button class="relative text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="flex items-center gap-sm pl-lg border-l border-outline-variant">
+<div class="text-right hidden sm:block">
+<p class="text-body-md font-bold text-primary">Alex Sterling</p>
+<p class="text-label-md text-on-surface-variant">Administrator</p>
+</div>
+<img class="w-10 h-10 rounded-full border border-outline-variant object-cover" data-alt="A professional corporate headshot of a person with a friendly smile, set against a blurred modern office background with soft neutral lighting and high-end photographic quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxo9JkhOB-cRwFG6UPOppBUhaw0cZMrB2sV1u0nnKeHe3VQ5e5Zc86zqrhRQhKlxgq--Zk29nqKVINO0Rb53KP75WtOLYV_l6sSLcjp8CIv62dly-TKuU8R9rLIMB2Aunww2T-5RKwE2s8woSHJSgY53AE1jmJne2vf0_67FxTRvMEncljsy3jknwNOkuHI34kGvPU4XytJaWbL5El3TxWWXDksfvHNVHMzQNHiZ4J_Z3k7oItPII"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-[280px] pt-24 px-xl pb-xl max-w-container-max mx-auto">
+<header class="mb-xl">
+<h1 class="font-headline-lg text-headline-lg text-primary mb-xs">Subscription States</h1>
+<p class="text-body-lg text-on-surface-variant">UI module gallery for Finora Subscription lifecycle.</p>
+</header>
+<div class="space-y-3xl">
+<!-- 1. Cancelled State -->
+<section id="cancelled-state">
+<div class="flex items-center gap-sm mb-lg">
+<span class="w-2 h-6 bg-secondary rounded-full"></span>
+<h2 class="font-title-lg text-title-lg text-primary">1. Cancelled State</h2>
+</div>
+<div class="bg-error-container/20 border border-error/20 p-md rounded-xl mb-lg flex items-center gap-md">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">warning</span>
+<p class="text-on-error-container font-body-md">
+                        Your subscription will remain active until <span class="font-bold">November 24, 2023</span>, then it will be cancelled.
+                    </p>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-xl shadow-sm relative overflow-hidden">
+<div class="absolute top-0 right-0 p-lg">
+<span class="bg-surface-variant text-on-surface-variant px-md py-sm rounded-full font-label-md">CANCELLATION SCHEDULED</span>
+</div>
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-xl">
+<div>
+<p class="text-label-md text-secondary font-bold tracking-wider uppercase mb-xs">Current Plan</p>
+<h3 class="font-headline-md text-headline-md text-primary mb-md">Professional AI Suite</h3>
+<div class="flex items-baseline gap-xs mb-lg">
+<span class="text-display-lg font-display-lg text-primary">$149</span>
+<span class="text-body-lg text-on-surface-variant">/ month</span>
+</div>
+<ul class="space-y-sm">
+<li class="flex items-center gap-sm text-body-md text-on-surface-variant">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-[20px]">check_circle</span>
+                                    500 AI-automated invoices/mo
+                                </li>
+<li class="flex items-center gap-sm text-body-md text-on-surface-variant">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-[20px]">check_circle</span>
+                                    Unlimited client portals
+                                </li>
+</ul>
+</div>
+<div class="w-full md:w-72 space-y-md">
+<button class="w-full bg-primary text-on-primary py-md rounded-xl font-title-lg active:scale-95 transition-transform">Renew Subscription</button>
+<button class="w-full border border-outline-variant text-on-surface py-md rounded-xl font-title-lg hover:bg-surface-container-low transition-colors">Download Last Invoice</button>
+</div>
+</div>
+</div>
+</section>
+<hr class="border-outline-variant"/>
+<!-- 2. Empty State -->
+<section id="empty-state">
+<div class="flex items-center gap-sm mb-lg">
+<span class="w-2 h-6 bg-secondary rounded-full"></span>
+<h2 class="font-title-lg text-title-lg text-primary">2. Empty State</h2>
+</div>
+<div class="bg-surface-container-lowest border border-dashed border-outline-variant rounded-2xl p-3xl flex flex-col items-center text-center">
+<div class="w-24 h-24 bg-surface-container-high rounded-full flex items-center justify-center mb-xl">
+<span class="material-symbols-outlined text-primary text-[48px]" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary mb-sm">No Active Subscription</h3>
+<p class="text-body-lg text-on-surface-variant max-w-md mb-xl">You do not have an active subscription. Choose a plan below to unlock automated bookkeeping and AI-driven insights.</p>
+<button class="bg-secondary text-on-secondary px-3xl py-md rounded-xl font-title-lg shadow-lg shadow-secondary/20 hover:shadow-xl transition-all active:scale-95">View Plans</button>
+</div>
+</section>
+<hr class="border-outline-variant"/>
+<!-- 3. Loading State -->
+<section id="loading-state">
+<div class="flex items-center gap-sm mb-lg">
+<span class="w-2 h-6 bg-secondary rounded-full"></span>
+<h2 class="font-title-lg text-title-lg text-primary">3. Loading State</h2>
+</div>
+<div class="space-y-xl">
+<!-- Current Plan Skeleton -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-xl shadow-sm">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-xl">
+<div class="space-y-md w-full max-w-sm">
+<div class="h-4 w-24 skeleton rounded"></div>
+<div class="h-10 w-full skeleton rounded"></div>
+<div class="h-16 w-32 skeleton rounded"></div>
+</div>
+<div class="w-full md:w-72 space-y-md">
+<div class="h-14 w-full skeleton rounded-xl"></div>
+<div class="h-14 w-full skeleton rounded-xl"></div>
+</div>
+</div>
+</div>
+<!-- Grid Skeleton -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<div class="h-64 skeleton rounded-xl"></div>
+<div class="h-64 skeleton rounded-xl"></div>
+<div class="h-64 skeleton rounded-xl"></div>
+</div>
+</div>
+</section>
+<hr class="border-outline-variant"/>
+<!-- 4. Error State -->
+<section id="error-state">
+<div class="flex items-center gap-sm mb-lg">
+<span class="w-2 h-6 bg-secondary rounded-full"></span>
+<h2 class="font-title-lg text-title-lg text-primary">4. Error State</h2>
+</div>
+<div class="bg-white border border-error/10 rounded-2xl p-3xl flex flex-col items-center justify-center text-center relative overflow-hidden">
+<!-- Subtle background decoration -->
+<div class="absolute -top-12 -left-12 w-48 h-48 bg-error/5 rounded-full blur-3xl"></div>
+<div class="absolute -bottom-12 -right-12 w-48 h-48 bg-secondary/5 rounded-full blur-3xl"></div>
+<div class="relative z-10">
+<div class="w-20 h-20 bg-error-container flex items-center justify-center rounded-2xl rotate-12 mb-xl mx-auto shadow-sm">
+<span class="material-symbols-outlined text-error text-[40px] -rotate-12">sync_problem</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary mb-sm">Connection Interrupted</h3>
+<p class="text-body-lg text-on-surface-variant max-w-sm mb-xl">Failed to load subscription data. This might be due to a temporary network issue or server maintenance.</p>
+<div class="flex items-center justify-center gap-md">
+<button class="bg-primary text-on-primary px-xl py-md rounded-xl font-title-lg flex items-center gap-sm active:scale-95 transition-transform" onclick="window.location.reload()">
+<span class="material-symbols-outlined">refresh</span>
+                                Retry
+                            </button>
+<button class="text-on-surface-variant font-title-lg px-xl py-md hover:text-primary transition-colors">Contact Support</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom Information: AI Capacity (Design Guidance Requirement) -->
+<section class="bg-primary-container text-on-primary-container p-xl rounded-2xl ai-glow">
+<div class="flex flex-col md:flex-row items-center justify-between gap-xl">
+<div class="flex items-center gap-lg">
+<div class="w-14 h-14 bg-secondary rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary">smart_toy</span>
+</div>
+<div>
+<h4 class="font-title-lg text-title-lg">AI Automation Capacity</h4>
+<p class="text-body-md text-on-primary-container/80">Remaining processing power for the current billing cycle.</p>
+</div>
+</div>
+<div class="w-full md:w-96">
+<div class="flex justify-between items-end mb-sm">
+<span class="font-label-md text-on-primary-container">64% Capacity Used</span>
+<span class="font-code text-on-primary-container font-bold">320 / 500 Credits</span>
+</div>
+<div class="w-full h-3 bg-primary-fixed-dim/20 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-[#14B8A6] to-[#10B981] w-[64%] rounded-full shadow-[0_0_8px_rgba(20,184,166,0.5)]"></div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Floating Action Button Suppression (Contextual Logic) -->
+<!-- As per design guidelines, FAB is suppressed on Settings/Subscription screens to prioritize content canvas -->
+<script>
+        // Micro-interactions for button presses and hover effects
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.style.transform = 'scale(0.97)';
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.style.transform = '';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = '';
+            });
+        });
+
+        // Simulating the loading state transition (demo only)
+        // setTimeout(() => {
+        //     console.log('States hydrated');
+        // }, 2000);
+    </script>
+</body></html>

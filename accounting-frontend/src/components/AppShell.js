@@ -55,6 +55,18 @@ const navItems = [
       </svg>
     ),
   },
+  {
+    key: "subscriptions",
+    href: "/subscriptions",
+    label: "Subscriptions",
+    labelAr: "الاشتراكات",
+    icon: (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+        <path d="M5 4h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z" />
+        <path d="M3 9h18M7 15h4M15 15h2" />
+      </svg>
+    ),
+  },
 ];
 
 /* ─── AppShell ───────────────────────────────────────────────────────────────── */
