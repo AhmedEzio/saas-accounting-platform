@@ -144,6 +144,24 @@ export class ITIChatModel extends BaseChatModel {
     console.log(`[LLM] Tokens used: ${data.usage?.total_tokens ?? "?"}`);
     const text = data.output_text ?? "";
 
+    const tokenUsage = data.usage ?? {};
+    const inputTokens =
+      tokenUsage.input_tokens ?? tokenUsage.prompt_tokens ?? tokenUsage.inputTokens ?? 0;
+    const outputTokens =
+      tokenUsage.output_tokens ??
+      tokenUsage.completion_tokens ??
+      tokenUsage.outputTokens ??
+      0;
+    const usageMetadata = {
+      input_tokens: inputTokens,
+      output_tokens: outputTokens,
+      total_tokens:
+        inputTokens + outputTokens ||
+        tokenUsage.total_tokens ||
+        tokenUsage.totalTokens ||
+        0,
+    };
+
     if (this._boundTools.length > 0) {
       const toolCall = parseToolCall(text);
       if (toolCall) {
@@ -152,7 +170,12 @@ export class ITIChatModel extends BaseChatModel {
           generations: [
             {
               text: "",
-              message: new AIMessage({ content: "", tool_calls: [toolCall] }),
+              message: new AIMessage({
+                content: "",
+                tool_calls: [toolCall],
+                response_metadata: { tokenUsage },
+                usage_metadata: usageMetadata,
+              }),
             },
           ],
         };
@@ -160,7 +183,16 @@ export class ITIChatModel extends BaseChatModel {
     }
 
     return {
-      generations: [{ text, message: new AIMessage(text) }],
+      generations: [
+        {
+          text,
+          message: new AIMessage({
+            content: text,
+            response_metadata: { tokenUsage },
+            usage_metadata: usageMetadata,
+          }),
+        },
+      ],
     };
   }
 }

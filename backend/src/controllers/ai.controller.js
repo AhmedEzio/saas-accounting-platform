@@ -32,6 +32,7 @@ import {
   upsertInvoiceToVector,
   upsertPaymentTransactionToVector,
 } from "../services/ai/vectorIndexing.js";
+import { consumeAICredits } from "../services/subscription.service.js";
 
 export const createChatSession = async (req, res, next) => {
   try {
@@ -245,7 +246,24 @@ export const chat = async (req, res, next) => {
       let result = await uploadFileToCloudinary(req.file);
       imageUrl = result.secure_url;
     }
-    const result = await runAgent(question, userId, sessionId, imageUrl);
+    const { content: result, usage, shouldConsumeCredits } = await runAgent(
+      question,
+      userId,
+      sessionId,
+      imageUrl,
+      req.activeSubscription?.planId?.features ?? {},
+    );
+    if (shouldConsumeCredits) {
+      const totalTokens = usage?.totalTokens ?? 0;
+      await consumeAICredits({
+        userId,
+        requestType: req.aiRequestType || "chat",
+        inputTokens: usage?.inputTokens ?? 0,
+        outputTokens: usage?.outputTokens ?? 0,
+        totalTokens,
+        creditsUsed: totalTokens > 0 ? totalTokens : req.aiCreditCost || 1,
+      });
+    }
     await chatMessage.create({
       sessionId,
       content: question,

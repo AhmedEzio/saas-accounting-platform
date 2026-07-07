@@ -84,4 +84,14 @@ export const retrieveSubscription = async (stripeSubscriptionId) => {
   return stripe.subscriptions.retrieve(stripeSubscriptionId);
 };
 
+export const cancelSubscriptionAtPeriodEnd = async (stripeSubscriptionId) => {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    throw new AppError("Stripe is not configured on this server.", 500);
+  }
+
+  return stripe.subscriptions.update(stripeSubscriptionId, {
+    cancel_at_period_end: true,
+  });
+};
+
 export default stripe;
