@@ -95,9 +95,13 @@ export default function ReturnModal({ invoice, open, onClose, t }) {
     for (const item of items) {
       const quantity = Number(item.quantity);
 
-      if (!Number.isFinite(quantity) || quantity < 1) {
+      if (!Number.isFinite(quantity) || quantity < 0) {
         setError(t("error.quantityMin"));
         return;
+      }
+
+      if (quantity === 0) {
+        continue;
       }
 
       if (item.maxQuantity > 0 && quantity > item.maxQuantity) {
@@ -110,6 +114,11 @@ export default function ReturnModal({ invoice, open, onClose, t }) {
         quantity,
         unitPrice: item.unitPrice,
       });
+    }
+
+    if (!payloadItems.length) {
+      setError(t("return.noItems"));
+      return;
     }
 
     const trimmedNotes = notes.trim();
@@ -209,7 +218,7 @@ export default function ReturnModal({ invoice, open, onClose, t }) {
                         className="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-950 outline-none transition focus:border-[#001540] focus:ring-2 focus:ring-[#001540]/20"
                         disabled={saving}
                         id={`return-quantity-${index}`}
-                        min="1"
+                        min="0"
                         onChange={(event) => updateQuantity(index, event.target.value)}
                         step="1"
                         type="number"
