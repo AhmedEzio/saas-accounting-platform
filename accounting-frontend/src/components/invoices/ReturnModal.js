@@ -16,13 +16,18 @@ function getApiError(error, fallback) {
 }
 
 function toReturnItems(invoice) {
-  return (Array.isArray(invoice?.items) ? invoice.items : []).map((item, index) => ({
-    id: `${item.description || "item"}-${index}`,
-    description: item.description || "",
-    quantity: item.quantity ? String(item.quantity) : "1",
-    maxQuantity: Number(item.quantity || 0),
-    unitPrice: Number(item.unitPrice || 0),
-  }));
+  return (Array.isArray(invoice?.items) ? invoice.items : []).map((item, index) => {
+    const maxQuantity = Number(item.remainingQuantity ?? item.quantity ?? 0);
+    const initialQuantity = Math.min(Number(item.quantity) || 1, maxQuantity);
+
+    return {
+      id: `${item.description || "item"}-${index}`,
+      description: item.description || "",
+      quantity: String(initialQuantity),
+      maxQuantity,
+      unitPrice: Number(item.unitPrice || 0),
+    };
+  });
 }
 
 export default function ReturnModal({ invoice, open, onClose, t }) {
