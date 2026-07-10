@@ -101,13 +101,13 @@ export default function AppShell({ children, activeKey, lang: propLang, setLang:
   /* ─── Sidebar Content ─── */
   const SidebarContent = ({ compact = false }) => (
     <aside
-      className={`flex h-full flex-col bg-white transition-all duration-300 ${
+      className={`flex h-full flex-col bg-white dark:bg-slate-800 transition-all duration-300 ${
         compact ? "w-full" : ""
       }`}
     >
       {/* Logo */}
       <div
-        className={`flex items-center border-b border-gray-100 transition-all duration-300 ${
+        className={`flex items-center border-b border-gray-100 dark:border-slate-700 transition-all duration-300 ${
           collapsed && !compact ? "justify-center px-3 py-4" : "gap-3 px-5 py-5"
         }`}
       >
@@ -118,8 +118,8 @@ export default function AppShell({ children, activeKey, lang: propLang, setLang:
         </div>
         {(!collapsed || compact) && (
           <div className="min-w-0">
-            <p className="text-sm font-bold leading-tight text-[#1b2b6b]">Finora</p>
-            <p className="text-[11px] leading-tight text-gray-400">Accounting AI</p>
+            <p className="text-sm font-bold leading-tight text-[#1b2b6b] dark:text-white">Finora</p>
+            <p className="text-[11px] leading-tight text-gray-400 dark:text-slate-400">Accounting AI</p>
           </div>
         )}
       </div>
@@ -130,7 +130,7 @@ export default function AppShell({ children, activeKey, lang: propLang, setLang:
           type="button"
           onClick={() => go("/invoices/new")}
           title="New Invoice"
-          className={`flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#1b2b6b] text-sm font-semibold text-white shadow-sm transition hover:bg-[#162358] focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] focus:ring-offset-2 ${
+          className={`flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#1b2b6b] dark:bg-blue-600 text-sm font-semibold text-white shadow-sm transition hover:bg-[#162358] dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] focus:ring-offset-2 ${
             collapsed && !compact ? "h-11 w-11 p-0" : "w-full px-3 py-2.5"
           }`}
         >
@@ -153,16 +153,16 @@ export default function AppShell({ children, activeKey, lang: propLang, setLang:
               type="button"
               onClick={() => go(item.href)}
               title={isRtl ? item.labelAr : item.label}
-              className={`flex min-h-11 w-full items-center rounded-xl px-3 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] focus:ring-offset-1 ${
+              className={`flex min-h-11 w-full items-center rounded-xl px-3 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] dark:focus:ring-blue-500 focus:ring-offset-1 dark:focus:ring-offset-slate-800 ${
                 collapsed && !compact ? "justify-center gap-0" : "gap-3"
               } ${
                 active
-                  ? "bg-[#e8ebf7] text-[#1b2b6b]"
-                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  ? "bg-[#e8ebf7] dark:bg-slate-700 text-[#1b2b6b] dark:text-white"
+                  : "text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white"
               } ${isRtl ? "flex-row-reverse text-right" : "text-left"}`}
             >
               <span
-                className={`shrink-0 ${active ? "text-[#1b2b6b]" : "text-gray-400"}`}
+                className={`shrink-0 ${active ? "text-[#1b2b6b] dark:text-white" : "text-gray-400 dark:text-slate-400"}`}
                 aria-hidden="true"
               >
                 {item.icon}
@@ -173,7 +173,7 @@ export default function AppShell({ children, activeKey, lang: propLang, setLang:
                 </span>
               )}
               {active && (!collapsed || compact) && (
-                <span className={`ml-auto h-1.5 w-1.5 rounded-full bg-[#1b2b6b] ${isRtl ? "mr-auto ml-0" : ""}`} />
+                <span className={`ml-auto h-1.5 w-1.5 rounded-full bg-[#1b2b6b] dark:bg-white ${isRtl ? "mr-auto ml-0" : ""}`} />
               )}
             </button>
           );
@@ -181,14 +181,14 @@ export default function AppShell({ children, activeKey, lang: propLang, setLang:
       </nav>
 
       {/* Profile section */}
-      <div className="border-t border-gray-100 px-3 py-3">
+      <div className="border-t border-gray-100 dark:border-slate-700 px-3 py-3">
         <button
           type="button"
           onClick={() => go("/profile")}
           title="Go to Profile"
-          className={`flex w-full items-center rounded-xl px-2 py-2 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] focus:ring-offset-1 ${
+          className={`flex w-full items-center rounded-xl px-2 py-2 transition hover:bg-gray-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] dark:focus:ring-blue-500 focus:ring-offset-1 dark:focus:ring-offset-slate-800 ${
             collapsed && !compact ? "justify-center" : "gap-3"
-          } ${currentKey === "profile" ? "bg-[#e8ebf7]" : ""}`}
+          } ${currentKey === "profile" ? "bg-[#e8ebf7] dark:bg-slate-700" : ""}`}
         >
           <div
             className={`flex shrink-0 items-center justify-center rounded-full bg-[#1b2b6b] text-xs font-bold text-white ${
@@ -199,14 +199,14 @@ export default function AppShell({ children, activeKey, lang: propLang, setLang:
           </div>
           {(!collapsed || compact) && (
             <div className="min-w-0 flex-1 text-left">
-              <p className="truncate text-sm font-semibold text-gray-800">
+              <p className="truncate text-sm font-semibold text-gray-800 dark:text-white">
                 {user?.name || "User"}
               </p>
-              <p className="truncate text-xs text-gray-400">{user?.email || ""}</p>
+              <p className="truncate text-xs text-gray-400 dark:text-slate-400">{user?.email || ""}</p>
             </div>
           )}
           {(!collapsed || compact) && (
-            <svg className="h-4 w-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+            <svg className="h-4 w-4 shrink-0 text-gray-400 dark:text-slate-400" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
               <path d="M9 18l6-6-6-6" />
             </svg>
           )}
@@ -221,7 +221,7 @@ export default function AppShell({ children, activeKey, lang: propLang, setLang:
       type="button"
       onClick={() => setCollapsed((c) => !c)}
       title={collapsed ? t("sidebar.expand", lang) : t("sidebar.collapse", lang)}
-      className={`absolute ${isRtl ? "-left-3" : "-right-3"} top-20 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-gray-200 bg-white shadow-sm text-gray-500 transition hover:border-[#1b2b6b] hover:text-[#1b2b6b] hidden lg:flex`}
+      className={`absolute ${isRtl ? "-left-3" : "-right-3"} top-20 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 shadow-sm text-gray-500 dark:text-slate-400 transition hover:border-[#1b2b6b] hover:text-[#1b2b6b] dark:hover:border-slate-400 dark:hover:text-white hidden lg:flex`}
     >
       <svg
         className={`h-3 w-3 transition-transform duration-300 ${
@@ -242,10 +242,10 @@ export default function AppShell({ children, activeKey, lang: propLang, setLang:
   const sidebarWidth = collapsed ? "w-[70px]" : "w-64";
 
   return (
-    <div className="min-h-dvh bg-[#f4f5f8] text-gray-900" dir={isRtl ? "rtl" : "ltr"}>
+    <div className="min-h-dvh bg-[#f4f5f8] dark:bg-slate-900 text-gray-900 dark:text-slate-200" dir={isRtl ? "rtl" : "ltr"}>
       {/* ── Desktop Sidebar ── */}
       <div
-        className={`fixed inset-y-0 z-30 hidden border-gray-100 bg-white shadow-sm print:hidden lg:block transition-all duration-300 ${sidebarWidth} ${
+        className={`fixed inset-y-0 z-30 hidden border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm print:hidden lg:block transition-all duration-300 ${sidebarWidth} ${
           isRtl ? "right-0 border-l" : "left-0 border-r"
         }`}
       >
@@ -261,7 +261,7 @@ export default function AppShell({ children, activeKey, lang: propLang, setLang:
         <div className="fixed inset-0 z-40 print:hidden lg:hidden">
           <button
             type="button"
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm"
             aria-label="Close navigation"
             onClick={() => setMobileOpen(false)}
           />
@@ -277,7 +277,7 @@ export default function AppShell({ children, activeKey, lang: propLang, setLang:
 
       {/* ── Header ── */}
       <header
-        className={`sticky top-0 z-20 flex min-h-16 items-center gap-3 border-b border-gray-100 bg-white/95 px-4 backdrop-blur print:hidden lg:fixed lg:h-16 transition-all duration-300 ${
+        className={`sticky top-0 z-20 flex min-h-16 items-center gap-3 border-b border-gray-100 dark:border-slate-700 bg-white/95 dark:bg-slate-800/95 px-4 backdrop-blur print:hidden lg:fixed lg:h-16 transition-all duration-300 ${
           isRtl
             ? `lg:left-0 ${collapsed ? "lg:right-[70px]" : "lg:right-64"}`
             : `${collapsed ? "lg:left-[70px]" : "lg:left-64"} lg:right-0`
@@ -287,7 +287,7 @@ export default function AppShell({ children, activeKey, lang: propLang, setLang:
         <button
           type="button"
           onClick={() => setMobileOpen(true)}
-          className="flex h-11 w-11 items-center justify-center rounded-xl text-gray-600 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] focus:ring-offset-2 lg:hidden"
+          className="flex h-11 w-11 items-center justify-center rounded-xl text-gray-600 dark:text-slate-300 transition hover:bg-gray-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] dark:focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800 lg:hidden"
           aria-label="Open navigation"
         >
           <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
@@ -297,7 +297,7 @@ export default function AppShell({ children, activeKey, lang: propLang, setLang:
 
         {/* Page title (derived from active key) */}
         <div className="hidden lg:block">
-          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
+          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-slate-500">
             {navItems.find((n) => n.key === currentKey)?.[isRtl ? "labelAr" : "label"] || "Finora"}
           </p>
         </div>
@@ -316,7 +316,7 @@ export default function AppShell({ children, activeKey, lang: propLang, setLang:
             <button
               type="button"
               onClick={() => setLang(lang === "ar" ? "en" : "ar")}
-              className="min-h-9 rounded-full border border-gray-200 bg-white px-4 text-xs font-bold text-gray-600 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] focus:ring-offset-2"
+              className="min-h-9 rounded-full border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 text-xs font-bold text-gray-600 dark:text-slate-300 transition hover:bg-gray-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] dark:focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800"
               aria-label="Switch language"
             >
               {lang === "ar" ? "EN" : "AR"}
@@ -328,7 +328,7 @@ export default function AppShell({ children, activeKey, lang: propLang, setLang:
             type="button"
             onClick={() => router.push("/profile")}
             title="My Profile"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1b2b6b] text-xs font-bold text-white shadow-sm transition hover:bg-[#162358] focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] focus:ring-offset-2"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1b2b6b] dark:bg-blue-600 text-xs font-bold text-white shadow-sm transition hover:bg-[#162358] dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] dark:focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800"
           >
             {initials}
           </button>
