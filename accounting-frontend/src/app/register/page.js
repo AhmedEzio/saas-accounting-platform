@@ -9,6 +9,7 @@ import { GoogleLogin } from "@react-oauth/google";
 
 import { useLanguage } from "@/context/LanguageContext";
 import { t } from "@/locales/auth";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const InputIcon = ({ children, isRtl }) => (
   <span className={`pointer-events-none absolute top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 ${isRtl ? 'right-3' : 'left-3'}`}>
@@ -148,7 +149,8 @@ export default function RegisterPage() {
 
       <div className="absolute bottom-0 right-0 w-125 h-100 bg-[#c8ede0] dark:bg-emerald-900/30 rounded-full blur-[80px] opacity-70 pointer-events-none" />
 
-      <div className={`absolute top-5 z-10 ${isRtl ? 'left-5' : 'right-5'}`}>
+      <div className={`absolute top-5 z-10 flex items-center gap-2 ${isRtl ? 'left-5' : 'right-5'}`}>
+        <ThemeToggle />
         <button
           onClick={() => setLang(lang === "ar" ? "en" : "ar")}
           className="flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-gray-300 dark:border-slate-600 bg-white/80 dark:bg-slate-800/80 text-sm font-medium text-gray-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 transition"
