@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { t } from "@/locales/overview";
+import ThemeToggle from "@/components/ThemeToggle";
 
 /* ─── Nav items ─────────────────────────────────────────────────────────────── */
 const navItems = [
@@ -309,6 +310,7 @@ export default function AppShell({ children, activeKey, lang: propLang, setLang:
         )}
 
         <div className={`ms-auto flex items-center gap-2 ${isRtl ? "mr-auto ms-0" : ""}`}>
+          <ThemeToggle />
           {/* Language toggle */}
           {setLang && (
             <button
