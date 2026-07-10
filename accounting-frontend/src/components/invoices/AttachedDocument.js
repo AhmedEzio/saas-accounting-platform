@@ -1,4 +1,6 @@
 import React from "react";
+import { downloadFile } from "@/utils/downloadFile";
+
 
 export default function AttachedDocument({ invoice, lang, t }) {
   const document = invoice?.documentId;
@@ -39,15 +41,13 @@ export default function AttachedDocument({ invoice, lang, t }) {
             >
               {t("document.open")}
             </a>
-            <a
-              href={document.fileUrl}
-              download
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={(e) => downloadFile(e, document.fileUrl, document.fileName, document.fileType)}
               className="inline-flex h-8 items-center justify-center rounded bg-[#1b2b6b] dark:bg-blue-600 px-3 text-xs font-semibold text-white transition hover:bg-[#162358] dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-[#1b2b6b]/30"
+              type="button"
             >
               {t("document.download")}
-            </a>
+            </button>
           </div>
         </div>
       )}
