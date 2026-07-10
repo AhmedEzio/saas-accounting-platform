@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { documentsApi } from "@/services/documents";
+import { downloadFile } from "@/utils/downloadFile";
+
 
 export default function DocumentPreviewModal({ documentId, open, onClose, t }) {
   const [doc, setDoc] = useState(null);
@@ -125,14 +127,23 @@ export default function DocumentPreviewModal({ documentId, open, onClose, t }) {
             {t("action.close")}
           </button>
           {doc && doc.fileUrl && (
-            <a
-              href={doc.fileUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#1b2b6b] dark:bg-blue-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#162358] dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-[#1b2b6b]/30"
-            >
-              {t("action.openNewTab")}
-            </a>
+            <div className="flex gap-2 w-full sm:w-auto flex-col sm:flex-row">
+              <a
+                href={doc.fileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center justify-center rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-4 text-sm font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-[#1b2b6b]/25"
+              >
+                {t("action.openNewTab")}
+              </a>
+              <button
+                onClick={(e) => downloadFile(e, doc.fileUrl, doc.fileName, doc.fileType)}
+                className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#1b2b6b] dark:bg-blue-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#162358] dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-[#1b2b6b]/30"
+                type="button"
+              >
+                {t("document.download") || t("action.download") || "Download"}
+              </button>
+            </div>
           )}
         </div>
       </div>
