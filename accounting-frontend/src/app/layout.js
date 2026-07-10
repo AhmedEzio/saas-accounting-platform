@@ -32,7 +32,20 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${plusJakarta.variable} ${inter.variable} ${tajawal.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#faf8fe] text-[#1a1b1f] font-sans">
+      <body className="min-h-full flex flex-col bg-[#faf8fe] text-[#1a1b1f] font-sans dark:bg-[#0f172a] dark:text-[#e2e8f0]">
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
+              } catch (_) {}
+            `,
+          }}
+        />
         <Providers>{children}</Providers>
       </body>
     </html>

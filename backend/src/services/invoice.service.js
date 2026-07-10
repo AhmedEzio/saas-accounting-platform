@@ -58,6 +58,64 @@ const computeEffectiveFields = (invoice, returnedAmount = 0) => {
   };
 };
 
+const computeReturnedQuantityForItem = (previousReturns, item) =>
+  previousReturns.reduce((sum, ret) => {
+    const returnedItem = ret.items.find(
+      (i) =>
+        i.description === item.description &&
+        round2(i.unitPrice) === round2(item.unitPrice),
+    );
+
+    return sum + (returnedItem?.quantity || 0);
+  }, 0);
+
+const attachItemReturnQuantities = async (invoice, accountantId) => {
+  const items = Array.isArray(invoice?.items) ? invoice.items : [];
+
+  if (!ORIGINAL_RETURN_TYPES.includes(invoice.invoiceType)) {
+    return {
+      ...invoice,
+      items: items.map((item) => ({
+        ...item,
+        returnedQuantity: 0,
+        remainingQuantity: 0,
+      })),
+    };
+  }
+
+  const returnInvoiceType =
+    invoice.invoiceType === "sale" ? "sales_return" : "purchase_return";
+
+  const previousReturns = await Invoice.find({
+    accountantId,
+    relatedInvoiceId: invoice._id,
+    invoiceType: returnInvoiceType,
+    isCancelled: false,
+  })
+    .select("items")
+    .lean();
+
+  return {
+    ...invoice,
+    items: items.map((item) => {
+      const returnedQuantity = computeReturnedQuantityForItem(
+        previousReturns,
+        item,
+      );
+      const remainingQuantity = Math.max(
+        Number(item.quantity || 0) - returnedQuantity,
+        0,
+      );
+
+      return {
+        ...item,
+        returnedQuantity,
+        remainingQuantity,
+      };
+    }),
+  };
+};
+
 const attachEffectiveFields = async (invoices, accountantId) => {
   const list = Array.isArray(invoices) ? invoices : [invoices];
   const originalIds = list
@@ -499,7 +557,12 @@ export const getInvoiceById = async (id, accountantId) => {
     throw Object.assign(new Error("Invoice not found"), { statusCode: 404 });
   }
 
-  return attachEffectiveFields(invoice, accountantId);
+  const invoiceWithEffectiveFields = await attachEffectiveFields(
+    invoice,
+    accountantId,
+  );
+
+  return attachItemReturnQuantities(invoiceWithEffectiveFields, accountantId);
 };
 
 export const cancelInvoice = async (

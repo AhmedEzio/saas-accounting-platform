@@ -1,6 +1,40 @@
 import UserSubscription from "../models/UserSubscription.js";
 import AIUsageLog from "../models/AIUsageLog.js";
 import AppError from "../utils/appError.js";
+
+export const AI_REQUEST_FEATURES = {
+  chat: "aiChat",
+  client_tool: "clientTools",
+  invoice_tool: "invoiceTools",
+  payment_tool: "paymentTools",
+  file_extract: "fileExtraction",
+  financial_report: "financialReports",
+  invoice_analysis: "invoiceAnalysis",
+  rag_query: "ragSearch",
+};
+
+const normalizeAICreditCheckArgs = (userIdOrOptions, requiredCredits = 1) => {
+  if (
+    userIdOrOptions &&
+    typeof userIdOrOptions === "object" &&
+    !Array.isArray(userIdOrOptions)
+  ) {
+    return {
+      userId: userIdOrOptions.userId,
+      requiredCredits: userIdOrOptions.requiredCredits ?? 1,
+      requestType: userIdOrOptions.requestType,
+      usesOptionsObject: true,
+    };
+  }
+
+  return {
+    userId: userIdOrOptions,
+    requiredCredits,
+    requestType: undefined,
+    usesOptionsObject: false,
+  };
+};
+
 /**
  * ملخص الملف 
 1. يتأكد إن المستخدم عنده رصيد AI
@@ -16,7 +50,17 @@ import AppError from "../utils/appError.js";
  * Call this BEFORE making any OpenAI / AI API call.
  *
  */
-export const checkAvailableAICredits = async (userId, requiredCredits = 1) => {
+export const checkAvailableAICredits = async (
+  userIdOrOptions,
+  requiredCredits = 1
+) => {
+  const {
+    userId,
+    requiredCredits: creditsToCheck,
+    requestType,
+    usesOptionsObject,
+  } = normalizeAICreditCheckArgs(userIdOrOptions, requiredCredits);
+
   // Find the user's active or trialing subscription
   const subscription = await UserSubscription.findOne({
     userId,
@@ -30,16 +74,40 @@ export const checkAvailableAICredits = async (userId, requiredCredits = 1) => {
     );
   }
 
-  const remaining = subscription.creditLimit - subscription.creditsUsed;
+  const requiredFeature = requestType
+    ? AI_REQUEST_FEATURES[requestType]
+    : undefined;
 
-  if (remaining < requiredCredits) {
+  if (requestType && !requiredFeature) {
+    throw new AppError(`Unknown AI request type: ${requestType}.`, 400);
+  }
+
+  if (requiredFeature && !subscription.planId?.features?.[requiredFeature]) {
     throw new AppError(
-      `Insufficient AI credits. You have ${remaining} credits remaining but this request requires ${requiredCredits}.`,
+      `Your subscription plan does not include access to this AI feature: ${requiredFeature}.`,
       403
     );
   }
 
-  return subscription;
+  const remaining = subscription.creditLimit - subscription.creditsUsed;
+
+  if (remaining < creditsToCheck) {
+    throw new AppError(
+      `Insufficient AI credits. You have ${remaining} credits remaining but this request requires ${creditsToCheck}.`,
+      403
+    );
+  }
+
+  if (!usesOptionsObject) {
+    return subscription;
+  }
+
+  return {
+    subscription,
+    requestType,
+    requiredFeature,
+    requiredCredits: creditsToCheck,
+  };
 };
 
 /**
@@ -121,15 +189,22 @@ export const getUserActiveSubscription = async (userId) => {
 export const resetCycleCredits = async (
   stripeSubscriptionId,
   periodStart,
-  periodEnd
+  periodEnd,
+  creditLimit
 ) => {
+  const update = {
+    creditsUsed: 0,
+    currentPeriodStart: periodStart,
+    currentPeriodEnd: periodEnd,
+  };
+
+  if (creditLimit !== undefined) {
+    update.creditLimit = creditLimit;
+  }
+
   return UserSubscription.findOneAndUpdate(
     { stripeSubscriptionId },
-    {
-      creditsUsed: 0,
-      currentPeriodStart: periodStart,
-      currentPeriodEnd: periodEnd,
-    },
+    update,
     { new: true }
   );
 };
@@ -148,14 +223,38 @@ const normalizeStripeStatus = (status) => {
 
 export const updateSubscriptionStatus = async (
   stripeSubscriptionId,
-  newStatus
+  newStatus,
+  stripeSubscription = null
 ) => {
   const normalizedStatus = normalizeStripeStatus(newStatus);
 
   const update = { status: normalizedStatus };
 
+  if (stripeSubscription) {
+    const periodStart =
+      stripeSubscription.current_period_start ||
+      stripeSubscription.items?.data?.[0]?.current_period_start;
+
+    const periodEnd =
+      stripeSubscription.current_period_end ||
+      stripeSubscription.items?.data?.[0]?.current_period_end;
+
+    update.cancelAtPeriodEnd = Boolean(stripeSubscription.cancel_at_period_end);
+
+    if (periodStart) {
+      update.currentPeriodStart = new Date(periodStart * 1000);
+    }
+
+    if (periodEnd) {
+      update.currentPeriodEnd = new Date(periodEnd * 1000);
+    }
+  }
+
   if (normalizedStatus === "cancelled") {
-    update.cancelledAt = new Date();
+    update.cancelledAt = stripeSubscription?.canceled_at
+      ? new Date(stripeSubscription.canceled_at * 1000)
+      : new Date();
+    update.cancelAtPeriodEnd = false;
   }
 
   return UserSubscription.findOneAndUpdate(

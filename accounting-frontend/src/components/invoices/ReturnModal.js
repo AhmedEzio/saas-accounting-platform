@@ -16,13 +16,18 @@ function getApiError(error, fallback) {
 }
 
 function toReturnItems(invoice) {
-  return (Array.isArray(invoice?.items) ? invoice.items : []).map((item, index) => ({
-    id: `${item.description || "item"}-${index}`,
-    description: item.description || "",
-    quantity: item.quantity ? String(item.quantity) : "1",
-    maxQuantity: Number(item.quantity || 0),
-    unitPrice: Number(item.unitPrice || 0),
-  }));
+  return (Array.isArray(invoice?.items) ? invoice.items : []).map((item, index) => {
+    const maxQuantity = Number(item.remainingQuantity ?? item.quantity ?? 0);
+    const initialQuantity = Math.min(Number(item.quantity) || 1, maxQuantity);
+
+    return {
+      id: `${item.description || "item"}-${index}`,
+      description: item.description || "",
+      quantity: String(initialQuantity),
+      maxQuantity,
+      unitPrice: Number(item.unitPrice || 0),
+    };
+  });
 }
 
 export default function ReturnModal({ invoice, open, onClose, t }) {
@@ -95,9 +100,13 @@ export default function ReturnModal({ invoice, open, onClose, t }) {
     for (const item of items) {
       const quantity = Number(item.quantity);
 
-      if (!Number.isFinite(quantity) || quantity < 1) {
+      if (!Number.isFinite(quantity) || quantity < 0) {
         setError(t("error.quantityMin"));
         return;
+      }
+
+      if (quantity === 0) {
+        continue;
       }
 
       if (item.maxQuantity > 0 && quantity > item.maxQuantity) {
@@ -110,6 +119,11 @@ export default function ReturnModal({ invoice, open, onClose, t }) {
         quantity,
         unitPrice: item.unitPrice,
       });
+    }
+
+    if (!payloadItems.length) {
+      setError(t("return.noItems"));
+      return;
     }
 
     const trimmedNotes = notes.trim();
@@ -209,7 +223,7 @@ export default function ReturnModal({ invoice, open, onClose, t }) {
                         className="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-950 outline-none transition focus:border-[#001540] focus:ring-2 focus:ring-[#001540]/20"
                         disabled={saving}
                         id={`return-quantity-${index}`}
-                        min="1"
+                        min="0"
                         onChange={(event) => updateQuantity(index, event.target.value)}
                         step="1"
                         type="number"

@@ -60,5 +60,9 @@ export const authApi = {
 
 export const subscriptionApi = {
   getPlans: () => api.get("/subscription-plans").then((r) => r.data),
+  getCurrent: () => api.get("/subscriptions/me").then((r) => r.data),
+  createCheckoutSession: (planId) =>
+    api.post("/subscriptions/create-checkout-session", { planId }).then((r) => r.data),
+  cancel: () => api.patch("/subscriptions/cancel").then((r) => r.data),
 };
 

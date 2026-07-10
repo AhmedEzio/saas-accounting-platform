@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+
+<html class="light" dir="ltr" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FinAuto AI | Subscription Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#e3e2e7",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "primary": "#001540",
+                        "surface-dim": "#dbd9de",
+                        "secondary": "#3755c3",
+                        "outline": "#757780",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed": "#001946",
+                        "inverse-on-surface": "#f2f0f5",
+                        "secondary-container": "#708cfd",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#b1c5ff",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "on-background": "#1a1b1f",
+                        "secondary-fixed-dim": "#b8c4ff",
+                        "tertiary-container": "#003421",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "tertiary": "#001d11",
+                        "on-secondary-fixed": "#001453",
+                        "primary-fixed-dim": "#b1c5ff",
+                        "on-secondary-fixed-variant": "#173bab",
+                        "surface": "#faf8fe",
+                        "outline-variant": "#c5c6d1",
+                        "primary-container": "#0f2a5f",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#dde1ff",
+                        "on-tertiary-fixed": "#002113",
+                        "primary-fixed": "#dae2ff",
+                        "tertiary-fixed": "#6ffbbe",
+                        "background": "#faf8fe",
+                        "on-surface-variant": "#44464f",
+                        "surface-container": "#efedf2",
+                        "surface-bright": "#faf8fe",
+                        "on-primary-fixed-variant": "#2e457b",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#f4f3f8",
+                        "surface-tint": "#465d94",
+                        "surface-container-highest": "#e3e2e7",
+                        "surface-container-high": "#e9e7ed",
+                        "inverse-surface": "#2f3034",
+                        "on-primary-container": "#7d93ce",
+                        "on-secondary-container": "#00217a",
+                        "on-tertiary-container": "#00a975",
+                        "on-surface": "#1a1b1f",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "lg": "24px",
+                        "2xl": "48px",
+                        "md": "16px",
+                        "gutter": "24px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "sidebar-width": "280px",
+                        "container-max": "1440px",
+                        "3xl": "64px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "title-lg": ["18px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #f4f5f8; font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .sidebar-item { transition: all 0.2s ease-in-out; }
+    </style>
+</head>
+<body class="text-on-background">
+<!-- Side Navigation Shell -->
+<aside class="fixed left-0 top-0 h-full w-[280px] bg-primary dark:bg-primary-container flex flex-col p-md gap-sm shadow-sm z-50">
+<div class="mb-xl flex flex-col items-start px-sm">
+<span class="font-headline-md text-headline-md font-bold text-on-primary">FinAuto AI</span>
+<span class="font-body-md text-body-md text-on-primary-container opacity-80">Modern Accounting</span>
+</div>
+<nav class="flex-1 flex flex-col gap-xs">
+<a class="sidebar-item flex items-center gap-md px-md py-sm text-on-primary-container hover:text-on-primary hover:bg-primary-fixed-dim/10 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Overview</span>
+</a>
+<a class="sidebar-item flex items-center gap-md px-md py-sm text-on-primary-container hover:text-on-primary hover:bg-primary-fixed-dim/10 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-body-md text-body-md">Clients</span>
+</a>
+<a class="sidebar-item flex items-center gap-md px-md py-sm text-on-primary-container hover:text-on-primary hover:bg-primary-fixed-dim/10 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-body-md text-body-md">Invoices</span>
+</a>
+<a class="sidebar-item flex items-center gap-md px-md py-sm text-on-primary-container hover:text-on-primary hover:bg-primary-fixed-dim/10 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-body-md text-body-md">Payments</span>
+</a>
+<a class="sidebar-item flex items-center gap-md px-md py-sm text-on-primary-container hover:text-on-primary hover:bg-primary-fixed-dim/10 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-body-md text-body-md">Documents</span>
+</a>
+<a class="sidebar-item flex items-center gap-md px-md py-sm bg-secondary text-on-secondary rounded-lg transition-transform active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">card_membership</span>
+<span class="font-body-md text-body-md">Subscription</span>
+</a>
+<a class="sidebar-item flex items-center gap-md px-md py-sm text-on-primary-container hover:text-on-primary hover:bg-primary-fixed-dim/10 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-body-md text-body-md">AI Assistant</span>
+</a>
+<a class="sidebar-item flex items-center gap-md px-md py-sm text-on-primary-container hover:text-on-primary hover:bg-primary-fixed-dim/10 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+<button class="mt-auto bg-tertiary-fixed text-on-tertiary-fixed font-bold py-md px-lg rounded-xl flex items-center justify-center gap-sm hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined">add</span>
+            New Invoice
+        </button>
+</aside>
+<!-- Top Bar Shell -->
+<header class="fixed top-0 right-0 w-[calc(100%-280px)] h-16 bg-surface border-b border-outline-variant flex justify-between items-center px-lg z-40">
+<div class="flex items-center gap-md">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full w-64 focus:ring-2 focus:ring-secondary/20 font-body-md text-body-md" placeholder="Search invoices or clients..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-xl">
+<button class="flex items-center gap-xs font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">language</span>
+                EN/AR
+            </button>
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">notifications</span>
+<div class="h-8 w-8 rounded-full bg-secondary-fixed flex items-center justify-center overflow-hidden border border-outline-variant">
+<img class="h-full w-full object-cover" data-alt="A professional headshot of a business executive in a modern office setting, bright clean lighting, corporate style portrait, soft blurred office background with subtle blue and green tones matching the FinAuto AI brand colors." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnlgREwojJqpBcIh8VOKUXpbG3BwOdaEwGrSbZ1KV69J3UzmkURWfD_dy10mrK7QHMvwnpTADwhSwAwaqkgAivo4yKTy9eIszceCvAA4hYnlEgWXBWS78cdTIZYsHTxpjhhtWWITvsz-7CqlR55zcmhhbFc0oAhSQfWuBQQ-P_N2OygXQx8YO-vc_71scva3iM_lsc0LCTq5a000a-oV6YEl4oyli0lPVUR6IhDQxOK5aQ00EHPkw"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[280px] mt-16 p-xl max-w-container-max mx-auto">
+<!-- Header -->
+<header class="mb-xl">
+<h1 class="font-headline-lg text-headline-lg text-primary">Subscription</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-xs">Manage your AI plan, tokens, and billing.</p>
+</header>
+<!-- Current Plan Section -->
+<section class="mb-3xl">
+<div class="bg-surface-container-lowest rounded-xl p-xl shadow-[0px_4px_12px_rgba(15,23,42,0.05)] border border-outline-variant flex flex-col md:flex-row items-start md:items-center justify-between gap-xl">
+<div class="flex-1 space-y-md">
+<div class="flex items-center gap-md">
+<h2 class="font-title-lg text-title-lg text-primary">Professional Plan</h2>
+<span class="bg-emerald-500/10 text-emerald-600 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Active</span>
+</div>
+<div class="space-y-sm max-w-md">
+<div class="flex justify-between font-label-md text-label-md text-on-surface-variant">
+<span>AI Tokens Used</span>
+<span class="font-bold text-primary">3,760 / 5,000</span>
+</div>
+<div class="h-3 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-right from-[#14B8A6] to-[#10B981] transition-all duration-1000 ease-out" style="width: 75.2%; background: linear-gradient(90deg, #14B8A6 0%, #10B981 100%);"></div>
+</div>
+<p class="text-[12px] text-on-surface-variant opacity-70 italic">75% of monthly capacity utilized. Resets in 12 days.</p>
+</div>
+<div class="flex items-center gap-md pt-base">
+<div class="flex items-center gap-xs text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+<span>Renewal Date: November 24, 2023</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-sm">
+<button class="bg-secondary text-on-secondary px-lg py-md rounded-lg font-bold transition-transform active:scale-95 shadow-sm">
+                        Upgrade Plan
+                    </button>
+<button class="border border-outline-variant text-on-surface-variant px-lg py-md rounded-lg font-bold hover:bg-surface-container-low transition-colors active:scale-95">
+                        Cancel Subscription
+                    </button>
+</div>
+</div>
+</section>
+<!-- Plans Grid -->
+<section>
+<h3 class="font-title-lg text-title-lg text-primary mb-lg">Select a Plan</h3>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<!-- Card 1: Chat Plan -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-xl flex flex-col hover:shadow-lg transition-shadow">
+<div class="mb-xl">
+<h4 class="font-title-lg text-title-lg text-primary">Chat Plan</h4>
+<div class="flex items-baseline gap-xs mt-sm">
+<span class="text-3xl font-bold text-primary">$49</span>
+<span class="text-on-surface-variant font-body-md">/mo</span>
+</div>
+<p class="text-on-surface-variant font-label-md mt-md uppercase tracking-widest font-bold">1,000 Tokens included</p>
+</div>
+<ul class="flex-1 space-y-md mb-xl">
+<li class="flex items-start gap-md text-on-surface-variant font-body-md">
+<span class="material-symbols-outlined text-secondary-container">check_circle</span>
+                            AI Chat Assistance
+                        </li>
+<li class="flex items-start gap-md text-on-surface-variant font-body-md">
+<span class="material-symbols-outlined text-secondary-container">check_circle</span>
+                            Read-only client search
+                        </li>
+<li class="flex items-start gap-md text-on-surface-variant font-body-md">
+<span class="material-symbols-outlined text-secondary-container">check_circle</span>
+                            Read-only invoice search
+                        </li>
+<li class="flex items-start gap-md text-on-surface-variant font-body-md">
+<span class="material-symbols-outlined text-secondary-container">check_circle</span>
+                            Read-only payment search
+                        </li>
+<li class="flex items-start gap-md text-on-surface-variant/40 font-body-md italic">
+<span class="material-symbols-outlined">block</span>
+                            No creation tools
+                        </li>
+</ul>
+<button class="w-full border border-secondary text-secondary py-md rounded-lg font-bold hover:bg-secondary/5 transition-colors">
+                        Select Plan
+                    </button>
+</div>
+<!-- Card 2: Chat + Tools Plan (Current) -->
+<div class="bg-surface-container-lowest rounded-xl border-2 border-secondary p-xl flex flex-col relative shadow-xl transform scale-[1.02] z-10">
+<div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-secondary text-on-secondary px-md py-1 rounded-full font-label-md text-[10px] uppercase tracking-widest font-bold">
+                        Current Plan
+                    </div>
+<div class="mb-xl">
+<h4 class="font-title-lg text-title-lg text-primary">Chat + Tools Plan</h4>
+<div class="flex items-baseline gap-xs mt-sm">
+<span class="text-3xl font-bold text-primary">$149</span>
+<span class="text-on-surface-variant font-body-md">/mo</span>
+</div>
+<p class="text-on-surface-variant font-label-md mt-md uppercase tracking-widest font-bold">5,000 Tokens included</p>
+</div>
+<ul class="flex-1 space-y-md mb-xl">
+<li class="flex items-start gap-md text-on-surface text-primary font-bold font-body-md">
+<span class="material-symbols-outlined text-secondary">verified</span>
+                            Everything in Chat Plan
+                        </li>
+<li class="flex items-start gap-md text-on-surface-variant font-body-md">
+<span class="material-symbols-outlined text-secondary">check_circle</span>
+                            Create clients/vendors
+                        </li>
+<li class="flex items-start gap-md text-on-surface-variant font-body-md">
+<span class="material-symbols-outlined text-secondary">check_circle</span>
+                            Create invoices
+                        </li>
+<li class="flex items-start gap-md text-on-surface-variant font-body-md">
+<span class="material-symbols-outlined text-secondary">check_circle</span>
+                            Record payments
+                        </li>
+</ul>
+<button class="w-full bg-surface-container-high text-on-surface-variant py-md rounded-lg font-bold cursor-not-allowed" disabled="">
+                        Already Subscribed
+                    </button>
+</div>
+<!-- Card 3: Chat + Tools + Support Plan -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-xl flex flex-col hover:shadow-lg transition-shadow">
+<div class="mb-xl">
+<h4 class="font-title-lg text-title-lg text-primary">Chat + Tools + Support</h4>
+<div class="flex items-baseline gap-xs mt-sm">
+<span class="text-3xl font-bold text-primary">$399</span>
+<span class="text-on-surface-variant font-body-md">/mo</span>
+</div>
+<p class="text-on-surface-variant font-label-md mt-md uppercase tracking-widest font-bold">20,000 Tokens included</p>
+</div>
+<ul class="flex-1 space-y-md mb-xl">
+<li class="flex items-start gap-md text-on-surface-variant font-body-md">
+<span class="material-symbols-outlined text-secondary-container">check_circle</span>
+                            Everything in Chat + Tools
+                        </li>
+<li class="flex items-start gap-md text-on-surface-variant font-body-md">
+<span class="material-symbols-outlined text-secondary-container">check_circle</span>
+                            Technical support
+                        </li>
+<li class="flex items-start gap-md text-on-surface-variant font-body-md">
+<span class="material-symbols-outlined text-secondary-container">check_circle</span>
+                            Priority assistance
+                        </li>
+<li class="flex items-start gap-md text-on-surface-variant font-body-md">
+<span class="material-symbols-outlined text-secondary-container">check_circle</span>
+                            Custom AI training
+                        </li>
+</ul>
+<button class="w-full border border-secondary text-secondary py-md rounded-lg font-bold hover:bg-secondary/5 transition-colors">
+                        Select Plan
+                    </button>
+</div>
+</div>
+</section>
+<!-- AI Insights Sidebar/Widget (Bento style) -->
+<section class="mt-3xl grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div class="bg-primary text-on-primary rounded-xl p-lg relative overflow-hidden group">
+<div class="relative z-10">
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-tertiary-fixed">bolt</span>
+<span class="font-label-md text-label-md uppercase tracking-widest">AI Efficiency Tip</span>
+</div>
+<h4 class="font-title-lg text-title-lg mb-sm">Maximize your tokens</h4>
+<p class="font-body-md text-body-md opacity-80 leading-relaxed">By batch-uploading receipts in PDF format, our AI processing efficiency increases by 22%, saving you roughly 120 tokens per 50 documents.</p>
+</div>
+<div class="absolute -right-12 -bottom-12 h-48 w-48 bg-secondary rounded-full opacity-10 group-hover:scale-125 transition-transform duration-700"></div>
+</div>
+<div class="bg-surface-container-high rounded-xl p-lg flex flex-col justify-center border border-outline-variant/30">
+<div class="flex justify-between items-end">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase mb-xs">Next Billing Amount</p>
+<p class="font-headline-md text-headline-md text-primary">$149.00</p>
+</div>
+<div class="text-right">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase mb-xs">Saved this month</p>
+<p class="font-title-lg text-title-lg text-emerald-600">-$24.50</p>
+</div>
+</div>
+<div class="mt-lg pt-lg border-t border-outline-variant">
+<a class="text-secondary font-bold font-body-md flex items-center gap-xs hover:underline" href="#">
+                        Download Invoice History
+                        <span class="material-symbols-outlined text-[18px]">download</span>
+</a>
+</div>
+</div>
+</section>
+</main>
+<!-- Micro-interaction scripts -->
+<script>
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                if (!button.disabled) {
+                    button.style.transform = 'translateY(-1px)';
+                }
+            });
+            button.addEventListener('mouseleave', () => {
+                button.style.transform = 'translateY(0px)';
+            });
+        });
+
+        // Simple progress bar animation on load
+        window.addEventListener('load', () => {
+            const progressBar = document.querySelector('.h-full.bg-gradient-to-right');
+            if(progressBar) {
+                const targetWidth = progressBar.style.width;
+                progressBar.style.width = '0%';
+                setTimeout(() => {
+                    progressBar.style.width = targetWidth;
+                }, 100);
+            }
+        });
+    </script>
+</body></html>

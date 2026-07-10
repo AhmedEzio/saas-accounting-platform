@@ -16,14 +16,15 @@ const userSubscriptionSchema = new mongoose.Schema(
 
     stripeSubscriptionId: {
       type: String,
-      required: true,
       unique: true,
+      sparse: true,
+      default: undefined,
     },
 
     // Stripe Customer ID for creating future sessions
     stripeCustomerId: {
       type: String,
-      required: true,
+      default: undefined,
     },
 
     /**
@@ -33,10 +34,20 @@ const userSubscriptionSchema = new mongoose.Schema(
      * - past_due:  Payment failed; Stripe is retrying
      * - cancelled: User cancelled; access ends at periodEnd
      * - incomplete: Initial payment not yet confirmed
+     * - incomplete_expired/unpaid/paused: Other Stripe subscription states
      */
     status: {
       type: String,
-      enum: ["active", "trialing", "past_due", "cancelled", "incomplete"],
+      enum: [
+        "active",
+        "trialing",
+        "past_due",
+        "cancelled",
+        "incomplete",
+        "incomplete_expired",
+        "unpaid",
+        "paused",
+      ],
       default: "incomplete",
     },
 
@@ -63,6 +74,11 @@ const userSubscriptionSchema = new mongoose.Schema(
     currentPeriodEnd: {
       type: Date,
       default: null,
+    },
+
+    cancelAtPeriodEnd: {
+      type: Boolean,
+      default: false,
     },
 
     
