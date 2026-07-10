@@ -11,8 +11,13 @@ import DocumentsTable from "@/components/documents/DocumentsTable";
 import Pagination from "@/components/invoices/Pagination";
 import EmptyState from "@/components/invoices/EmptyState";
 
+import DocumentUploadModal from "@/components/documents/DocumentUploadModal";
+import DocumentPreviewModal from "@/components/documents/DocumentPreviewModal";
+import DeleteConfirmationModal from "@/components/documents/DeleteConfirmationModal";
+import AppShell from "@/components/AppShell";
+
 export default function DocumentsPage() {
-  const { lang, isRtl } = useLanguage();
+  const { lang, isRtl, setLang, dir } = useLanguage();
 
   const [loading, setLoading] = useState(true);
   const [statsLoading, setStatsLoading] = useState(true);
@@ -31,6 +36,10 @@ export default function DocumentsPage() {
     pages: 1,
     limit: 20,
   });
+
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
+  const [previewId, setPreviewId] = useState(null);
+  const [deleteId, setDeleteId] = useState(null);
 
   const fetchStats = useCallback(async () => {
     try {
@@ -79,9 +88,15 @@ export default function DocumentsPage() {
 
   const hasActiveFilters = filters.search !== "" || filters.fileType !== "";
 
+  const handleSuccess = () => {
+    fetchStats();
+    fetchDocuments();
+  };
+
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <AppShell activeKey="documents" lang={lang} setLang={setLang}>
+      <div className="mx-auto flex max-w-7xl flex-col gap-6" dir={dir}>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             {t("page.documents", lang)}
@@ -94,6 +109,7 @@ export default function DocumentsPage() {
         <div className="flex shrink-0 items-center gap-3">
           <button
             type="button"
+            onClick={() => setIsUploadOpen(true)}
             className="flex items-center gap-2 rounded-xl bg-[#1b2b6b] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#162358] focus:outline-none focus:ring-2 focus:ring-[#1b2b6b] focus:ring-offset-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-500 dark:focus:ring-offset-slate-900"
           >
             <svg
@@ -132,7 +148,9 @@ export default function DocumentsPage() {
             loading={loading} 
             lang={lang} 
             t={t} 
-            isRtl={isRtl} 
+            isRtl={isRtl}
+            onPreview={setPreviewId}
+            onDelete={setDeleteId}
           />
         )}
         
@@ -148,6 +166,29 @@ export default function DocumentsPage() {
           />
         )}
       </div>
-    </div>
+
+      <DocumentUploadModal
+        open={isUploadOpen}
+        onClose={() => setIsUploadOpen(false)}
+        onSuccess={handleSuccess}
+        t={(key) => t(key, lang)}
+      />
+
+      <DocumentPreviewModal
+        documentId={previewId}
+        open={!!previewId}
+        onClose={() => setPreviewId(null)}
+        t={(key) => t(key, lang)}
+      />
+
+      <DeleteConfirmationModal
+        documentId={deleteId}
+        open={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onSuccess={handleSuccess}
+        t={(key) => t(key, lang)}
+      />
+      </div>
+    </AppShell>
   );
 }

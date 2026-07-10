@@ -11,6 +11,7 @@ import PaymentModal from "@/components/invoices/PaymentModal";
 import PaymentTimeline from "@/components/invoices/PaymentTimeline";
 import ReturnModal from "@/components/invoices/ReturnModal";
 import SkeletonRow from "@/components/invoices/SkeletonRow";
+import AttachedDocument from "@/components/invoices/AttachedDocument";
 import useLang from "@/components/invoices/useLang";
 import { invoicesApi, paymentsApi } from "@/services/invoices";
 import AppShell from "@/components/AppShell";
@@ -226,12 +227,15 @@ export default function InvoiceDetailsPage() {
                 <InvoiceSummary invoice={invoice} lang={lang} t={t} />
                 <InvoiceItemsTable invoice={invoice} isRtl={isRtl} t={t} />
               </div>
-              <PaymentTimeline
-                error={paymentError}
-                lang={lang}
-                payments={payments}
-                t={t}
-              />
+              <div className="space-y-6">
+                <PaymentTimeline
+                  error={paymentError}
+                  lang={lang}
+                  payments={payments}
+                  t={t}
+                />
+                <AttachedDocument invoice={invoice} lang={lang} t={t} />
+              </div>
             </div>
             <CancelModal
               invoice={invoice}

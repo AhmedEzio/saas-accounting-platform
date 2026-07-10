@@ -37,12 +37,32 @@ export const translations = {
   
   'delete.confirmTitle':      { en: 'Delete Document',                            ar: 'حذف المستند' },
   'delete.confirmMessage':    { en: 'Are you sure you want to delete this document? This action cannot be undone.', ar: 'هل أنت متأكد أنك تريد حذف هذا المستند؟ لا يمكن التراجع عن هذا الإجراء.' },
+  'delete.deleting':          { en: 'Deleting...',                                ar: 'جارٍ الحذف...' },
 
   // Toasts
   'toast.uploadSuccess':      { en: 'Document uploaded successfully.',            ar: 'تم رفع المستند بنجاح.' },
   'toast.uploadError':        { en: 'Failed to upload document.',                 ar: 'فشل في رفع المستند.' },
   'toast.deleteSuccess':      { en: 'Document deleted.',                          ar: 'تم حذف المستند.' },
   'toast.deleteError':        { en: 'Failed to delete document.',                 ar: 'فشل في حذف المستند.' },
+
+  // Added keys for Polish Phase
+  'stats.allFiltered':        { en: 'All filtered documents',                     ar: 'جميع المستندات المفلترة' },
+  'error.required':           { en: 'This field is required.',                    ar: 'هذا الحقل مطلوب.' },
+  
+  'upload.notes':             { en: 'Notes',                                      ar: 'ملاحظات' },
+  'upload.searchInvoice':     { en: 'Search by invoice number...',                ar: 'ابحث برقم الفاتورة...' },
+  'upload.searchInvoiceHint': { en: 'Type to search invoices',                    ar: 'اكتب للبحث عن فواتير' },
+  
+  'preview.loading':          { en: 'Loading document...',                        ar: 'جاري تحميل المستند...' },
+  'preview.failed':           { en: 'Failed to load document details',            ar: 'فشل في تحميل تفاصيل المستند' },
+  'preview.ocrText':          { en: 'OCR Extracted Text',                         ar: 'النصوص المستخرجة (OCR)' },
+  
+  'action.cancel':            { en: 'Cancel',                                     ar: 'إلغاء' },
+  'action.close':             { en: 'Close',                                      ar: 'إغلاق' },
+  'action.openNewTab':        { en: 'Open in New Tab',                            ar: 'فتح في علامة تبويب جديدة' },
+  'form.selected':            { en: 'Selected',                                   ar: 'محدد' },
+  'state.loading':            { en: 'Loading...',                                 ar: 'جاري التحميل...' },
+  'state.networkError':       { en: 'Network error',                              ar: 'خطأ في الشبكة' },
 };
 
 export const t = (key, lang = 'en') =>

@@ -205,6 +205,12 @@ export const translations = {
   'details.paymentHistoryUnavailable': { en: 'Payment history is unavailable right now.', ar: 'سجل المدفوعات غير متاح حالياً.' },
   'details.expenseName':      { en: 'Expense Name',              ar: 'اسم المصروف' },
   'details.expenseType':      { en: 'Expense Category',          ar: 'فئة المصروف' },
+
+  // ── Attached Document ─────────────────────────────────────────────────────
+  'document.title':           { en: 'Attached Document',         ar: 'المستند المرفق' },
+  'document.noDocument':      { en: 'No document attached.',     ar: 'لا يوجد مستند مرفق.' },
+  'document.open':            { en: 'Open',                      ar: 'فتح' },
+  'document.download':        { en: 'Download',                  ar: 'تحميل' },
 };
 
 /**

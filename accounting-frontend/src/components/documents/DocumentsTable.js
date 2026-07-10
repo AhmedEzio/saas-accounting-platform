@@ -23,7 +23,7 @@ function getFileTypeColor(type) {
   }
 }
 
-export default function DocumentsTable({ documents, loading, lang, t, isRtl }) {
+export default function DocumentsTable({ documents, loading, lang, t, isRtl, onPreview, onDelete }) {
   const alignEnd = isRtl ? "text-start" : "text-end"; // Since it's flex row reverse sometimes, let's keep it robust. Actually for LTR it's text-end, for RTL it's text-start if we just use "text-end" with logical properties, but since InvoiceTable used standard align, we'll use "text-end" which logicalizes to left in RTL. wait, logical classes in tailwind are `text-end`. `text-end` is automatically left in RTL.
 
   return (
@@ -89,6 +89,7 @@ export default function DocumentsTable({ documents, loading, lang, t, isRtl }) {
                         {/* Placeholder buttons for Phase 2, actual modals in Phase 3 */}
                         <button
                           type="button"
+                          onClick={() => onPreview(doc._id)}
                           className="inline-flex min-h-8 items-center rounded border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 text-xs font-medium text-slate-700 dark:text-slate-200 transition hover:bg-slate-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-[#1b2b6b]/20"
                           title={t("action.preview", lang)}
                         >
@@ -96,6 +97,7 @@ export default function DocumentsTable({ documents, loading, lang, t, isRtl }) {
                         </button>
                         <button
                           type="button"
+                          onClick={() => onDelete(doc._id)}
                           className="inline-flex min-h-8 items-center rounded border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 text-xs font-medium text-red-600 dark:text-red-400 transition hover:bg-red-50 dark:hover:bg-red-900/30 focus:outline-none focus:ring-2 focus:ring-red-500/20"
                           title={t("action.delete", lang)}
                         >
