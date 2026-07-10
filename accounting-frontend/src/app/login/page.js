@@ -57,9 +57,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-[#e8ecf5] relative overflow-hidden" dir={dir}>
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-[#e8ecf5] dark:bg-slate-900 relative overflow-hidden" dir={dir}>
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="absolute inset-0 pointer-events-none opacity-100 dark:opacity-20"
         style={{
           backgroundImage:
             "linear-gradient(to right,#c5cde0 1px,transparent 1px),linear-gradient(to bottom,#c5cde0 1px,transparent 1px)",
@@ -67,12 +67,12 @@ export default function LoginPage() {
         }}
       />
 
-      <div className="absolute bottom-0 right-0 w-125 h-100 bg-[#c8ede0] rounded-full blur-[80px] opacity-70 pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-125 h-100 bg-[#c8ede0] dark:bg-emerald-900/30 rounded-full blur-[80px] opacity-70 pointer-events-none" />
 
       <div className={`absolute top-5 z-10 ${isRtl ? 'left-5' : 'right-5'}`}>
         <button
           onClick={() => setLang(lang === "ar" ? "en" : "ar")}
-          className="flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-gray-300 bg-white/80 text-sm font-medium text-gray-600 hover:bg-white transition"
+          className="flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-gray-300 dark:border-slate-600 bg-white/80 dark:bg-slate-800/80 text-sm font-medium text-gray-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 transition"
         >
           <svg
             className="w-4 h-4"
@@ -88,7 +88,7 @@ export default function LoginPage() {
         </button>
       </div>
 
-      <div className="relative z-10 w-full max-w-105 bg-white rounded-2xl shadow-md px-10 py-10">
+      <div className="relative z-10 w-full max-w-105 bg-white dark:bg-slate-800 rounded-2xl shadow-md dark:shadow-xl dark:border dark:border-slate-700 px-10 py-10">
         <div className="flex justify-center mb-7">
           <div className="w-17 h-17 rounded-xl bg-[#1b2b6b] flex flex-col items-center justify-center gap-0.5">
             <span className="text-white text-3xl font-extrabold leading-none">
@@ -99,26 +99,26 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <h1 className="text-center text-[28px] font-extrabold text-[#111827] mb-1 tracking-tight">
+        <h1 className="text-center text-[28px] font-extrabold text-[#111827] dark:text-white mb-1 tracking-tight">
           {t("login.title", lang)}
         </h1>
-        <p className="text-center text-sm text-gray-500 mb-8">
+        <p className="text-center text-sm text-gray-500 dark:text-slate-400 mb-8">
           {t("login.subtitle", lang)}
         </p>
 
         {error && (
-          <div className="mb-5 px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-600">
+          <div className="mb-5 px-4 py-3 rounded-lg bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800/50 text-sm text-red-600 dark:text-red-400">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1.5">
               {t("field.workEmail", lang)}
             </label>
             <div className="relative">
-              <span className={`absolute top-1/2 -translate-y-1/2 text-gray-400 ${isRtl ? 'right-3.5' : 'left-3.5'}`}>
+              <span className={`absolute top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 ${isRtl ? 'right-3.5' : 'left-3.5'}`}>
                 <svg
                   className="w-4.5 h-4.5"
                   fill="none"
@@ -138,18 +138,18 @@ export default function LoginPage() {
                   setError("");
                 }}
                 placeholder={t("field.emailPlaceholder", lang)}
-                className={`w-full py-3 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#1b2b6b]/25 focus:border-[#1b2b6b] transition ${isRtl ? 'pr-10 pl-4 text-right' : 'pl-10 pr-4'}`}
+                className={`w-full py-3 rounded-lg border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-900/50 text-sm text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 outline-none focus:ring-2 focus:ring-[#1b2b6b]/25 dark:focus:ring-blue-500/50 focus:border-[#1b2b6b] dark:focus:border-blue-500 transition ${isRtl ? 'pr-10 pl-4 text-right' : 'pl-10 pr-4'}`}
                 dir="ltr"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1.5">
               {t("field.password", lang)}
             </label>
             <div className="relative">
-              <span className={`absolute top-1/2 -translate-y-1/2 text-gray-400 ${isRtl ? 'right-3.5' : 'left-3.5'}`}>
+              <span className={`absolute top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 ${isRtl ? 'right-3.5' : 'left-3.5'}`}>
                 <svg
                   className="w-4.5 h-4.5"
                   fill="none"
@@ -169,13 +169,13 @@ export default function LoginPage() {
                   setError("");
                 }}
                 placeholder={t("field.passwordPlaceholder", lang)}
-                className={`w-full py-3 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#1b2b6b]/25 focus:border-[#1b2b6b] transition ${isRtl ? 'pr-10 pl-11 text-right' : 'pl-10 pr-11'}`}
+                className={`w-full py-3 rounded-lg border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-900/50 text-sm text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 outline-none focus:ring-2 focus:ring-[#1b2b6b]/25 dark:focus:ring-blue-500/50 focus:border-[#1b2b6b] dark:focus:border-blue-500 transition ${isRtl ? 'pr-10 pl-11 text-right' : 'pl-10 pr-11'}`}
                 dir="ltr"
               />
               <button
                 type="button"
                 onClick={() => setShowPass(!showPass)}
-                className={`absolute top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 ${isRtl ? 'left-3.5' : 'right-3.5'}`}
+                className={`absolute top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300 ${isRtl ? 'left-3.5' : 'right-3.5'}`}
               >
                 {showPass ? (
                   <svg
@@ -205,18 +205,18 @@ export default function LoginPage() {
           </div>
 
           <div className="flex items-center justify-between">
-            <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer select-none">
+            <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400 cursor-pointer select-none">
               <input
                 type="checkbox"
                 checked={remember}
                 onChange={(e) => setRemember(e.target.checked)}
-                className="w-4 h-4 rounded border-gray-300 accent-[#1b2b6b]"
+                className="w-4 h-4 rounded border-gray-300 dark:border-slate-600 dark:bg-slate-800 accent-[#1b2b6b] dark:accent-blue-500"
               />
               {t("action.rememberMe", lang)}
             </label>
             <Link
               href="/forgot-password"
-              className="text-sm font-semibold text-[#111827] hover:underline"
+              className="text-sm font-semibold text-[#111827] dark:text-white hover:underline"
             >
               {t("action.forgotPassword", lang)}
             </Link>
@@ -225,7 +225,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#2d3ebd] hover:bg-[#2233aa] active:bg-[#1b2b9e] text-white font-bold text-base tracking-wide transition disabled:opacity-60"
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#2d3ebd] dark:bg-blue-600 hover:bg-[#2233aa] dark:hover:bg-blue-700 active:bg-[#1b2b9e] dark:active:bg-blue-800 text-white font-bold text-base tracking-wide transition disabled:opacity-60"
           >
             {loading ? (
               <svg
@@ -265,11 +265,11 @@ export default function LoginPage() {
         </form>
 
         <div className="flex items-center gap-3 my-6">
-          <div className="flex-1 h-px bg-gray-200" />
-          <span className="text-[11px] font-semibold text-gray-400 tracking-[0.12em] whitespace-nowrap uppercase">
+          <div className="flex-1 h-px bg-gray-200 dark:bg-slate-700" />
+          <span className="text-[11px] font-semibold text-gray-400 dark:text-slate-500 tracking-[0.12em] whitespace-nowrap uppercase">
             {t("text.orContinueWith", lang)}
           </span>
-          <div className="flex-1 h-px bg-gray-200" />
+          <div className="flex-1 h-px bg-gray-200 dark:bg-slate-700" />
         </div>
 
         <div className="space-y-3">
@@ -286,7 +286,7 @@ export default function LoginPage() {
 
             <button
               type="button"
-              className="w-full flex items-center justify-center gap-3 py-3 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition text-sm font-medium text-gray-700"
+              className="w-full flex items-center justify-center gap-3 py-3 rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 transition text-sm font-medium text-gray-700 dark:text-slate-300"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -313,16 +313,16 @@ export default function LoginPage() {
       </div>
 
       <div className="relative z-10 mt-6 text-center">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-slate-400">
           {t("text.noAccount", lang)}{" "}
           <Link
             href="/register"
-            className="font-bold text-[#111827] hover:underline"
+            className="font-bold text-[#111827] dark:text-white hover:underline"
           >
             {t("action.requestAccess", lang)}
           </Link>
         </p>
-        <p className="mt-2 text-xs text-gray-400 flex items-center justify-center gap-2">
+        <p className="mt-2 text-xs text-gray-400 dark:text-slate-500 flex items-center justify-center gap-2">
           <Link href="/privacy" className="hover:underline">
             {t("text.privacyPolicy", lang)}
           </Link>
