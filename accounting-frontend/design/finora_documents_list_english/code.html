@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+
+<html class="light" dir="ltr" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Documents - Finora</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-lowest": "#ffffff",
+                      "outline-variant": "#c5c6d1",
+                      "on-tertiary-fixed-variant": "#005236",
+                      "on-surface": "#1a1b1f",
+                      "on-error": "#ffffff",
+                      "surface-container-high": "#e9e7ed",
+                      "on-tertiary-fixed": "#002113",
+                      "on-primary-container": "#7d93ce",
+                      "on-secondary-fixed-variant": "#173bab",
+                      "primary-fixed": "#dae2ff",
+                      "primary-container": "#0f2a5f",
+                      "secondary-fixed-dim": "#b8c4ff",
+                      "background": "#faf8fe",
+                      "on-primary-fixed-variant": "#2e457b",
+                      "tertiary-container": "#003421",
+                      "surface": "#faf8fe",
+                      "inverse-surface": "#2f3034",
+                      "on-error-container": "#93000a",
+                      "tertiary-fixed": "#6ffbbe",
+                      "surface-container-low": "#f4f3f8",
+                      "on-background": "#1a1b1f",
+                      "on-surface-variant": "#44464f",
+                      "primary": "#001540",
+                      "secondary-container": "#708cfd",
+                      "inverse-primary": "#b1c5ff",
+                      "tertiary": "#001d11",
+                      "on-tertiary-container": "#00a975",
+                      "primary-fixed-dim": "#b1c5ff",
+                      "surface-dim": "#dbd9de",
+                      "secondary-fixed": "#dde1ff",
+                      "outline": "#757780",
+                      "error-container": "#ffdad6",
+                      "surface-variant": "#e3e2e7",
+                      "surface-bright": "#faf8fe",
+                      "secondary": "#3755c3",
+                      "surface-container-highest": "#e3e2e7",
+                      "surface-container": "#efedf2",
+                      "on-tertiary": "#ffffff",
+                      "tertiary-fixed-dim": "#4edea3",
+                      "on-secondary-fixed": "#001453",
+                      "surface-tint": "#465d94",
+                      "on-secondary": "#ffffff",
+                      "inverse-on-surface": "#f2f0f5",
+                      "on-primary": "#ffffff",
+                      "on-primary-fixed": "#001946",
+                      "error": "#ba1a1a",
+                      "on-secondary-container": "#00217a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "base": "4px",
+                      "2xl": "48px",
+                      "xl": "32px",
+                      "sidebar-width": "280px",
+                      "md": "16px",
+                      "lg": "24px",
+                      "container-max": "1440px",
+                      "sm": "8px",
+                      "gutter": "24px",
+                      "3xl": "64px",
+                      "xs": "4px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "code": [
+                              "JetBrains Mono"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "display-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-lg-mobile": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "title-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "code": [
+                              "13px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "60px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "title-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Custom scrollbar for better UI */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased overflow-x-hidden min-h-screen flex">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col fixed h-screen w-sidebar-width start-0 top-0 bg-surface dark:bg-inverse-surface border-e border-outline-variant z-50">
+<div class="p-lg flex flex-col h-full overflow-y-auto">
+<!-- Brand -->
+<div class="flex items-center gap-3 mb-xl px-4">
+<div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined fill">donut_large</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Finora</h1>
+<p class="font-label-md text-label-md text-on-surface-variant">Accounting Intelligence</p>
+</div>
+</div>
+<!-- New CTA -->
+<div class="px-4 mb-lg">
+<button class="w-full flex items-center justify-center gap-2 bg-primary text-on-primary py-2.5 px-4 rounded-lg font-body-md hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                    New Invoice
+                </button>
+</div>
+<!-- Navigation Links -->
+<div class="flex flex-col gap-1 flex-1 font-body-md text-body-md">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest dark:hover:bg-surface-variant transition-colors rounded-lg cursor-pointer active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                    Dashboard
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest dark:hover:bg-surface-variant transition-colors rounded-lg cursor-pointer active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">group</span>
+                    Clients
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest dark:hover:bg-surface-variant transition-colors rounded-lg cursor-pointer active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">storefront</span>
+                    Vendors
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest dark:hover:bg-surface-variant transition-colors rounded-lg cursor-pointer active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+                    Invoices
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest dark:hover:bg-surface-variant transition-colors rounded-lg cursor-pointer active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">payments</span>
+                    Payments
+                </a>
+<!-- ACTIVE STATE -->
+<a class="flex items-center gap-3 px-4 py-3 bg-secondary-container text-on-secondary-container rounded-lg font-bold cursor-pointer active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined fill">description</span>
+                    Documents
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest dark:hover:bg-surface-variant transition-colors rounded-lg cursor-pointer active:scale-95 duration-150 mt-auto" href="#">
+<span class="material-symbols-outlined">card_membership</span>
+                    Subscription
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest dark:hover:bg-surface-variant transition-colors rounded-lg cursor-pointer active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+                    AI Usage
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest dark:hover:bg-surface-variant transition-colors rounded-lg cursor-pointer active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">settings</span>
+                    Settings
+                </a>
+</div>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 md:ms-sidebar-width flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="fixed top-0 end-0 w-full md:w-[calc(100%-280px)] z-40 bg-surface dark:bg-background flex justify-between items-center h-16 px-gutter max-w-container-max ms-auto border-b border-outline-variant shadow-sm transition-all duration-200 ease-in-out">
+<!-- Mobile Brand/Menu -->
+<div class="flex items-center gap-3 md:hidden">
+<button class="text-on-surface-variant p-2 rounded-lg hover:bg-surface-container-highest">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<span class="font-headline-md text-headline-md font-black text-primary dark:text-primary-fixed">Finora</span>
+</div>
+<!-- Search (Left on Web) -->
+<div class="hidden md:flex items-center bg-surface-container-low rounded-lg px-3 py-1.5 w-64 border border-outline-variant focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px] mr-2">search</span>
+<input class="bg-transparent border-none outline-none text-body-md font-body-md w-full placeholder:text-on-surface-variant text-on-surface p-0 focus:ring-0" placeholder="Search across Finora..." type="text"/>
+</div>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-4">
+<!-- Icon Actions -->
+<div class="flex items-center gap-1">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">language</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant rounded-full transition-colors flex items-center justify-center relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full"></span>
+</button>
+</div>
+<!-- Divider -->
+<div class="w-px h-8 bg-outline-variant hidden sm:block"></div>
+<!-- Profile Dropdown Trigger -->
+<div class="flex items-center gap-3 cursor-pointer hover:bg-surface-container-low p-1.5 rounded-lg transition-colors">
+<img alt="User Avatar" class="w-8 h-8 rounded-full border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTb12Wruuz9PHtNWa_caeIKivIG0zi-erUYcIStV4R77PQeMuqSPl_r2wPS__4n70n4eD7kYiC1iM5P73r2YLdkHZo-5JWZv7YTAram4dLEB7sZfvPYZjp3tjpthHYnl5rh4_Wa5KCFVzV3V3ExhvHYVi2v12Nf3jtlaXqLsUqKIMCUuI1iKNY4liIiCQOAcY9g1Yi-oGmVnQ2yy6S004quUcNeHH9cGK582weyAEyDa1cyHTl62NmH65OmrOGVbkrFG_uknGitQ"/>
+<div class="hidden sm:block text-left">
+<p class="font-label-md text-label-md font-semibold text-on-surface">Alex Mercer</p>
+<p class="font-label-md text-[10px] text-on-surface-variant">Admin</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant hidden sm:block text-[20px]">expand_more</span>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 pt-16 p-gutter max-w-container-max mx-auto w-full">
+<!-- Page Header -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-xl gap-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface font-bold">Documents</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Upload and manage invoice documents and receipts.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 bg-surface text-on-surface border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">cloud_download</span>
+                        Export List
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg font-label-md text-label-md hover:bg-[#1a2d5e] transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">cloud_upload</span>
+                        Upload Document
+                    </button>
+</div>
+</div>
+<!-- Analytics / Stat Cards (Bento Grid Style) -->
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-xl">
+<!-- Stat Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow">
+<div class="absolute top-0 right-0 p-3 text-[#10B981] flex items-center gap-1 font-label-md text-[11px] font-semibold bg-[#10B981]/10 rounded-bl-lg">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> 12%
+                    </div>
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-3">
+<span class="material-symbols-outlined">folder_open</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant mb-1">Total Documents</p>
+<p class="font-headline-md text-headline-md font-semibold text-on-surface">1,248</p>
+</div>
+<!-- Stat Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow">
+<div class="w-10 h-10 rounded-lg bg-[#ef4444]/10 flex items-center justify-center text-[#ef4444] mb-3">
+<span class="material-symbols-outlined">picture_as_pdf</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant mb-1">PDF Files</p>
+<p class="font-headline-md text-headline-md font-semibold text-on-surface">892</p>
+</div>
+<!-- Stat Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow">
+<div class="w-10 h-10 rounded-lg bg-[#3b82f6]/10 flex items-center justify-center text-[#3b82f6] mb-3">
+<span class="material-symbols-outlined">image</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant mb-1">Image Files</p>
+<p class="font-headline-md text-headline-md font-semibold text-on-surface">356</p>
+</div>
+<!-- Stat Card 4 (AI Accent) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow">
+<!-- Subtle AI Glow -->
+<div class="absolute -right-4 -bottom-4 w-24 h-24 bg-[#14B8A6]/10 rounded-full blur-xl pointer-events-none"></div>
+<div class="w-10 h-10 rounded-lg bg-[#14B8A6]/10 flex items-center justify-center text-[#14B8A6] mb-3 relative z-10">
+<span class="material-symbols-outlined">document_scanner</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant mb-1 relative z-10">Processed (OCR)</p>
+<div class="flex items-end gap-2 relative z-10">
+<p class="font-headline-md text-headline-md font-semibold text-on-surface">1,180</p>
+<p class="font-label-md text-[11px] text-on-surface-variant mb-1">/ 1,248</p>
+</div>
+<!-- Mini Progress -->
+<div class="w-full h-1.5 bg-surface-container-highest rounded-full mt-2 overflow-hidden relative z-10">
+<div class="h-full bg-gradient-to-r from-[#14B8A6] to-[#10B981] rounded-full" style="width: 94%;"></div>
+</div>
+</div>
+<!-- Stat Card 5 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow">
+<div class="absolute top-0 right-0 p-3 text-[#10B981] flex items-center gap-1 font-label-md text-[11px] font-semibold bg-[#10B981]/10 rounded-bl-lg">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span> 24
+                    </div>
+<div class="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary mb-3">
+<span class="material-symbols-outlined">update</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant mb-1">Recent (30d)</p>
+<p class="font-headline-md text-headline-md font-semibold text-on-surface">142</p>
+</div>
+</div>
+<!-- Document List Section -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm flex flex-col">
+<!-- Filters Bar -->
+<div class="p-4 border-b border-outline-variant flex flex-col lg:flex-row gap-4 justify-between items-center bg-[#F8FAFC] rounded-t-xl">
+<!-- Search -->
+<div class="relative w-full lg:w-80">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+<input class="w-full pl-10 pr-4 py-2 border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 focus:border-primary transition-shadow placeholder:text-on-surface-variant/60" placeholder="Search by filename or invoice ID..." type="text"/>
+</div>
+<!-- Filter Toggles -->
+<div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+<!-- File Type -->
+<div class="relative group">
+<button class="flex items-center gap-2 px-3 py-2 border border-outline-variant rounded-lg bg-surface-container-lowest font-label-md text-label-md text-on-surface hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">filter_list</span>
+                                File Type: All
+                                <span class="material-symbols-outlined text-[16px] text-on-surface-variant">expand_more</span>
+</button>
+</div>
+<!-- Date Range -->
+<div class="relative group">
+<button class="flex items-center gap-2 px-3 py-2 border border-outline-variant rounded-lg bg-surface-container-lowest font-label-md text-label-md text-on-surface hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">calendar_month</span>
+                                Last 30 Days
+                                <span class="material-symbols-outlined text-[16px] text-on-surface-variant">expand_more</span>
+</button>
+</div>
+<!-- Status -->
+<div class="relative group">
+<button class="flex items-center gap-2 px-3 py-2 border border-outline-variant rounded-lg bg-surface-container-lowest font-label-md text-label-md text-on-surface hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[16px] text-[#14B8A6]">document_scanner</span>
+                                OCR: Any
+                                <span class="material-symbols-outlined text-[16px] text-on-surface-variant">expand_more</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Table Container -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-[#F1F5F9] border-b border-outline-variant">
+<th class="py-3 px-4 font-label-md text-label-md text-on-surface-variant font-semibold">File Name</th>
+<th class="py-3 px-4 font-label-md text-label-md text-on-surface-variant font-semibold">Type</th>
+<th class="py-3 px-4 font-label-md text-label-md text-on-surface-variant font-semibold">Related Invoice</th>
+<th class="py-3 px-4 font-label-md text-label-md text-on-surface-variant font-semibold">OCR Status</th>
+<th class="py-3 px-4 font-label-md text-label-md text-on-surface-variant font-semibold">Uploaded</th>
+<th class="py-3 px-4 font-label-md text-label-md text-on-surface-variant font-semibold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/50">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-lowest/50 transition-colors group h-[52px]">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-[#ef4444]/10 flex items-center justify-center text-[#ef4444]">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</div>
+<div>
+<p class="font-body-md text-body-md font-medium text-on-surface group-hover:text-primary transition-colors cursor-pointer">AWS_Invoice_Oct2023.pdf</p>
+<p class="font-label-md text-[11px] text-on-surface-variant">245 KB</p>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 font-body-md text-body-md text-on-surface-variant">PDF Document</td>
+<td class="py-3 px-4">
+<a class="font-code text-code text-secondary hover:underline flex items-center gap-1" href="#">
+                                        INV-2023-089
+                                        <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</a>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-[#10B981]/10 text-[#10B981] font-label-md text-[11px] font-semibold border border-[#10B981]/20">
+<span class="material-symbols-outlined text-[12px]">check_circle</span> Processed
+                                    </span>
+</td>
+<td class="py-3 px-4 font-body-md text-body-md text-on-surface-variant">Oct 12, 2023</td>
+<td class="py-3 px-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded transition-colors" title="View">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-secondary hover:bg-secondary/10 rounded transition-colors" title="Details">
+<span class="material-symbols-outlined text-[18px]">info</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error/10 rounded transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-lowest/50 transition-colors group h-[52px]">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-[#3b82f6]/10 flex items-center justify-center text-[#3b82f6]">
+<span class="material-symbols-outlined text-[18px]">image</span>
+</div>
+<div>
+<p class="font-body-md text-body-md font-medium text-on-surface group-hover:text-primary transition-colors cursor-pointer">Receipt_Uber_SFO.jpg</p>
+<p class="font-label-md text-[11px] text-on-surface-variant">1.2 MB</p>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 font-body-md text-body-md text-on-surface-variant">JPEG Image</td>
+<td class="py-3 px-4">
+<span class="font-body-md text-body-md text-on-surface-variant italic">Unlinked</span>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-[#f59e0b]/10 text-[#f59e0b] font-label-md text-[11px] font-semibold border border-[#f59e0b]/20">
+<span class="material-symbols-outlined text-[12px] animate-spin">sync</span> Processing...
+                                    </span>
+</td>
+<td class="py-3 px-4 font-body-md text-body-md text-on-surface-variant">Oct 11, 2023</td>
+<td class="py-3 px-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded transition-colors" title="View">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-secondary hover:bg-secondary/10 rounded transition-colors" title="Details">
+<span class="material-symbols-outlined text-[18px]">info</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error/10 rounded transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-lowest/50 transition-colors group h-[52px]">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-[#ef4444]/10 flex items-center justify-center text-[#ef4444]">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</div>
+<div>
+<p class="font-body-md text-body-md font-medium text-on-surface group-hover:text-primary transition-colors cursor-pointer">Stripe_Fees_Sept.pdf</p>
+<p class="font-label-md text-[11px] text-on-surface-variant">89 KB</p>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 font-body-md text-body-md text-on-surface-variant">PDF Document</td>
+<td class="py-3 px-4">
+<a class="font-code text-code text-secondary hover:underline flex items-center gap-1" href="#">
+                                        INV-2023-088
+                                        <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</a>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-[#10B981]/10 text-[#10B981] font-label-md text-[11px] font-semibold border border-[#10B981]/20">
+<span class="material-symbols-outlined text-[12px]">check_circle</span> Processed
+                                    </span>
+</td>
+<td class="py-3 px-4 font-body-md text-body-md text-on-surface-variant">Oct 09, 2023</td>
+<td class="py-3 px-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded transition-colors" title="View">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-secondary hover:bg-secondary/10 rounded transition-colors" title="Details">
+<span class="material-symbols-outlined text-[18px]">info</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error/10 rounded transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="p-4 border-t border-outline-variant flex items-center justify-between text-on-surface-variant bg-[#F8FAFC] rounded-b-xl">
+<p class="font-label-md text-label-md">Showing 1 to 10 of 1,248 entries</p>
+<div class="flex items-center gap-2">
+<button class="p-1.5 rounded border border-outline-variant hover:bg-surface-container-low disabled:opacity-50 disabled:cursor-not-allowed transition-colors" disabled="">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary text-on-primary font-label-md text-label-md">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant hover:bg-surface-container-low font-label-md text-label-md transition-colors">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant hover:bg-surface-container-low font-label-md text-label-md transition-colors">3</button>
+<span class="font-label-md text-label-md">...</span>
+<button class="p-1.5 rounded border border-outline-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

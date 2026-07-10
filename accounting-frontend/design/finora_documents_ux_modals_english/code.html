@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+
+<html class="light" dir="ltr" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Finora - Documents UI Gallery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#c5c6d1",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "on-surface": "#1a1b1f",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#e9e7ed",
+                        "on-tertiary-fixed": "#002113",
+                        "on-primary-container": "#7d93ce",
+                        "on-secondary-fixed-variant": "#173bab",
+                        "primary-fixed": "#dae2ff",
+                        "primary-container": "#0f2a5f",
+                        "secondary-fixed-dim": "#b8c4ff",
+                        "background": "#faf8fe",
+                        "on-primary-fixed-variant": "#2e457b",
+                        "tertiary-container": "#003421",
+                        "surface": "#faf8fe",
+                        "inverse-surface": "#2f3034",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#6ffbbe",
+                        "surface-container-low": "#f4f3f8",
+                        "on-background": "#1a1b1f",
+                        "on-surface-variant": "#44464f",
+                        "primary": "#001540",
+                        "secondary-container": "#708cfd",
+                        "inverse-primary": "#b1c5ff",
+                        "tertiary": "#001d11",
+                        "on-tertiary-container": "#00a975",
+                        "primary-fixed-dim": "#b1c5ff",
+                        "surface-dim": "#dbd9de",
+                        "secondary-fixed": "#dde1ff",
+                        "outline": "#757780",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e3e2e7",
+                        "surface-bright": "#faf8fe",
+                        "secondary": "#3755c3",
+                        "surface-container-highest": "#e3e2e7",
+                        "surface-container": "#efedf2",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "on-secondary-fixed": "#001453",
+                        "surface-tint": "#465d94",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#f2f0f5",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed": "#001946",
+                        "error": "#ba1a1a",
+                        "on-secondary-container": "#00217a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "2xl": "48px",
+                        "xl": "32px",
+                        "sidebar-width": "280px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "container-max": "1440px",
+                        "sm": "8px",
+                        "gutter": "24px",
+                        "3xl": "64px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "code": ["JetBrains Mono"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "title-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "code": ["13px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "title-lg": ["18px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Level 1 Surface */
+        .surface-level-1 {
+            background-color: theme('colors.surface-container-lowest');
+            border: 1px solid theme('colors.surface-variant');
+            border-radius: theme('borderRadius.lg');
+        }
+        
+        /* Level 2 Raised */
+        .surface-level-2 {
+            background-color: theme('colors.surface-container-lowest');
+            border: 1px solid theme('colors.surface-variant');
+            border-radius: theme('borderRadius.lg');
+            box-shadow: 0px 4px 12px rgba(15, 23, 42, 0.05);
+        }
+        
+        /* Level 3 Overlay */
+        .surface-level-3 {
+            background-color: theme('colors.surface-container-lowest');
+            border-radius: theme('borderRadius.xl');
+            box-shadow: 0px 12px 32px rgba(15, 23, 42, 0.1);
+        }
+
+        /* AI Glow */
+        .ai-glow {
+            box-shadow: 0 0 12px 2px rgba(20, 184, 166, 0.15);
+            border: 1px solid rgba(20, 184, 166, 0.3);
+        }
+        
+        /* Focus Ring */
+        .focus-ring:focus-within {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(30, 64, 175, 0.2);
+            border-color: theme('colors.secondary');
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex">
+<!-- Sidebar Canvas (Suppressed due to Gallery focus, keeping basic structure for context) -->
+<!-- Main Content -->
+<div class="flex-1 flex flex-col min-h-screen">
+<!-- Header Canvas (Gallery Focus, simplified) -->
+<header class="h-16 border-b border-outline-variant bg-surface-container-lowest flex items-center px-gutter flex-shrink-0 z-10 sticky top-0">
+<div class="font-headline-md text-headline-md text-primary font-bold">Finora UI Gallery</div>
+<div class="ml-4 font-body-md text-body-md text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                Documents Module States
+            </div>
+</header>
+<main class="flex-1 p-gutter overflow-y-auto w-full max-w-container-max mx-auto">
+<div class="mb-xl">
+<h1 class="font-headline-lg text-headline-lg text-primary mb-sm">Document Interaction States</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-3xl">A comprehensive gallery of UI states for the Finora Documents module, demonstrating modals, drawers, empty states, and system feedback in a modern corporate aesthetic.</p>
+</div>
+<!-- Bento Grid Layout for Gallery Items -->
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-gutter items-start">
+<!-- 1. Upload Document Modal State -->
+<section class="flex flex-col gap-sm">
+<h2 class="font-title-lg text-title-lg text-on-surface border-b border-outline-variant pb-2">1. Upload Document Modal</h2>
+<div class="surface-level-1 p-xl flex items-center justify-center bg-surface-container-low min-h-[500px] relative overflow-hidden rounded-xl">
+<!-- Modal Mockup -->
+<div class="surface-level-3 w-full max-w-md flex flex-col relative z-10">
+<div class="p-lg border-b border-surface-variant flex justify-between items-center">
+<h3 class="font-title-lg text-title-lg text-on-surface">Upload Document</h3>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="p-lg flex flex-col gap-md">
+<!-- Dropdown -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface-variant">Related Invoice</label>
+<div class="surface-level-1 flex items-center px-md py-2 cursor-pointer hover:bg-surface-container-lowest focus-ring transition-all">
+<span class="flex-1 font-body-md text-body-md text-on-surface-variant">Select an invoice (Optional)</span>
+<span class="material-symbols-outlined text-outline-variant">expand_more</span>
+</div>
+</div>
+<!-- Drag & Drop Area -->
+<div class="border-2 border-dashed border-outline-variant rounded-lg p-xl flex flex-col items-center justify-center gap-sm bg-surface-container-lowest hover:bg-surface-container-low hover:border-secondary transition-all cursor-pointer group">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center group-hover:bg-primary-fixed group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]">cloud_upload</span>
+</div>
+<div class="text-center">
+<p class="font-body-md text-body-md text-on-surface font-medium">Click to upload or drag and drop</p>
+<p class="font-label-md text-label-md text-outline">PDF, JPG, PNG up to 10MB</p>
+</div>
+</div>
+<!-- Note -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface-variant">Note</label>
+<textarea class="surface-level-1 w-full p-md min-h-[80px] font-body-md text-body-md text-on-surface focus-ring resize-none placeholder:text-outline" placeholder="Add a brief description..."></textarea>
+</div>
+</div>
+<div class="p-lg border-t border-surface-variant flex justify-end gap-md bg-surface-container-lowest rounded-b-xl">
+<button class="px-md py-2 rounded-lg font-label-md text-label-md text-on-surface bg-surface-container-lowest border border-surface-variant hover:bg-surface-container-low transition-colors">Cancel</button>
+<button class="px-md py-2 rounded-lg font-label-md text-label-md text-on-primary bg-secondary hover:bg-primary transition-colors shadow-sm">Upload Document</button>
+</div>
+</div>
+</div>
+</section>
+<!-- 2. Empty State -->
+<section class="flex flex-col gap-sm">
+<h2 class="font-title-lg text-title-lg text-on-surface border-b border-outline-variant pb-2">4. Empty State</h2>
+<div class="surface-level-1 p-xl flex items-center justify-center bg-surface-container-lowest min-h-[500px]">
+<div class="flex flex-col items-center justify-center max-w-sm text-center py-2xl">
+<div class="w-20 h-20 rounded-full bg-surface-container-high flex items-center justify-center mb-lg relative">
+<span class="material-symbols-outlined text-[40px] text-outline">description</span>
+<!-- Decorative subtle circle -->
+<div class="absolute inset-0 rounded-full border border-outline-variant opacity-50 scale-125"></div>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-surface mb-xs">No documents uploaded yet</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-lg">Securely store and manage your vendor invoices, contracts, and receipts. Our AI will automatically extract key data.</p>
+<button class="px-lg py-3 rounded-lg font-label-md text-label-md text-on-primary bg-secondary hover:bg-primary transition-colors flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                                Upload Document
+                            </button>
+</div>
+</div>
+</section>
+<!-- 3. Document Details Drawer (AI Enhanced) -->
+<section class="flex flex-col gap-sm xl:col-span-2">
+<h2 class="font-title-lg text-title-lg text-on-surface border-b border-outline-variant pb-2">2. Document Details Drawer (AI Extracted)</h2>
+<div class="surface-level-1 flex overflow-hidden bg-surface-container-low min-h-[600px] relative rounded-xl border border-outline-variant">
+<!-- Simulated Main Content Area -->
+<div class="flex-1 p-lg opacity-40 grayscale pointer-events-none">
+<div class="h-8 w-48 bg-surface-variant rounded mb-lg"></div>
+<div class="space-y-4">
+<div class="h-16 w-full bg-surface-variant rounded"></div>
+<div class="h-16 w-full bg-surface-variant rounded"></div>
+<div class="h-16 w-full bg-surface-variant rounded"></div>
+</div>
+</div>
+<!-- Drawer Overlay -->
+<div class="absolute inset-0 bg-on-surface/20 z-10"></div>
+<!-- Drawer Content -->
+<div class="absolute top-0 right-0 bottom-0 w-full max-w-[600px] surface-level-3 rounded-none rounded-l-2xl z-20 flex flex-col transform transition-transform duration-300">
+<!-- Drawer Header -->
+<div class="p-lg border-b border-surface-variant flex justify-between items-start bg-surface-container-lowest">
+<div>
+<div class="flex items-center gap-2 mb-xs">
+<span class="material-symbols-outlined text-error text-[20px]">picture_as_pdf</span>
+<h3 class="font-title-lg text-title-lg text-on-surface truncate pr-4">Vendor_Invoice_Q3_AcmeCorp.pdf</h3>
+</div>
+<p class="font-body-md text-body-md text-outline">Uploaded Oct 24, 2023 • 2.4 MB</p>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface p-1 rounded-full hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Drawer Body -->
+<div class="flex-1 overflow-y-auto p-lg flex flex-col gap-xl bg-surface-container-lowest">
+<!-- Meta Info Grid -->
+<div class="grid grid-cols-2 gap-md">
+<div class="flex flex-col gap-1">
+<span class="font-label-md text-label-md text-outline-variant uppercase">Document Type</span>
+<span class="font-body-md text-body-md text-on-surface">Invoice</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-label-md text-label-md text-outline-variant uppercase">Related Entity</span>
+<a class="font-body-md text-body-md text-secondary hover:underline flex items-center gap-1" href="#">
+                                            Acme Corp
+                                            <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</a>
+</div>
+</div>
+<!-- File Preview Area -->
+<div class="flex flex-col gap-sm">
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Preview</h4>
+<div class="surface-level-1 h-64 bg-surface-container flex items-center justify-center relative overflow-hidden group border border-outline-variant">
+<!-- Placeholder for document image -->
+<div class="absolute inset-0 bg-cover bg-center opacity-80 blur-[1px] group-hover:blur-none transition-all duration-300" data-alt="A clean, highly legible placeholder image of a modern corporate invoice document, blurred slightly for a preview effect, light mode aesthetic, sharp modern typography visible in the layout, soft natural lighting." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAt26wgl_CxkehG54nVydF721JuqSOU9sGWq0QhQv0g50-fuKivIoq3HJjsZSfAfSwzs-IoArGJUHERO-uC2Itsa0eIV0xB-tEllN_aLUJXwUosyWPPpLyDLCClgSQ0uZsbXSW6a4eWszRqdcsKxn2PRPpuNtmLvktAXiK-uBzTRT5OZJKwzHrbtlPUyGGFgzkJv7TzzV7WV9Wy4x5xfbEM_vdncggsxbeWMsKwsxqFUKJMFxdPU-ZDbuO8opG35ewEZ47S4Hi-yw')"></div>
+<button class="absolute bg-on-surface/80 text-surface px-md py-2 rounded-full font-label-md text-label-md flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm shadow-lg">
+<span class="material-symbols-outlined text-[18px]">fullscreen</span>
+                                            View Full Screen
+                                        </button>
+</div>
+</div>
+<!-- AI OCR Text Preview -->
+<div class="flex flex-col gap-sm">
+<div class="flex justify-between items-center">
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-[#14B8A6]">auto_awesome</span>
+                                            AI Extracted Data
+                                        </h4>
+<span class="font-label-md text-label-md text-[#14B8A6] bg-[#14B8A6]/10 px-2 py-1 rounded">High Confidence</span>
+</div>
+<div class="ai-glow bg-surface-container-low rounded-lg p-md font-code text-code text-on-surface-variant max-h-48 overflow-y-auto leading-relaxed border border-surface-variant">
+INVOICE #INV-2023-089
+Date: 2023-10-20
+Due Date: 2023-11-19
+Vendor: Acme Corporation
+Total Amount: $12,450.00
+
+Line Items:
+1. Software Licensing Q3 - $10,000.00
+2. Implementation Support - $2,450.00
+
+Tax ID: US-987654321
+                                    </div>
+</div>
+</div>
+<!-- Drawer Footer Actions -->
+<div class="p-lg border-t border-surface-variant flex justify-between items-center bg-surface-container-lowest">
+<button class="px-md py-2 rounded-lg font-label-md text-label-md text-error bg-surface-container-lowest border border-error-container hover:bg-error-container/50 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+                                    Delete
+                                </button>
+<div class="flex gap-md">
+<button class="px-md py-2 rounded-lg font-label-md text-label-md text-on-surface bg-surface-container-lowest border border-surface-variant hover:bg-surface-container-low transition-colors">Download</button>
+<button class="px-md py-2 rounded-lg font-label-md text-label-md text-on-primary bg-secondary hover:bg-primary transition-colors shadow-sm">Open Document</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+</body></html>

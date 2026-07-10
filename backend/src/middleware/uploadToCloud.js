@@ -11,13 +11,17 @@ export const uploadToCloud = async (req, res, next) => {
 
   try {
     const file = req.file;
+    const isPdf = file.originalname.toLowerCase().endsWith(".pdf");
+    const resourceType = isPdf ? "raw" : "image";
+    const publicId = isPdf ? file.originalname.replace(/\.pdf$/i, "") : file.originalname;
 
     function streamUpload(fileBuffer) {
       return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
           {
-            public_id: file.originalname,
+            public_id: publicId,
             overwrite: true,
+            resource_type: resourceType,
           },
           (error, uploadResult) => {
             if (uploadResult) {
@@ -36,7 +40,7 @@ export const uploadToCloud = async (req, res, next) => {
 
     req.cloudInvoice = {
       fileName: file.originalname,
-      fileType: uploadedFile.format,
+      fileType: uploadedFile.format || (isPdf ? "pdf" : "unknown"),
       fileUrl: uploadedFile.secure_url,
       publicId: uploadedFile.public_id,
     };
