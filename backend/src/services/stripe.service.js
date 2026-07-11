@@ -45,8 +45,8 @@ export const createCheckoutSession = async ({
     },
 
     // Redirect URLs — set in environment for each environment (dev/prod)
-    success_url: `${process.env.CLIENT_URL}/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.CLIENT_URL}/subscription/cancel`,
+    success_url: `${process.env.CLIENT_URL}/subscriptions?success=true&session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${process.env.CLIENT_URL}/subscriptions`,
   });
 
   return session;
@@ -67,10 +67,13 @@ export const constructWebhookEvent = (rawBody, signature) => {
     return stripe.webhooks.constructEvent(
       rawBody,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET
+      process.env.STRIPE_WEBHOOK_SECRET,
     );
   } catch (err) {
-    throw new AppError(`Webhook signature verification failed: ${err.message}`, 400);
+    throw new AppError(
+      `Webhook signature verification failed: ${err.message}`,
+      400,
+    );
   }
 };
 
