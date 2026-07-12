@@ -32,7 +32,7 @@ const sendAuthResponse = (
 };
 
 const getFrontendUrl = () =>
-  process.env.FRONTEND_URL || "http://localhost:3000";
+  process.env.FRONTEND_URL;
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 

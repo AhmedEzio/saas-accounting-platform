@@ -8,7 +8,7 @@ import PaymentTable from "./PaymentTable";
 const TABS = ["Invoices", "Payments"];
 const PAGE_SIZE = 10;
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 function getAuthHeaders() {
   const token =

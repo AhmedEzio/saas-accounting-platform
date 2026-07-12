@@ -9,7 +9,7 @@ import ClientDetailTabs from "@/components/clients/ClientDetailTabs";
 import EditClientModal from "@/components/clients/EditClientModal";
 import AppShell from "@/components/AppShell";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 function getAuthHeaders() {
   const token =

@@ -32,7 +32,14 @@ connectDB();
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "https://saas-accounting-platform-bqdw.vercel.app",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 app.post(
   "/api/stripe/webhook",
