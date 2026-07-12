@@ -23,7 +23,10 @@ const tajawal = Tajawal({
 
 export const metadata = {
   title: "Finora - Accounting Intelligence for the Modern Accountant",
-  description: "Manage clients, automate invoices, track payments, and store documents in one powerful, AI-driven platform built for freelancers and SMBs.",
+  description:
+    "Manage clients, automate invoices, track payments, and store documents in one powerful, AI-driven platform built for freelancers and SMBs.",
+  manifest: "/manifest.webmanifest",
+  themeColor: "#13cce4e0",
 };
 
 export default function RootLayout({ children }) {
