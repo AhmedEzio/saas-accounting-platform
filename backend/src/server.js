@@ -32,17 +32,17 @@ connectDB();
 
 const app = express();
 
-// const allowedOrigins = [
-//   "http://localhost:4200",
-//   "http://localhost:3000",
-//   "https://erp-dashboard-teal-gamma.vercel.app",
-//   "https://saas-accounting-platform-bqdw.vercel.app",
-// ];
-const allowedOrigins = (
-  process.env.ALLOWED_ORIGINS || "http://localhost:4200,http://localhost:3000"
-)
-  .split(",")
-  .map((origin) => origin.trim());
+const allowedOrigins = [
+  "http://localhost:4200",
+  "http://localhost:3000",
+  "https://erp-dashboard-teal-gamma.vercel.app",
+  "https://saas-accounting-platform-bqdw.vercel.app",
+];
+// const allowedOrigins = (
+//   process.env.ALLOWED_ORIGINS || "http://localhost:4200,http://localhost:3000"
+// )
+//   .split(",")
+//   .map((origin) => origin.trim());
 
 app.use(
   cors({
