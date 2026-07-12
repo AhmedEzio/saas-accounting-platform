@@ -32,13 +32,31 @@ connectDB();
 
 const app = express();
 
+// const allowedOrigins = [
+//   "http://localhost:4200",
+//   "http://localhost:3000",
+//   "https://erp-dashboard-teal-gamma.vercel.app",
+//   "https://saas-accounting-platform-bqdw.vercel.app",
+// ];
+const allowedOrigins = (
+  process.env.ALLOWED_ORIGINS || "http://localhost:4200,http://localhost:3000"
+)
+  .split(",")
+  .map((origin) => origin.trim());
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "https://saas-accounting-platform-bqdw.vercel.app",
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origin ${origin} not allowed by CORS`));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-  })
+  }),
 );
 
 app.post(
