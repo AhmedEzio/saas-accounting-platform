@@ -15,6 +15,7 @@ import { getInvoicesRules } from "../validations/invoice.validation.js";
 import { getAllClients } from "../controllers/dashboard-controllers/clients.controller.js";
 import { getAllPayments } from "../controllers/dashboard-controllers/payments.controller.js";
 import { searchAllPayments } from "../controllers/dashboard-controllers/payments.controller.js";
+import { register } from "../controllers/dashboard-controllers/create-user.controller.js";
 
 const router = Router();
 
@@ -141,5 +142,12 @@ router.get("/payments", getAllPayments);
  * // GET /api/dashboard/payments/search?search=...
  */
 router.get("/payments/search", searchAllPayments);
+
+/**
+ * @route   POST /api/dashboard/register
+ * @desc    Register a new accountant account
+ * @access  Public
+ */
+router.post("/register", register);
 
 export default router;
