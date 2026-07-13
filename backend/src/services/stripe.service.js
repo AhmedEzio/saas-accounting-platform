@@ -1,5 +1,7 @@
+import dotenv from "dotenv";
 import Stripe from "stripe";
 import AppError from "../utils/appError.js";
+dotenv.config();
 
 // Initialise the Stripe client once — reuse across requests
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
