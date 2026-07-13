@@ -18,7 +18,7 @@ import { ChatOpenAI } from "@langchain/openai";
 export function getEmbeddings() {
   const embeddings = new GoogleGenerativeAIEmbeddings({
     apiKey: process.env.GOOGLE_API_KEY,
-    model: "gemini-embedding-2",
+    model: "gemini-embedding-001",
     outputDimensionality: 3072,
     // outputDimensionality: 1536,
   });
