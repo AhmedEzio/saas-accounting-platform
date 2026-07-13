@@ -7,6 +7,7 @@ import {
   createPlan,
   updatePlan,
   deletePlan,
+  removePlan,
   createCheckout,
   getMySubscription,
   getAllSubscriptions,
@@ -59,6 +60,16 @@ router.delete(
   protect,
   authorize("admin"),
   deletePlan
+);
+
+// Hard delete — permanently removes the plan. Distinct from the soft
+// delete route above so existing clients calling DELETE /:id keep the
+// (safer) deactivate behaviour.
+router.delete(
+  "/admin/subscription-plans/:id/permanent",
+  protect,
+  authorize("admin"),
+  removePlan
 );
 
 router.post(

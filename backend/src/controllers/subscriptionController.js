@@ -184,6 +184,39 @@ export const deletePlan = catchError(async (req, res) => {
   });
 });
 
+// DELETE /api/admin/subscription-plans/:id/permanent
+// Hard delete — permanently removes the plan document from the database.
+// Unlike deletePlan() (soft delete / deactivate), this cannot be undone,
+// so it is blocked whenever any UserSubscription still references the plan.
+export const removePlan = catchError(async (req, res) => {
+  const { id } = req.params;
+
+  const plan = await SubscriptionPlan.findById(id);
+
+  if (!plan) {
+    throw new AppError("Subscription plan not found.", 404);
+  }
+
+  const subscriptionCount = await UserSubscription.countDocuments({
+    planId: id,
+  });
+
+  if (subscriptionCount > 0) {
+    throw new AppError(
+      "This plan has subscription history and cannot be permanently deleted. Deactivate it instead to hide it from users.",
+      409,
+    );
+  }
+
+  await SubscriptionPlan.findByIdAndDelete(id);
+
+  res.status(200).json({
+    success: true,
+    message: "Subscription plan permanently deleted.",
+    data: { _id: id },
+  });
+});
+
 // POST /api/subscriptions/create-checkout-session
 
 export const createCheckout = catchError(async (req, res) => {
